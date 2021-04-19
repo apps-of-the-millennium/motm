@@ -1,0 +1,76 @@
+.mediaPostImg {
+    width: 100%;
+    object-fit: contain;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    max-height: 25rem;
+    background: black;
+}
+
+.mediaPost {
+    display: grid;
+    place-items: center;
+    max-width: 40rem;
+    min-width: 40rem;
+    min-height: 30rem;
+    background-color: white;
+    border: 3px solid lightgray;
+    margin-bottom: 4rem;
+}
+
+.mediaPostTitle {
+    min-height: 3rem;
+}
+
+.mediaPostInfo {
+    min-height: 3rem;
+}
+
+.mediaPostSummary {
+    min-height: 3rem;
+}
+
+.allbtns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7em;
+    margin-bottom: 1rem;
+}
+
+.expandbtn {
+    border-radius: 10px;
+    width: 4em;
+    height: 4em;
+}
+
+.expandbtn:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+  
+.laterBtn {
+    width: 4em;
+    height: 4em;
+}
+
+/* .laterBtn:hover {
+    color: lightblue;
+} */
+
+.ratings {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.favBtn {
+    align-self: flex-start;
+}
+
+.completed {
+    align-self: flex-start;
+    width: 4em;
+    height: 4em;
+}

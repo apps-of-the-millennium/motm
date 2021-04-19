@@ -1,0 +1,42 @@
+.appHeader {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    border-bottom: 4px solid lightgrey;
+    margin-bottom: 0.5em;
+    background-color: #129490;
+}
+
+.appHeaderImg {
+    object-fit: contain;
+    padding-right: 1.25rem;
+    width: 12rem;
+    height: auto;
+}
+  
+.appHeaderTitle {
+    padding: 1.25rem;
+    margin: auto;
+}
+
+.logo {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: contain;
+    width: 2rem;
+    height: auto;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}

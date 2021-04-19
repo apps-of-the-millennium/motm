@@ -1,0 +1,42 @@
+/* color scheme
+CE1483
+E0A890
+129490
+065143
+70B77E
+*/
+
+* {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  
+}
+
+.appBg {
+  background-color: #E0A890;
+}
+
+.appBody {
+  display: grid;
+  place-items: center;
+}
+
+.loginContainer {
+  background-color: #CE1483;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+.appSignIn {
+  padding: 2.25rem;
+  text-align: center;
+}
+
+
+.appSignup {
+  display: flex;
+  flex-direction: column;
+}
