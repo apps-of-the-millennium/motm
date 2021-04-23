@@ -16,8 +16,8 @@ const addFavourite = (id) => {
 }
 
 const buttonStyle = {
-    width: '4em',
-    height: '4em',
+    width: '10vw',
+    height: '10vh',
     '&:hover': {
         color: 'lightblue',
     }
@@ -122,7 +122,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     {/* add to list add to ... */}
                     <div className="allbtns">
                         <div>
-                            <button className="favBtn" onClick={() => addFavourite(this.props.id)} />
+                            <button className="favBtn" onClick={() => addFavourite(this.props.id)} style={{...buttonStyle}} />
                             <h5>Favourite</h5>
                         </div>
                         <div>

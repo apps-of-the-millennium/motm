@@ -23,17 +23,15 @@ const Header = () => {
       {!!user ? (
         <>
         <div className="logo">
-        <img className="appHeaderImg" src="/logo.png" alt="bruh"/>
-        <h2 className="appHeaderTitle">Media of The Millenium</h2>
+          <img className="appHeaderImg" src="/logo.png" alt="bruh"/>
+          {/* <div className="appHeaderTitle">Media of The Millenium</div> */}
         </div>
             <div className="navigation">
-              <ul><a href="/#">Home</a></ul>
-              <ul><Link to={`/profile/${user.uid}`}>My Profile</Link></ul>
-              <ul>
-                <h3>Welcome, {user.displayName} <img className="avatar" src={user.photoURL} alt="temp.png"></img>
-                  <button className="headerBtns" onClick={() => signOut()}>Sign Out</button>
-                </h3>
-              </ul>
+              <a className="nav" href="/#">Home</a>
+              <Link className="nav" to={`/profile/${user.uid}`}>My Profile</Link>
+              <h3 className="nav">Welcome, {user.displayName} <img className="avatar" src={user.photoURL} alt="temp.png"></img>
+                <button className="headerBtns" onClick={() => signOut()}>Sign Out</button>
+              </h3>
             </div>
         </>
       ):(

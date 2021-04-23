@@ -8,33 +8,36 @@
 }
 
 .mediaPost {
+    width: 90%;
     display: grid;
     place-items: center;
     max-width: 40rem;
-    min-width: 40rem;
     min-height: 30rem;
     background-color: white;
     border: 3px solid lightgray;
     margin-bottom: 4rem;
+    text-align: center;
+    overflow: auto;
 }
 
 .mediaPostTitle {
-    min-height: 3rem;
+    /* min-height: 3rem; */
+    /* text-align: center; */
 }
 
 .mediaPostInfo {
-    min-height: 3rem;
+    /* min-height: 3rem; */
 }
 
 .mediaPostSummary {
-    min-height: 3rem;
+    /* min-height: 3rem; */
+    /* max-width: 80%; */
 }
 
 .allbtns {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 7em;
+    gap: 20%;
     margin-bottom: 1rem;
 }
 
@@ -65,12 +68,12 @@
     align-items: center;
 }
 
-.favBtn {
-    align-self: flex-start;
-}
-
 .completed {
     align-self: flex-start;
     width: 4em;
     height: 4em;
+}
+
+@media (min-width: 900px) {
+
 }
