@@ -12,7 +12,7 @@ const addFavourite = (id) => {
     var userId = firebase.auth().currentUser.uid;
     firestore.collection('users').doc(userId).set({
         favourites: firebase.firestore.FieldValue.arrayUnion(id)
-    }, {merge: true})
+    }, { merge: true })
 }
 
 const buttonStyle = {
@@ -27,12 +27,13 @@ class MediaPost extends React.Component { //({ user, match }) => {
     constructor(props) {
         super(props);
         this.state = {
-            isLoaded: false,
+            isLoaded: true, //TEMPORARY SETTING TO ALWAYS TRUE
             mediaInfo: {},
             mediaBg: '',
             currRating: 0,
             laterColor: "black",
             completed: false,
+            hover: false
             // userInfo: {
             //     'bio': 'this is bio,
             //     'favourites': [],
@@ -45,12 +46,12 @@ class MediaPost extends React.Component { //({ user, match }) => {
     async updateLater(id) {
         var userId = firebase.auth().currentUser.uid;
         var userDoc = firestore.collection('users').doc(userId);
-        if(this.state.laterColor === "blue") {
+        if (this.state.laterColor === "blue") {
             userDoc.collection('later').doc(id).delete();
-            this.setState({laterColor: "black"});
+            this.setState({ laterColor: "black" });
         } else {
             userDoc.collection('later').doc(id).set({});
-            this.setState({laterColor: "blue"});
+            this.setState({ laterColor: "blue" });
         }
     }
 
@@ -60,97 +61,95 @@ class MediaPost extends React.Component { //({ user, match }) => {
             [mediaId]: newRating,
         })
         firestore.collection('posts').doc(mediaId).collection('userRatings').doc(userId).set(
-            {rating: newRating}, 
-            {merge: true}
+            { rating: newRating },
+            { merge: true }
         )
-        this.setState({currRating: newRating});
+        this.setState({ currRating: newRating });
     }
 
     async getRating(mediaId) {
         var userId = firebase.auth().currentUser.uid;
         var userDoc = firestore.collection('users').doc(userId);
         userDoc.collection('ratings').doc('books').get().then((doc) => {
-            if(doc.exists) {
+            if (doc.exists) {
                 console.log(doc.data()[mediaId]);
-                this.setState({currRating: doc.data()[mediaId]});
+                this.setState({ currRating: doc.data()[mediaId] });
             }
             //no else needed already set to 0
         })
         userDoc.collection('later').doc(mediaId).get().then((doc) => {
-            if(doc.exists) {
-                this.setState({laterColor: "blue"});
+            if (doc.exists) {
+                this.setState({ laterColor: "blue" });
             }
         })
     }
 
     async getPicture(url) {
-        const ref = firebaseApp.storage().ref(url);
-        console.log(ref);
-        ref.getDownloadURL()
-        .then((url) => {
-            this.setState({mediaBg: url});
-        })
-        .catch((e) =>
-            console.log('Error retrieving profilePic => ', e)
-        );
+        if (url) {
+            const ref = firebaseApp.storage().ref(url);
+            console.log(ref);
+            ref.getDownloadURL()
+                .then((url) => {
+                    this.setState({ mediaBg: url });
+                })
+                .catch((e) =>
+                    console.log('Error retrieving profilePic => ', e)
+                );
+        }
+    }
+
+    onMouseEnterHandler = () => {
+        this.setState({
+            hover: true
+        });
+        console.log('enter');
+    }
+    onMouseLeaveHandler = () => {
+        this.setState({
+            hover: false
+        });
+        console.log('leave');
     }
 
     componentDidMount() {
         firestore.collection('posts').doc(this.props.id).get().then((doc) => {
-            if(doc.exists) {
+            if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
-                this.getPicture('/mediaBg/'+this.props.id+'.jpg');
+                this.getPicture('/mediaBg/' + this.props.id + '.jpg');
                 this.getRating(this.props.id);
             }
         })
     }
-    
-    render() {
-        const { isLoaded } = this.state;
 
-        if (isLoaded) {
+    render() {
+        if (this.state.isLoaded) {
             return (
-                <div className="mediaPost">
-                    {/* picture of media and favorite btn*/}
-                    <img className="mediaPostImg" src={this.state.mediaBg} alt={this.state.mediaInfo['title']}></img>
-                    {/* title */}
-                    <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-                    {/* basic info depends on category temp will be actors*/}
-                    <h3 className="mediaPostInfo">{this.state.mediaInfo['info']}</h3>
-                    {/* summary */}
-                    <h4 className="mediaPostSummary">{this.state.mediaInfo['summary']}</h4>
-                    {/* add to list add to ... */}
-                    <div className="allbtns">
-                        <div>
-                            <button className="favBtn" onClick={() => addFavourite(this.props.id)} style={{...buttonStyle}} />
-                            <h5>Favourite</h5>
-                        </div>
-                        <div>
-                            <WatchLaterIcon onClick={() => this.updateLater(this.props.id)} size="large" style={{...buttonStyle, color: this.state.laterColor}} />
-                            <h5>Later</h5>
-                        </div>
-                        <div>
-                            {this.state.completed ? (
-                                <CheckCircleIcon className="completed" size="large" style={{...buttonStyle, color: "green"}} />
-                            ) : (
-                                <CheckCircleOutlineIcon className="completed" size="large" style={{...buttonStyle}} />
-                            )}
-                            <h5>Completed</h5>
-                        </div>
+                <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
+                    <div className="mediaPost" >
+                        {/* picture of media and favorite btn*/}
+                        <div className="mediaPostImg"></div>
+                        {/* title */}
+                        <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+
+
+
+
+
                     </div>
-                    {/* rate and rating general */}
-                    <div className="ratings">
-                        <h2>Average Rating:  {this.state.mediaInfo['avgRating']}</h2>
-                        <h4>Add a graph here...</h4>
-                        <h1>Rate this Title:</h1>
-                        <Rating style={{fontSize: "3em"}} value={this.state.currRating} precision={0.5} emptyIcon={<StarBorderIcon fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
-                    </div>
-                    {/* reviews or go to page*/}
-                    {/* <Reviews/> */}
-                    {/* extra report etc */}
-                    <div className="extra">
-                        {/* <button className="report" onClick={() => report({id})}>Report</button> */}
-                    </div>
+                    {(this.state.hover) ?
+                        <div className="mediaPostInfoBox">
+                            {/* basic info depends on category temp will be actors*/}
+                            <div className="mediaPostCategory">{this.state.mediaInfo['category']}</div>
+                            <div className="ratings">
+                                <h2>{this.state.mediaInfo['avgRating']}</h2>
+                            </div>
+                            <h2 className="releaseDate">Fall 2020</h2>
+                            <div className="author">John Smith</div>
+                            <div className="tagContainer">
+                                <div className="tag">action</div>
+                            </div>
+
+                        </div> : ''}
                 </div>
             )
         } else {
@@ -162,3 +161,49 @@ class MediaPost extends React.Component { //({ user, match }) => {
 };
 
 export default MediaPost;
+
+//Date released, Category type: tv show, movie, actor etc, tags, rating
+
+
+
+//place back in placeholder
+//<img className="mediaPostImg" src={this.state.mediaBg} alt={this.state.mediaInfo['title']}></img>
+//  {/* title */}
+//  <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+//  {/* basic info depends on category temp will be actors*/}
+//  <h3 className="mediaPostInfo">{this.state.mediaInfo['info']}</h3>
+//  {/* summary */}
+//  <h4 className="mediaPostSummary">{this.state.mediaInfo['summary']}</h4>
+//  {/* add to list add to ... */}
+//  <div className="allbtns">
+//      <div>
+//          <button className="favBtn" onClick={() => addFavourite(this.props.id)} style={{...buttonStyle}} />
+//          <h5>Favourite</h5>
+//      </div>
+//      <div>
+//          <WatchLaterIcon onClick={() => this.updateLater(this.props.id)} size="large" style={{...buttonStyle, color: this.state.laterColor}} />
+//          <h5>Later</h5>
+//      </div>
+//      <div>
+//          {this.state.completed ? (
+//              <CheckCircleIcon className="completed" size="large" style={{...buttonStyle, color: "green"}} />
+//          ) : (
+//              <CheckCircleOutlineIcon className="completed" size="large" style={{...buttonStyle}} />
+//          )}
+//          <h5>Completed</h5>
+//      </div>
+//  </div>
+
+//  {/* rate and rating general */}
+//  <div className="ratings">
+//      <h2>Average Rating:  {this.state.mediaInfo['avgRating']}</h2>
+//      <h4>Add a graph here...</h4>
+//      <h1>Rate this Title:</h1>
+//      <Rating style={{fontSize: "3em"}} value={this.state.currRating} precision={0.5} emptyIcon={<StarBorderIcon fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
+//  </div>
+//  {/* reviews or go to page*/}
+//  {/* <Reviews/> */}
+//  {/* extra report etc */}
+//  <div className="extra">
+//      {/* <button className="report" onClick={() => report({id})}>Report</button> */}
+//  </div>

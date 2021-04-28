@@ -28,11 +28,55 @@ import { firestore } from "./firebase";
 //   },
 // }));
 
+const DUMMY_POSTS = [
+  {
+    docId: '1',
+    postInfo: {
+      category: '',
+      title: '',
+      info: '',
+      summary: '',
+      imageUrl: ''
+    }
+  },
+  {
+    docId: '2',
+    postInfo: {
+      category: '',
+      title: '',
+      info: '',
+      summary: '',
+      imageUrl: ''
+    }
+  },
+  {
+    docId: '3',
+    postInfo: {
+      category: '',
+      title: '',
+      info: '',
+      summary: '',
+      imageUrl: ''
+    }
+  },
+  {
+    docId: '4',
+    postInfo: {
+      category: '',
+      title: '',
+      info: '',
+      summary: '',
+      imageUrl: ''
+    }
+  }
+
+]
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: [],
+      posts: DUMMY_POSTS
     }
   }
 
@@ -42,33 +86,32 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div className="home">
-        <div className="appBg">
-          {/*main page*/}
 
-          {/* picture of media and favorite btn*/}
+      <div className="homeBg">
+        {/*main page*/}
 
-          {/* title */}
+        {/* picture of media and favorite btn*/}
 
-          {/* basic info depends on category temp will be actors*/}
+        {/* title */}
 
-          {/* summary */}
+        {/* basic info depends on category temp will be actors*/}
 
-          {/* rate and rating general */}
+        {/* summary */}
 
-          {/* add to list add to ... */}
+        {/* rate and rating general */}
 
-          {/* reviews or go to page*/}
+        {/* add to list add to ... */}
 
-          {/* extra report etc */}
-          <div className="appBody">
-            {
-              this.state.posts.map((post) => {
-                let postInfo = post.postInfo;
-                return (<div key={post.docId}> <MediaPost category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-              })
-            }
-          </div>
+        {/* reviews or go to page*/}
+
+        {/* extra report etc */}
+        <div className="appBody">
+          {
+            this.state.posts.map((post) => {
+              let postInfo = post.postInfo;
+              return (<div key={post.docId}> <MediaPost category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+            })
+          }
         </div>
       </div>
     )
@@ -81,73 +124,11 @@ class Home extends React.Component {
           docId: doc.id,
           postInfo: doc.data()
         }
-        this.setState( {posts: [ ...this.state.posts, newPost ]} ); //...arrayName basically used to append a new item to the original array (aka spread syntax)
+        this.setState({ posts: [...this.state.posts, newPost] }); //...arrayName basically used to append a new item to the original array (aka spread syntax)
       });
     });
   }
 
 } //Class Home ===============
-
-
-
-
-// function Home() {
-
-//   return (
-//     <div className="home">
-//       <HomeScreen />
-//     </div>
-//   );
-// }
-
-//function HomeScreen() {
-
-  // const classes = useStyles();
-  // const [modalStyle] = React.useState(getModalStyle);
-
-  //const [posts, setPosts] = useState([]);
-
-  //useEffect runs piece of code based on specific condition
-  //useEffect(() => {
-
-  //   firestore.collection('posts').onSnapshot(snapshot => {
-  //     //every time a new post is added 
-  //     setPosts(snapshot.docs.map(doc => ({
-  //       docId: doc.id,
-  //       post: doc.data()
-  //     })));
-  //   })
-  // }, []); //if [], only runs once when app component loads
-  // //if [posts], runs whenever posts changes
-
-//   return (
-//     <body className="appBg">
-//       {/*main page*/}
-
-//       {/* picture of media and favorite btn*/}
-
-//       {/* title */}
-
-//       {/* basic info depends on category temp will be actors*/}
-
-//       {/* summary */}
-
-//       {/* rate and rating general */}
-
-//       {/* add to list add to ... */}
-
-//       {/* reviews or go to page*/}
-
-//       {/* extra report etc */}
-//       <div className="appBody">
-//         {
-//           posts.map(({ docId, post }) => (
-//             <MediaPost category={post.category} id={docId} title={post.title} info={post.info} summary={post.summary} imageUrl={post.imageUrl} />
-//           ))
-//         }
-//       </div>
-//     </body>
-//   )
-// }
 
 export default Home;
