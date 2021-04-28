@@ -37,7 +37,6 @@
 .allbtns {
     display: flex;
     justify-content: center;
-    gap: 20%;
     margin-bottom: 1rem;
 }
 

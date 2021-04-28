@@ -1,7 +1,6 @@
 import React, {useState, useEffect } from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
-import Header from './Header';
 import { firestore } from "./firebase";
 // import { makeStyles } from '@material-ui/core/styles';
 

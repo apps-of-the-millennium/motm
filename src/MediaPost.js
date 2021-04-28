@@ -45,7 +45,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
     async updateLater(id) {
         var userId = firebase.auth().currentUser.uid;
         var userDoc = firestore.collection('users').doc(userId);
-        if(this.state.laterColor == "blue") {
+        if(this.state.laterColor === "blue") {
             userDoc.collection('later').doc(id).delete();
             this.setState({laterColor: "black"});
         } else {
@@ -85,13 +85,14 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
     async getPicture(url) {
         const ref = firebaseApp.storage().ref(url);
+        console.log(ref);
         ref.getDownloadURL()
-            .then((url) => {
-                this.setState({mediaBg: url});
-            })
-            .catch((e) =>
-                console.log('Error retrieving profilePic => ', e)
-            );
+        .then((url) => {
+            this.setState({mediaBg: url});
+        })
+        .catch((e) =>
+            console.log('Error retrieving profilePic => ', e)
+        );
     }
 
     componentDidMount() {
@@ -105,8 +106,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
     
     render() {
-        const { userInfo, isLoaded } = this.state;
-        const { classes } = this.props;
+        const { isLoaded } = this.state;
 
         if (isLoaded) {
             return (
