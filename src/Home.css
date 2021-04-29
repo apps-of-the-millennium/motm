@@ -14,14 +14,40 @@ E0A890
   
 }
 
-.appBg {
-  background-color: #E0A890;
+.homeBg {
+  background-color: #1c2331;
+  height: 100rem;
+  overflow: auto;
+  
 }
 
-.appBody {
-  display: grid;
-  place-items: center;
+.searchForm {
+  margin-top: 5%;
+  margin-left: 15%;
 }
+
+.postContainer {
+  margin: 0 auto;
+  width: 70%;
+  
+ 
+  display: flex;
+  flex-flow: row wrap; 
+  justify-content: space-between;
+}
+
+.topContainer {
+  display: table;
+  margin: 0 auto;
+  
+}
+
+
+
+
+
+
+
 
 .loginContainer {
   background-color: #CE1483;
