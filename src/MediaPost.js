@@ -103,7 +103,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     this.setState({ mediaPostPic: url });
                 })
                 .catch((e) =>
-                    console.log('Error retrieving profilePic => ', e)
+                    console.log('Error retrieving mediaPostPic => ', e)
                 );
         }
     }
@@ -122,7 +122,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        firestore.collection('posts').doc(this.props.id).get().then((doc) => {
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
@@ -135,17 +135,14 @@ class MediaPost extends React.Component { //({ user, match }) => {
         if (this.state.isLoaded) {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
+                    <div>
+                    <div className="testing">Hello</div>
                     <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
                         <div className="mediaPost" >
                             {/* picture of media*/}
                             <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
                             {/* title */}
                             <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-
-
-
-
-
                         </div>
                         {(this.state.hover) ?
                             <div className="mediaPostInfoBox">
@@ -171,6 +168,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 <ImCheckmark className="icon" />
 
                             </div> : ''}
+                    </div>
                     </div>
                 )
             } else { //envData.MEDIA_P_TYPE.SIMPLE i.e top10 post style

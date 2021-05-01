@@ -42,6 +42,30 @@ E0A890
   
 }
 
+.searchInput {
+  color: rgb(226, 228, 245);
+  height: 2rem;
+  width: 20%;
+  background-color: #767a9b;
+  background-image: url('./images/search.svg');
+  background-position: -90% 5px;
+  background-repeat: no-repeat;
+  background-size: 70% 70%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+
+  font-size: medium;
+  font-weight: 500; 
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  /* Remove default */
+  position: relative;
+  left: 0.5rem;
+
+
+}
+
 
 
 
