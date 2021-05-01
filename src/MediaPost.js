@@ -3,14 +3,13 @@ import './MediaPost.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
-
-import Rating from '@material-ui/lab/Rating';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+// Might use later but for full page of MediaPost
+// import Rating from '@material-ui/lab/Rating';
+// import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import { AiFillStar } from 'react-icons/ai';
 
 import { AiFillClockCircle } from 'react-icons/ai';
-import { MdStars } from 'react-icons/md';
 import { ImCheckmark } from 'react-icons/im';
 
 class MediaPost extends React.Component { //({ user, match }) => {

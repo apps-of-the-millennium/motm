@@ -3,11 +3,8 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-import { color, black } from 'ansi-styles';
-import { rgb } from 'chalk';
 
 import searchIcon from './images/search.svg'; // with import
-import { fontSize } from '@material-ui/system';
 
 import envData from './envData';
 //console.log(env.TEST);
@@ -189,7 +186,7 @@ class Home extends React.Component {
 
   retrievePosts = () => {
     firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
-      const tempDocument = querySnapshot.docs.map(doc => {
+      querySnapshot.docs.forEach( doc => {
         const newPost = {
           docId: doc.id,
           postInfo: doc.data()
