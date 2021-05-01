@@ -11,13 +11,13 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_APIKEY }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_APPID }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_AUTHDOMAIN }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_DATABASEURL }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_MESSAGINGSENDERID }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_PROJECTID }} >> .env
-          echo REACT_APP_API_KEY=${{ secrets.REACT_APP_STORAGEBUCKET }} >> .env
+          echo REACT_APP_APIKEY=${{ secrets.REACT_APP_APIKEY }} >> .env
+          echo REACT_APP_APPID=${{ secrets.REACT_APP_APPID }} >> .env
+          echo REACT_APP_AUTHDOMAIN=${{ secrets.REACT_APP_AUTHDOMAIN }} >> .env
+          echo REACT_APP_DATABASEURL=${{ secrets.REACT_APP_DATABASEURL }} >> .env
+          echo REACT_APP_MESSAGINGSENDERID=${{ secrets.REACT_APP_MESSAGINGSENDERID }} >> .env
+          echo REACT_APP_PROJECTID=${{ secrets.REACT_APP_PROJECTID }} >> .env
+          echo REACT_APP_STORAGEBUCKET=${{ secrets.REACT_APP_STORAGEBUCKET }} >> .env
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
