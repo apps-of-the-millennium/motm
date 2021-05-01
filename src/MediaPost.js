@@ -16,21 +16,6 @@ import { AiFillClockCircle } from 'react-icons/ai';
 import { MdStars } from 'react-icons/md';
 import { ImCheckmark } from 'react-icons/im';
 
-const addFavourite = (id) => {
-    var userId = firebase.auth().currentUser.uid;
-    firestore.collection('users').doc(userId).set({
-        favourites: firebase.firestore.FieldValue.arrayUnion(id)
-    }, { merge: true })
-}
-
-const buttonStyle = {
-    width: '10vw',
-    height: '10vh',
-    '&:hover': {
-        color: 'lightblue',
-    }
-};
-
 class MediaPost extends React.Component { //({ user, match }) => {
     constructor(props) {
         super(props);
@@ -41,9 +26,10 @@ class MediaPost extends React.Component { //({ user, match }) => {
             mediaInfo: {},
             mediaPostPic: '',
             currRating: 0,
-            laterColor: "black",
             completed: false,
-            hover: false
+            hover: false,
+            popUp: false,
+            listType: "",
             // userInfo: {
             //     'bio': 'this is bio,
             //     'favourites': [],
@@ -53,24 +39,46 @@ class MediaPost extends React.Component { //({ user, match }) => {
         };
     }
 
-    async updateLater(id) {
+    async updateFavourite(id) {
         var userId = firebase.auth().currentUser.uid;
-        var userDoc = firestore.collection('users').doc(userId);
-        if (this.state.laterColor === "blue") {
-            userDoc.collection('later').doc(id).delete();
-            this.setState({ laterColor: "black" });
-        } else {
-            userDoc.collection('later').doc(id).set({});
-            this.setState({ laterColor: "blue" });
-        }
+        firestore.collection('users').doc(userId).collection('lists').doc('favouriteList').update({
+            favouriteList: firebase.firestore.FieldValue.arrayUnion(id)
+        });
+        this.setState({ popUp: true, listType: 'Favourites List' })
+        setTimeout(function(){
+            this.setState({ popUp: false });
+        }.bind(this),5000);
     }
 
+    async updateLater(id) {
+        var userId = firebase.auth().currentUser.uid;
+        firestore.collection('users').doc(userId).collection('lists').doc('laterList').update({
+            laterList: firebase.firestore.FieldValue.arrayUnion(id)
+        });
+        this.setState({ popUp: true, listType: 'Later List' });
+        setTimeout(function(){
+            this.setState({ popUp: false });
+        }.bind(this),5000);
+    }
+
+    async updateCompleted(id) {
+        var userId = firebase.auth().currentUser.uid;
+        firestore.collection('users').doc(userId).collection('lists').doc('completedList').update({
+            completedList: firebase.firestore.FieldValue.arrayUnion(id)
+        });
+        this.setState({ popUp: true, listType: 'Completed List' });
+        setTimeout(function(){
+            this.setState({ popUp: false });
+        }.bind(this),5000);
+    }
+
+    //will move this function to full page MediaPost
     async updateRating(newRating, mediaId) {
         var userId = firebase.auth().currentUser.uid;
         firestore.collection('users').doc(userId).collection('ratings').doc('books').update({
             [mediaId]: newRating,
         })
-        firestore.collection('posts').doc(mediaId).collection('userRatings').doc(userId).set(
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(userId).set(
             { rating: newRating },
             { merge: true }
         )
@@ -82,7 +90,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
         var userDoc = firestore.collection('users').doc(userId);
         userDoc.collection('ratings').doc('books').get().then((doc) => {
             if (doc.exists) {
-                console.log(doc.data()[mediaId]);
                 this.setState({ currRating: doc.data()[mediaId] });
             }
             //no else needed already set to 0
@@ -97,7 +104,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
     async getPicture(url) {
         if (url) {
             const ref = firebaseApp.storage().ref(url);
-            console.log(ref);
             ref.getDownloadURL()
                 .then((url) => {
                     this.setState({ mediaPostPic: url });
@@ -112,17 +118,15 @@ class MediaPost extends React.Component { //({ user, match }) => {
         this.setState({
             hover: true
         });
-        console.log('enter');
     }
     onMouseLeaveHandler = () => {
         this.setState({
             hover: false
         });
-        console.log('leave');
     }
 
     componentDidMount() {
-        firestore.collection('posts').doc(this.props.id).get().then((doc) => {
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
@@ -135,43 +139,40 @@ class MediaPost extends React.Component { //({ user, match }) => {
         if (this.state.isLoaded) {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
-                    <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
-                        <div className="mediaPost" >
-                            {/* picture of media*/}
-                            <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
-                            {/* title */}
-                            <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-
-
-
-
-
+                    <>
+                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></> }
+                        <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
+                            <div className="mediaPost" >
+                                {/* picture of media*/}
+                                <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
+                                {/* title */}
+                                <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+                            </div>
+                            {(this.state.hover) ?
+                                <div className="mediaPostInfoBox">
+                                    {/* basic info depends on category temp will be actors*/}
+                                    <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+                                    <div className="ratings">
+                                        <div className="star"><AiFillStar /></div>
+                                        <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+                                    </div>
+                                    <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
+                                    <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                    {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
+                                    <div className="tagContainer">
+                                        {(this.state.mediaInfo['tags']) ? this.state.mediaInfo['tags'].slice(0,3).map((tag) => {
+                                            return <div className="tag">{tag}</div>
+                                        }) : "No tag"}
+                                    </div>
+                                </div> : ''}
+                            {(this.state.hover) ?
+                                <div className="mediaPostButtons">
+                                    <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillStar className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
+                                </div> : ''}
                         </div>
-                        {(this.state.hover) ?
-                            <div className="mediaPostInfoBox">
-                                {/* basic info depends on category temp will be actors*/}
-                                <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-                                <div className="ratings">
-                                    <div className="star"><AiFillStar /></div>
-                                    <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
-                                </div>
-                                <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
-                                <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                                {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-                                <div className="tagContainer">
-                                    {(this.state.mediaInfo['tags']) ? this.state.mediaInfo['tags'].slice(0,3).map((tag) => {
-                                        return <div className="tag">{tag}</div>
-                                    }) : "No tag"}
-                                </div>
-                            </div> : ''}
-                        {(this.state.hover) ?
-                            <div className="mediaPostButtons">
-                                <AiFillStar className="icon" />
-                                <AiFillClockCircle className="icon" />
-                                <ImCheckmark className="icon" />
-
-                            </div> : ''}
-                    </div>
+                    </>
                 )
             } else { //envData.MEDIA_P_TYPE.SIMPLE i.e top10 post style
                 return (
@@ -210,47 +211,10 @@ class MediaPost extends React.Component { //({ user, match }) => {
 export default MediaPost;
 
 //Date released, Category type: tv show, movie, actor etc, tags, rating
-
-
-
-//place back in placeholder
-//<img className="mediaPostImg" src={this.state.mediaBg} alt={this.state.mediaInfo['title']}></img>
-//  {/* title */}
-//  <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-//  {/* basic info depends on category temp will be actors*/}
-//  <h3 className="mediaPostInfo">{this.state.mediaInfo['info']}</h3>
-//  {/* summary */}
-//  <h4 className="mediaPostSummary">{this.state.mediaInfo['summary']}</h4>
-//  {/* add to list add to ... */}
-//  <div className="allbtns">
-//      <div>
-//          <button className="favBtn" onClick={() => addFavourite(this.props.id)} style={{...buttonStyle}} />
-//          <h5>Favourite</h5>
-//      </div>
-//      <div>
-//          <WatchLaterIcon onClick={() => this.updateLater(this.props.id)} size="large" style={{...buttonStyle, color: this.state.laterColor}} />
-//          <h5>Later</h5>
-//      </div>
-//      <div>
-//          {this.state.completed ? (
-//              <CheckCircleIcon className="completed" size="large" style={{...buttonStyle, color: "green"}} />
-//          ) : (
-//              <CheckCircleOutlineIcon className="completed" size="large" style={{...buttonStyle}} />
-//          )}
-//          <h5>Completed</h5>
-//      </div>
-//  </div>
-
-//  {/* rate and rating general */}
+//Rating will be moved to full page view of mediaPost
 //  <div className="ratings">
 //      <h2>Average Rating:  {this.state.mediaInfo['avgRating']}</h2>
 //      <h4>Add a graph here...</h4>
 //      <h1>Rate this Title:</h1>
 //      <Rating style={{fontSize: "3em"}} value={this.state.currRating} precision={0.5} emptyIcon={<StarBorderIcon fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
-//  </div>
-//  {/* reviews or go to page*/}
-//  {/* <Reviews/> */}
-//  {/* extra report etc */}
-//  <div className="extra">
-//      {/* <button className="report" onClick={() => report({id})}>Report</button> */}
 //  </div>

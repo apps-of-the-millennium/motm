@@ -188,7 +188,7 @@ class Home extends React.Component {
 
 
   retrievePosts = () => {
-    firestore.collection('posts').get().then((querySnapshot) => {
+    firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
       const tempDocument = querySnapshot.docs.map(doc => {
         const newPost = {
           docId: doc.id,
