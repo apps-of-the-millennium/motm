@@ -18,6 +18,7 @@ jobs:
           echo REACT_APP_MESSAGINGSENDERID=${{ secrets.REACT_APP_MESSAGINGSENDERID }} >> .env
           echo REACT_APP_PROJECTID=${{ secrets.REACT_APP_PROJECTID }} >> .env
           echo REACT_APP_STORAGEBUCKET=${{ secrets.REACT_APP_STORAGEBUCKET }} >> .env
+          cat .env
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
