@@ -3,7 +3,7 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-
+import Select from 'react-select'
 
 import envData from './envData';
 //console.log(env.TEST);
@@ -32,60 +32,25 @@ import envData from './envData';
 //   },
 // }));
 
-const DUMMY_POSTS = [
-  {
-    docId: '1',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '2',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '3',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '4',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
 
-    }
-  }
 
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
 ]
+
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      trendingPosts: DUMMY_POSTS,
-      popularPosts: DUMMY_POSTS,
-      topPosts: DUMMY_POSTS,
+      trendingPosts: envData.DUMMY_POSTS,
+      popularPosts: envData.DUMMY_POSTS,
+      topPosts: envData.DUMMY_POSTS,
       searchPosts: [],
-      search: ''
+      search: '',
+      searchTags: []
     }
   }
 
@@ -104,12 +69,13 @@ class Home extends React.Component {
           className="searchForm">
           <label for="search" style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block', marginBottom: '1rem' }}>Search</label><br></br>
           <input className='searchInput'
-            onChange={this.handleChange}
+            onChange={this.handleSearchNameChange}
             value={this.state.search}
             // placeholder="Search..."
             type="search"
             id="search" />
         </form>
+        <Select options={options} isMulti={true} onChange={this.handleSearchTagChange}/>
 
 
         {searchVal === '' ? (
@@ -146,7 +112,7 @@ class Home extends React.Component {
               }
             </ol>
           </div>) : (
-            <div className="postContainer" style={{marginTop: '5rem', marginBottom: '1rem'}}>
+            <div className="postContainer" style={{ marginTop: '5rem', marginBottom: '1rem' }}>
               {
                 this.state.searchPosts.map((post) => {
                   let postInfo = post.postInfo;
@@ -161,16 +127,24 @@ class Home extends React.Component {
     )
   }
 
-  handleChange = (e) => {
+  handleSearchNameChange = (e) => {
     this.setState({ search: e.target.value });
 
     if (e.target.value == '') {
       this.setState({ searchPosts: [] }); //empty the array of search results if user searches for nothing
     } else {
-      
+
       this.retrieveSearchPosts(e.target.value)
     }
   }
+
+  handleSearchTagChange = (searchTags) => {
+    this.setState({ searchTags }, () => {console.log("state:", this.state.searchTags);});
+    console.log(`Option selected:`, searchTags);
+    
+  }
+
+  
 
   handleSubmit = (e) => {
     e.preventDefault(); //prevent default functionality of some button types on empty press, i.e new links, submitting empty form entries
@@ -251,6 +225,13 @@ class Home extends React.Component {
     });
   }
 
+
+
 } //Class Home ===============
 
 export default Home;
+
+
+
+
+
