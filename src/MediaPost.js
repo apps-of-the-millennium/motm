@@ -1,14 +1,11 @@
 import React from 'react';
 import './MediaPost.css';
-import { firestore, firebaseApp } from './firebase';
+import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 
 import Rating from '@material-ui/lab/Rating';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 import { AiFillStar } from 'react-icons/ai';
 
@@ -103,7 +100,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
     async getPicture(url) {
         if (url) {
-            const ref = firebaseApp.storage().ref(url);
+            const ref = firebase.storage().ref(url);
             ref.getDownloadURL()
                 .then((url) => {
                     this.setState({ mediaPostPic: url });

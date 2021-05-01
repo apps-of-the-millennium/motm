@@ -1,7 +1,8 @@
 import React from 'react';
 import './ProfilePage.css';
 import { Link } from 'react-router-dom';
-import { firestore, firebaseApp } from './firebase';
+import { firestore } from './firebase';
+import firebase from 'firebase/app';
 
 // const [favourites, setFavourites] = useState([]);
 
@@ -43,7 +44,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     async getPicture(url) {
         //check if it is a url or path to firebase storage
         if (url.charAt(0) === '/') {
-            const ref = firebaseApp.storage().ref(url);
+            const ref = firebase.storage().ref(url);
             ref.getDownloadURL()
                 .then((url) => {
                     this.setState({profilePic: url});
@@ -57,7 +58,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     async getFavourite(favourite, url) {
-        const ref = firebaseApp.storage().ref(url);
+        const ref = firebase.storage().ref(url);
         ref.getDownloadURL()
            .then((url) => {
                 this.setState( prevState => ({

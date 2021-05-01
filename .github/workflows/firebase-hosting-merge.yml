@@ -11,6 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Create env file
+        run: |
+          touch .env
+          echo API_ENDPOINT=${{ secrets.REACT_APP_APIKEY }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_APPID }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_AUTHDOMAIN }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_DATABASEURL }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_MESSAGINGSENDERID }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_PROJECTID }} >> .env
+          echo API_KEY=${{ secrets.REACT_APP_STORAGEBUCKET }} >> .env
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
