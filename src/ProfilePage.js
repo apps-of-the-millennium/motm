@@ -1,8 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 import './ProfilePage.css';
 import { Link } from 'react-router-dom';
-import { AuthContext } from "./context";
-import { firestore, firebaseApp } from './firebase';
+import { firestore } from './firebase';
+import firebase from 'firebase/app';
 
 // const [favourites, setFavourites] = useState([]);
 
@@ -31,6 +31,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             isLoaded: false,
             profilePic: '',
             favourites: {},
+            viewWatchList: false,
             // userInfo: {
             //     'bio':'my bio',
             //     'favourites': [],
@@ -41,18 +42,23 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     async getPicture(url) {
-        const ref = firebaseApp.storage().ref(url);
-        ref.getDownloadURL()
-            .then((url) => {
-                this.setState({profilePic: url});
-            })
-            .catch((e) =>
-                console.log('Error retrieving profilePic => ', e)
-            );
+        //check if it is a url or path to firebase storage
+        if (url.charAt(0) === '/') {
+            const ref = firebase.storage().ref(url);
+            ref.getDownloadURL()
+                .then((url) => {
+                    this.setState({profilePic: url});
+                })
+                .catch((e) =>
+                    console.log('Error retrieving profilePic => ', e)
+                );
+        } else {
+            this.setState({profilePic: url});
+        }
     }
 
     async getFavourite(favourite, url) {
-        const ref = firebaseApp.storage().ref(url);
+        const ref = firebase.storage().ref(url);
         ref.getDownloadURL()
            .then((url) => {
                 this.setState( prevState => ({
@@ -68,6 +74,26 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             );
     }
 
+    async viewWatchList(view) {
+        //if view in place do nothing
+        if (!view) {
+            firestore.collection('users').doc(this.props.user).collection('later').doc('books').get().then((doc) => {
+                if(doc.exists) {
+                    // console.log(doc.data());
+                    let laterList = doc.data()['readList'];
+                    console.log(laterList);
+                    laterList.map((later) =>
+                    <Link to={`/mediapost/${later}`}>
+                        <img className="favourite" src={this.getFavourite(later, "/mediaPosts/"+later+".jpg")} alt={later} />
+                    </Link>
+                    )
+                }
+                //no else needed already set to 0
+            })
+                
+        }
+    }
+
     componentDidMount() {
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             if(doc.exists) {
@@ -81,7 +107,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     render() {
-        const { userInfo, isLoaded } = this.state;
+        const { isLoaded } = this.state;
         if (isLoaded) {
             return (
                 <>
@@ -92,6 +118,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                     {/* Bio/Info */}
                     <p className="bio">{this.state.userInfo['bio']}</p>
                     {/* Top 5 Favourites */}
+                    Favourites
                     <div className="favourites">
                         {
                             this.state.userInfo['favourites']
@@ -100,6 +127,12 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                     <img className="favourite" src={this.state.favourites[favourite]} alt={favourite} />
                                 </Link>
                             )
+                        }
+                    </div>
+                    WatchList
+                    <div className="watchList">
+                        {
+                            // <button className="watchButton" onClick={() => this.viewWatchList(this.state.viewWatchList)} />
                         }
                     </div>
                 </div>

@@ -24,7 +24,7 @@ const Header = () => {
         <>
         <div className="logo">
           <img className="appHeaderImg" src="/logo.png" alt="bruh"/>
-          {/* <div className="appHeaderTitle">Media of The Millenium</div> */}
+          <div className="appHeaderTitle">Media of The Millenium</div>
         </div>
             <div className="navigation">
               <a className="nav" href="/#">Home</a>

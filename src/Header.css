@@ -12,7 +12,7 @@
 .appHeaderImg {
     object-fit: contain;
     padding-right: 1.25rem;
-    max-width: 100%;
+    max-width: 25%;
     height: auto;
 }
   
@@ -24,21 +24,18 @@
 .logo {
     display: flex;
     justify-content: flex-start;
-    max-width: 25%;
 }
 
 .navigation {
     display: flex;
     justify-content: center;
     align-items: baseline;
-    max-width: 70%;
 }
 
 .nav {
     margin: auto;
     margin-right: 10%;
     text-align: center;
-    font-size: 2.5vw;
 }
 
 .avatar {
@@ -49,5 +46,5 @@
 }
 
 .headerBtns {
-    font-size: 2vw;
+
 }
