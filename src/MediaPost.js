@@ -157,8 +157,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                     <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
                                     {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
                                     <div className="tagContainer">
-                                        {(this.state.mediaInfo['tags']) ? this.state.mediaInfo['tags'].slice(0,3).map((tag) => {
-                                            return <div className="tag">{tag}</div>
+                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0,3).map((keyName, i) => {
+                                        return <div className="tag">{keyName}</div>
                                         }) : "No tag"}
                                     </div>
                                 </div> : ''}
