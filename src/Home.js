@@ -5,29 +5,8 @@ import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
 import Select, { components } from 'react-select';
 import CustomSelect from './CustomSelect';
-
+import searchIcon from './images/search.svg'; // with import
 import envData from './envData';
-
-const customSelectStyle = {
-  // option: (provided, state) => ({
-  //   ...provided,
-  //   borderBottom: '2px dotted green',
-  //   color: state.isSelected ? 'yellow' : 'black',
-  //   backgroundColor: state.isSelected ? 'green' : 'white'
-  // }),
-  // control: (provided) => ({
-  //   ...provided,
-  //   marginTop: "5%",
-  // })
-}
-
-
-
-
-
-
-
-
 
 class Home extends React.Component {
   constructor(props) {
@@ -200,7 +179,8 @@ class Home extends React.Component {
 
   retrievePosts = () => {
     firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
-      const tempDocument = querySnapshot.docs.map(doc => {
+      // const tempDocument = querySnapshot.docs.map(doc => {
+      querySnapshot.docs.forEach(doc => {
         console.log(doc.id);
         const newPost = {
           docId: doc.id,

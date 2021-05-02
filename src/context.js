@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { firestore, firebaseApp } from "./firebase";
+import { firestore } from "./firebase";
+import firebase from 'firebase/app';
 
 export const AuthContext = React.createContext();
 
@@ -7,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    firebaseApp.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function(user) {
       setUser(user);
       if (user) {
         var userId = user.uid;

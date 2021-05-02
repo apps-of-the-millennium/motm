@@ -163,9 +163,6 @@
     padding-right: 3%;
     margin-right: 2%;
     margin-bottom: 1rem;
-    
-
-    
 }
 
 .mediaContainer .mediaPostButtons {
@@ -180,40 +177,42 @@
 
 .mediaPostButtons .icon {
     color: rgb(248, 247, 247);
-    width: 10%;
-    height: 10%;
-    padding: 3%;
+    width: 100%;
+    height: 100%;
+    padding: 25%;
     background: rgba(22, 22, 22, 0.767);
     border-radius: 50%;
 }
 
+.invisible {
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.popUp {
+    position: fixed;
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
+    font-size: small;
+    font-weight: 700; 
+    color: rgb(192, 192, 192);
+    width: max-content;
+    background: rgb(134, 255, 158);
+    text-align: center;
+    border-top-left-radius: 10px 50%;
+    border-bottom-left-radius: 10px 50%;
+    border-top-right-radius: 10px 50%;
+    border-bottom-right-radius: 10px 50%;
+    padding-left: 3%;
+    padding-right: 3%;
+    /* Can add animation later */
+}
 
 .mediaContainer2 {
     background: #0b2f58;
@@ -260,8 +259,6 @@
     text-align: left;
     font-size: 1rem;
     color: rgb(174, 176, 247);
-
-    
 }
 
 
@@ -269,7 +266,6 @@
     grid-area: rating;
     /* color: rgb(161, 28, 28); */
     justify-self: center;
-    
 }
 
 .ratings2 .star2 {
@@ -371,66 +367,8 @@ ol {
     top: 0;
     text-align: center;
     margin-top: 1rem;
-  }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .allbtns {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-}
-
-.expandbtn {
-    border-radius: 10px;
-    width: 4em;
-    height: 4em;
-}
-
-.expandbtn:hover {
-    background-color: #4CAF50;
-    color: white;
 }
   
-.laterBtn {
-    width: 4em;
-    height: 4em;
-} */
-
-/* .laterBtn:hover {
-    color: lightblue;
-} */
-
-/* .ratings {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
-} */
-
-/* .completed {
-    align-self: flex-start;
-    width: 4em;
-    height: 4em;
-} */
-
 @media (min-width: 900px) {
 
 }
-
-
-
-  
