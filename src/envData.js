@@ -3,9 +3,62 @@ const mediaPostTypeEnum = {
     SIMPLE: 2
 }
 
+const DUMMY_POSTS = [
+    {
+      docId: '1',
+      postInfo: {
+        category: '',
+        title: '',
+        info: '',
+        summary: '',
+        imageUrl: '',
+        tags: {"action": true}
+      }
+    },
+    {
+      docId: '2',
+      postInfo: {
+        category: '',
+        title: '',
+        info: '',
+        summary: '',
+        imageUrl: ''
+      }
+    },
+    {
+      docId: '3',
+      postInfo: {
+        category: '',
+        title: '',
+        info: '',
+        summary: '',
+        imageUrl: ''
+      }
+    },
+    
+    
+    
+
+    
+  
+  ]
 
 Object.freeze(mediaPostTypeEnum);
 
 module.exports = {
-    MEDIA_POST_TYPES: mediaPostTypeEnum
+    MEDIA_POST_TYPES: mediaPostTypeEnum,
+    DUMMY_POSTS: DUMMY_POSTS,
+    getAllSubstrings: (str, size) => {
+        if (str && str.length) {
+            let i, j, result = [];
+            size = (size || 0);
+            for (i = 0; i < str.length; i++) {
+                for (j = str.length; j - i >= size; j--) {
+                    result.push(str.slice(i, j));
+                }
+            }
+            return result;
+        } else
+            return ''
+    }
 }

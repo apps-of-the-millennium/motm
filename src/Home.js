@@ -3,179 +3,136 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-
-import searchIcon from './images/search.svg'; // with import
-
+import CustomSelect from './CustomSelect';
 import envData from './envData';
-//console.log(env.TEST);
-
-// import { makeStyles } from '@material-ui/core/styles';
-
-// function getModalStyle() {
-//   const top = 50;
-//   const left = 50;
-
-//   return {
-//     top: `${top}%`,
-//     left: `${left}%`,
-//     transform: `translate(-${top}%, -${left}%)`,
-//   };
-// }
-
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     position: 'absolute',
-//     width: 400,
-//     backgroundColor: theme.palette.background.paper,
-//     border: '2px solid #000',
-//     boxShadow: theme.shadows[5],
-//     padding: theme.spacing(2,4,3),
-//   },
-// }));
-
-const DUMMY_POSTS = [
-  {
-    docId: '1',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '2',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '3',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  },
-  {
-    docId: '4',
-    postInfo: {
-      category: '',
-      title: '',
-      info: '',
-      summary: '',
-      imageUrl: ''
-    }
-  }
-
-]
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      trendingPosts: DUMMY_POSTS,
-      popularPosts: DUMMY_POSTS,
-      topPosts: DUMMY_POSTS,
-      search: ''
+      trendingPosts: envData.DUMMY_POSTS,
+      popularPosts: envData.DUMMY_POSTS,
+      topPosts: envData.DUMMY_POSTS,
+      searchPosts: [],
+      search: '',
+      searchTags: []
     }
+
+    this.options = [
+      { value: 'action', label: 'Action' },
+      { value: 'comedy', label: 'Comedy' },
+      { value: 'horror', label: 'Horror' }
+    ]
   }
 
   componentDidMount() {
     this.retrievePosts();
+    //this.copyCollection();
+    //this.editCollection();
   }
 
   render() {
+    let searchVal = this.state.search;
+    let searchTags = this.state.searchTags;
     return (
-
       <div className="homeBg">
-        {/*main page*/}
+        <div className="searchOptionsContainer">
+          <form
+            onSubmit={this.handleSubmit}
+            className="searchForm">
+            <label htmlfor="search" style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block' }}>Search</label><br></br>
+            <input className='searchInput'
+              onChange={this.handleSearchNameChange}
+              value={this.state.search}
+              // placeholder="Search..."
+              type="search"
+              id="search" />
+          </form>
+          <div className="searchTagForm">
+            <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} />
+          </div>
 
-        {/* picture of media and favorite btn*/}
-
-        {/* title */}
-
-        {/* basic info depends on category temp will be actors*/}
-
-        {/* summary */}
-
-        {/* rate and rating general */}
-
-        {/* add to list add to ... */}
-
-        {/* reviews or go to page*/}
-
-        {/* extra report etc */}
-        <form
-          onSubmit={this.handleSubmit}
-          className="searchForm">
-          <label for="search" style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block', marginBottom: '1rem' }}>Search</label><br></br>
-          <input
-            style={{
-              color: `rgb(207, 210, 245)`,
-              height: "2rem",
-              backgroundColor: `#2c417a`,
-              backgroundImage: `url(${searchIcon})`,
-              backgroundPosition: '-90% 5px',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '70% 70%',
-              paddingLeft: '40px',
-              fontSize: 'medium',
-              fontWeight: '500'
-            }}
-            onChange={this.handleChange}
-            value={this.state.search}
-            // placeholder="Search..."
-            type="text"
-            id="search" />
-        </form>
-
-        <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>TRENDING</h3>
-        {/* perhaps rename to TrendingContainer, PopularContainer so we can fit header.. */}
-        <div className="postContainer">
-          {
-            this.state.trendingPosts.map((post) => {
-              let postInfo = post.postInfo;
-              return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-            })
-          }
         </div>
 
 
-        <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>POPULAR</h3>
-        <div className="postContainer">
-          {
-            this.state.trendingPosts.map((post) => { //TODO: change to popularposts
-              let postInfo = post.postInfo;
-              return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-            })
-          }
-        </div>
+        {(searchVal === '' && searchTags.length === 0) ? (
+          <div>
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>TRENDING</h3>
+            <div className="postContainer">
+              {
+                this.state.trendingPosts.map((post) => {
+                  let postInfo = post.postInfo;
+                  return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                })
+              }
+            </div>
 
 
-        <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>TOP 10</h3>
-        <ol className="topContainer">
-          {
-            this.state.trendingPosts.map((post) => { //TODO: change to popularposts
-              let postInfo = post.postInfo;
-              return (<li key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </li>)
-            })
-          }
-        </ol>
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>POPULAR</h3>
+            <div className="postContainer">
+              {
+                this.state.trendingPosts.map((post) => { //TODO: change to popularposts
+                  let postInfo = post.postInfo;
+                  return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                })
+              }
+            </div>
+
+
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>TOP 10</h3>
+            <ol className="topContainer">
+              {
+                this.state.trendingPosts.map((post) => { //TODO: change to topPosts
+                  let postInfo = post.postInfo;
+                  return (<li key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </li>)
+                })
+              }
+            </ol>
+
+
+
+          </div>) : (
+            <div>
+              <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>SEARCH RESULTS</h3>
+              <div className="postContainer" >
+                {
+                  this.state.searchPosts.map((post) => {
+                    let postInfo = post.postInfo;
+                    return (
+                      <div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
+                    )
+                  })
+
+                }
+
+                {/* needs to be n-1 of max columns of filler children */}
+                <div className="filling-empty-space-childs "></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+              </div>
+
+            </div>
+          )}
+
+
       </div>
     )
   }
 
-  handleChange = (e) => {
+  handleSearchNameChange = (e) => {
+
     this.setState({ search: e.target.value });
+    this.retrieveSearchPosts(e.target.value, this.state.searchTags);
   }
+
+  handleSearchTagChange = (searchTags) => {
+    this.setState({ searchTags }, () => { this.retrieveSearchPosts(this.state.search, this.state.searchTags) });
+    console.log(`Option selected:`, this.state.searchTags);
+  }
+
+
 
   handleSubmit = (e) => {
     e.preventDefault(); //prevent default functionality of some button types on empty press, i.e new links, submitting empty form entries
@@ -183,10 +140,46 @@ class Home extends React.Component {
     console.log("Do nothing for now");
   }
 
+  //'posts' -> doc(category) -> collection(bookPosts)
+  retrieveSearchPosts = (nameToSearch, tagsToSearch) => {
+    this.setState({ searchPosts: [] }, () => {
+      let searchValue = nameToSearch.toString().toLowerCase().trim();
+      //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with 'bookPosts'
+
+      //construct the ref
+      //console.log(tagsToSearch);
+      let ref = firestore.collection('posts').doc('books').collection('bookPosts');
+
+      if (nameToSearch)
+        ref = ref.where("titleSubStrings", "array-contains", searchValue)
+
+      if (tagsToSearch) {
+        tagsToSearch.forEach((tag) => {
+          ref = ref.where(`tags.${tag.value}`, '==', 'true');
+        });
+      }
+
+      ref.get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const newPost = {
+              docId: doc.id,
+              postInfo: doc.data()
+            }
+
+            if (this.state.searchPosts.findIndex(i => i.docId === doc.id) === -1) //only add to search posts if it doesnt exist yet
+              this.setState({ searchPosts: [...this.state.searchPosts, newPost] }); //may need to do once at the end to avoid async issues?
+          });
+        });
+    });
+
+  }
 
   retrievePosts = () => {
     firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
-      querySnapshot.docs.forEach( doc => {
+      // const tempDocument = querySnapshot.docs.map(doc => {
+      querySnapshot.docs.forEach(doc => {
+        console.log(doc.id);
         const newPost = {
           docId: doc.id,
           postInfo: doc.data()
@@ -200,6 +193,47 @@ class Home extends React.Component {
 
   // }
 
+  //===============================================
+  //used to copy posts to a new collection
+  copyCollection = () => {
+    console.log("hello?");
+    firestore.collection("posts").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let allSubStrings = envData.getAllSubstrings(doc.data().title, 2);
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(doc.id).set({
+          ...doc.data(), ...{ titleSubStrings: allSubStrings }
+        });
+
+
+      });
+    }).catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+
+  }
+
+  editCollection = () => {
+    firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        let allSubStrings = envData.getAllSubstrings(doc.data().title.toLowerCase(), 2);
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(doc.id).set({
+          ...doc.data(), ...{ titleSubStrings: allSubStrings }
+        });
+
+
+      });
+    }).catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+  }
+
+
+
 } //Class Home ===============
 
 export default Home;
+
+
+
+
+

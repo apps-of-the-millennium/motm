@@ -1,11 +1,12 @@
 .mediaContainer {
     width: 10rem;
     height: 17rem;
+    
 }
 
 .mediaPost {
-    width: 10rem;
-    height: 15rem;
+    width: 100%;
+    height: 85%;
     /* display: grid; */
     /* place-items: center; */
     /* max-width: 40rem;
@@ -17,15 +18,16 @@
     /* border-radius: 15%; */
     margin-bottom: 4rem;
     text-align: center;
+
     
-    margin-top: 1rem;
+    
 
     
 }
 
 .mediaPost .mediaPostImg {
-    width: 100%;
-    height: 100%;
+    width: 10rem; /*100% buggy for posts without image */
+    height: 15rem; /*100% bit buggy for posts without image*/
 
     /* height: fit-content;
     width: fit-content;
@@ -175,9 +177,9 @@
 
 .mediaPostButtons .icon {
     color: rgb(248, 247, 247);
-    width: 100%;
-    height: 100%;
-    padding: 25%;
+    width: 1rem;
+    height: 1rem;
+    padding: .5rem;
     background: rgba(22, 22, 22, 0.767);
     border-radius: 50%;
 }
@@ -369,4 +371,10 @@ ol {
   
 @media (min-width: 900px) {
 
+}
+
+input::-moz-focus-inner,
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
 }

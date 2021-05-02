@@ -21,19 +21,23 @@ E0A890
   
 }
 
-.searchForm {
-  margin-top: 5%;
-  margin-left: 15%;
-}
-
 .postContainer {
   margin: 0 auto;
-  width: 70%;
+  width: 63%;
   
  
   display: flex;
   flex-flow: row wrap; 
-  justify-content: space-between;
+  justify-content: space-around;
+}
+
+.filling-empty-space-childs {
+  width: 10rem;
+  height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .topContainer {
@@ -48,21 +52,43 @@ E0A890
 
 
 
-
-.loginContainer {
-  background-color: #CE1483;
-  display: grid;
-  place-items: center;
-  height: 100vh;
+.searchOptionsContainer .searchForm {
+  align-self: center;
+  margin-left: 2%;
 }
 
-.appSignIn {
-  padding: 2.25rem;
-  text-align: center;
+.searchOptionsContainer .searchTagForm {
+  width: 17%;
+  align-self: center;
 }
 
+.searchForm .searchInput {
+  color: rgb(226, 228, 245);
+  height: 2rem;
+  width: 80%;
+  background-color: #767a9b;
+  background-image: url('./images/search.svg');
+  background-position: -90% 5px;
+  background-repeat: no-repeat;
+  background-size: 70% 70%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
 
-.appSignup {
+  font-size: medium;
+  font-weight: 500; 
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  /* Remove default */
+  position: relative;
+  left: 0.5rem;
+}
+
+.searchOptionsContainer {
+  margin: 2rem auto;
+  width: 64%; /*should be whatever width i display contents in */
+  height: 5%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  
 }

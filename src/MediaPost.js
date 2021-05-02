@@ -67,7 +67,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
             this.setState({ popUp: false });
         }.bind(this),5000);
     }
-
+    
     //will move this function to full page MediaPost
     async updateRating(newRating, mediaId) {
         var userId = firebase.auth().currentUser.uid;
@@ -105,7 +105,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     this.setState({ mediaPostPic: url });
                 })
                 .catch((e) =>
-                    console.log('Error retrieving profilePic => ', e)
+                    console.log('Error retrieving mediaPostPic => ', e)
                 );
         }
     }
@@ -135,6 +135,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
         if (this.state.isLoaded) {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
+                   
                     <>
                         {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></> }
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
@@ -156,8 +157,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                     <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
                                     {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
                                     <div className="tagContainer">
-                                        {(this.state.mediaInfo['tags']) ? this.state.mediaInfo['tags'].slice(0,3).map((tag) => {
-                                            return <div className="tag">{tag}</div>
+                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0,3).map((keyName, i) => {
+                                        return <div className="tag">{keyName}</div>
                                         }) : "No tag"}
                                     </div>
                                 </div> : ''}
@@ -187,8 +188,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         <div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
                         {/* limiting displayed tags to max 4 */}
                         <div className="tagContainer2">
-                            {(this.state.mediaInfo['tags']) ? this.state.mediaInfo['tags'].slice(0,4).map((tag) => {
-                                return <div className="tag2">{tag}</div>
+                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0,4).map((keyName, i) => {
+                                        return <div className="tag2">{keyName}</div>
                             }) : "No tag"}
 
                         </div>
