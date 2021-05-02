@@ -90,6 +90,5 @@ input[type="search"]::-webkit-search-cancel-button {
   height: 5%;
   display: flex;
   flex-direction: row;
-  background: blue;
   
 }
