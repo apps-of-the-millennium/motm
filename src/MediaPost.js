@@ -136,7 +136,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
                     <div>
-                    <div className="testing">Hello</div>
                     <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
                         <div className="mediaPost" >
                             {/* picture of media*/}

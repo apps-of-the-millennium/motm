@@ -3,42 +3,30 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-import Select from 'react-select'
+import Select, { components } from 'react-select';
+import CustomSelect from './CustomSelect';
 
 import envData from './envData';
-//console.log(env.TEST);
 
-// import { makeStyles } from '@material-ui/core/styles';
-
-// function getModalStyle() {
-//   const top = 50;
-//   const left = 50;
-
-//   return {
-//     top: `${top}%`,
-//     left: `${left}%`,
-//     transform: `translate(-${top}%, -${left}%)`,
-//   };
-// }
-
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     position: 'absolute',
-//     width: 400,
-//     backgroundColor: theme.palette.background.paper,
-//     border: '2px solid #000',
-//     boxShadow: theme.shadows[5],
-//     padding: theme.spacing(2,4,3),
-//   },
-// }));
+const customSelectStyle = {
+  // option: (provided, state) => ({
+  //   ...provided,
+  //   borderBottom: '2px dotted green',
+  //   color: state.isSelected ? 'yellow' : 'black',
+  //   backgroundColor: state.isSelected ? 'green' : 'white'
+  // }),
+  // control: (provided) => ({
+  //   ...provided,
+  //   marginTop: "5%",
+  // })
+}
 
 
 
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-]
+
+
+
+
 
 
 class Home extends React.Component {
@@ -52,6 +40,12 @@ class Home extends React.Component {
       search: '',
       searchTags: []
     }
+
+    this.options = [
+      { value: 'action', label: 'Action' },
+      { value: 'comedy', label: 'Comedy' },
+      { value: 'horror', label: 'Horror' }
+    ]
   }
 
   componentDidMount() {
@@ -62,25 +56,31 @@ class Home extends React.Component {
 
   render() {
     let searchVal = this.state.search;
+    let searchTags = this.state.searchTags;
     return (
       <div className="homeBg">
-        <form
-          onSubmit={this.handleSubmit}
-          className="searchForm">
-          <label for="search" style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block', marginBottom: '1rem' }}>Search</label><br></br>
-          <input className='searchInput'
-            onChange={this.handleSearchNameChange}
-            value={this.state.search}
-            // placeholder="Search..."
-            type="search"
-            id="search" />
-        </form>
-        <Select options={options} isMulti={true} onChange={this.handleSearchTagChange}/>
+        <div className="searchOptionsContainer">
+          <form
+            onSubmit={this.handleSubmit}
+            className="searchForm">
+            <label htmlfor="search" style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block' }}>Search</label><br></br>
+            <input className='searchInput'
+              onChange={this.handleSearchNameChange}
+              value={this.state.search}
+              // placeholder="Search..."
+              type="search"
+              id="search" />
+          </form>
+          <div className="searchTagForm">
+            <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} />
+          </div>
+
+        </div>
 
 
-        {searchVal === '' ? (
+        {(searchVal === '' && searchTags.length == 0) ? (
           <div>
-            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>TRENDING</h3>
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>TRENDING</h3>
             <div className="postContainer">
               {
                 this.state.trendingPosts.map((post) => {
@@ -91,7 +91,7 @@ class Home extends React.Component {
             </div>
 
 
-            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>POPULAR</h3>
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>POPULAR</h3>
             <div className="postContainer">
               {
                 this.state.trendingPosts.map((post) => { //TODO: change to popularposts
@@ -102,7 +102,7 @@ class Home extends React.Component {
             </div>
 
 
-            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "1rem" }}>TOP 10</h3>
+            <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>TOP 10</h3>
             <ol className="topContainer">
               {
                 this.state.trendingPosts.map((post) => { //TODO: change to topPosts
@@ -111,14 +111,31 @@ class Home extends React.Component {
                 })
               }
             </ol>
+
+
+
           </div>) : (
-            <div className="postContainer" style={{ marginTop: '5rem', marginBottom: '1rem' }}>
-              {
-                this.state.searchPosts.map((post) => {
-                  let postInfo = post.postInfo;
-                  return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-                })
-              }
+            <div>
+              <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>SEARCH RESULTS</h3>
+              <div className="postContainer" >
+                {
+                  this.state.searchPosts.map((post) => {
+                    let postInfo = post.postInfo;
+                    return (
+                      <div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
+                    )
+                  })
+
+                }
+
+                {/* needs to be n-1 of max columns of filler children */}
+                <div className="filling-empty-space-childs "></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+                <div className="filling-empty-space-childs"></div>
+              </div>
+
             </div>
           )}
 
@@ -128,23 +145,17 @@ class Home extends React.Component {
   }
 
   handleSearchNameChange = (e) => {
+
     this.setState({ search: e.target.value });
-
-    if (e.target.value == '') {
-      this.setState({ searchPosts: [] }); //empty the array of search results if user searches for nothing
-    } else {
-
-      this.retrieveSearchPosts(e.target.value)
-    }
+    this.retrieveSearchPosts(e.target.value, this.state.searchTags);
   }
 
   handleSearchTagChange = (searchTags) => {
-    this.setState({ searchTags }, () => {console.log("state:", this.state.searchTags);});
-    console.log(`Option selected:`, searchTags);
-    
+    this.setState({ searchTags }, () => { this.retrieveSearchPosts(this.state.search, this.state.searchTags) });
+    console.log(`Option selected:`, this.state.searchTags);
   }
 
-  
+
 
   handleSubmit = (e) => {
     e.preventDefault(); //prevent default functionality of some button types on empty press, i.e new links, submitting empty form entries
@@ -153,12 +164,25 @@ class Home extends React.Component {
   }
 
   //'posts' -> doc(category) -> collection(bookPosts)
-  retrieveSearchPosts = (valueToSearch) => {
+  retrieveSearchPosts = (nameToSearch, tagsToSearch) => {
     this.setState({ searchPosts: [] }, () => {
-      let searchValue = valueToSearch.toString().toLowerCase().trim();
+      let searchValue = nameToSearch.toString().toLowerCase().trim();
       //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with 'bookPosts'
-      firestore.collection('posts').doc('books').collection('bookPosts').where("titleSubStrings", "array-contains", searchValue)
-        .get()
+
+      //construct the ref
+      //console.log(tagsToSearch);
+      let ref = firestore.collection('posts').doc('books').collection('bookPosts');
+
+      if (nameToSearch)
+        ref = ref.where("titleSubStrings", "array-contains", searchValue)
+
+      if (tagsToSearch) {
+        tagsToSearch.forEach((tag) => {
+          ref = ref.where(`tags.${tag.value}`, '==', 'true');
+        });
+      }
+
+      ref.get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             const newPost = {

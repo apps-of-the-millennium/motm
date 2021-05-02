@@ -14,7 +14,8 @@ const DUMMY_POSTS = [
         title: '',
         info: '',
         summary: '',
-        imageUrl: ''
+        imageUrl: '',
+        tags: {"action": true}
       }
     },
     {
@@ -37,17 +38,11 @@ const DUMMY_POSTS = [
         imageUrl: ''
       }
     },
-    {
-      docId: '4',
-      postInfo: {
-        category: '',
-        title: '',
-        info: '',
-        summary: '',
-        imageUrl: ''
-  
-      }
-    }
+    
+    
+    
+
+    
   
   ]
 
