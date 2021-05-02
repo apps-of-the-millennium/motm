@@ -3,9 +3,7 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-import Select, { components } from 'react-select';
 import CustomSelect from './CustomSelect';
-import searchIcon from './images/search.svg'; // with import
 import envData from './envData';
 
 class Home extends React.Component {
@@ -57,7 +55,7 @@ class Home extends React.Component {
         </div>
 
 
-        {(searchVal === '' && searchTags.length == 0) ? (
+        {(searchVal === '' && searchTags.length === 0) ? (
           <div>
             <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>TRENDING</h3>
             <div className="postContainer">

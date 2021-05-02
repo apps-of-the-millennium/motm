@@ -1,6 +1,6 @@
 // import React, { useState } from 'react';
 
-import React, { Component } from 'react';
+import React from 'react';
 import Select, { components } from "react-select";
 
 //TODO: attempt to use hooks, requires more research on how

@@ -1,6 +1,3 @@
-'use strict'
-
-
 const mediaPostTypeEnum = {
     FUNCTIONAL: 1,
     SIMPLE: 2
