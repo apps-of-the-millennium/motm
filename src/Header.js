@@ -19,26 +19,55 @@ const Header = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <header className="appHeader"> 
-      {!!user ? (
-        <>
-        <div className="logo">
-          <img className="appHeaderImg" src="/logo.png" alt="bruh"/>
-          <div className="appHeaderTitle">Media of The Millenium</div>
+    <header className="appHeader">
+
+      <>
+        <div className="logoContainer">
+          <img className="appHeaderImg" src="/logo.png" alt="bruh" />
+          <div className="appHeaderTitle">Media Of The Millenium</div>
         </div>
-            <div className="navigation">
+
+        {!!user ? (
+          <>
+            <div className="navigationContainer">
               <a className="nav" href="/#">Home</a>
-              <Link className="nav" to={`/profile/${user.uid}`}>My Profile</Link>
-              <h3 className="nav">Welcome, {user.displayName} <img className="avatar" src={user.photoURL} alt="temp.png"></img>
-                <button className="headerBtns" onClick={() => signOut()}>Sign Out</button>
-              </h3>
+              <Link className="nav" to={`/profile/${user.uid}`}>Profile</Link>
+              <a href="/#" className='nav'>Filler</a>
+              <a href="/#" className='nav'>Filler</a>
+              <a href="/#" className='nav'>Filler</a>
+              <a href="/#" className='nav'>Filler</a>
             </div>
-        </>
-      ):(
-        <button className="headerBtns" onClick={() => signInWithGoogle()}>Sign In</button>
-      )}
+
+            <div className="userContainer">
+              <h3 className="welcomeMessage">Welcome, {user.displayName} </h3>
+              <div className="dropBtn">
+                <img className='avatar' src={user.photoURL} alt="temp.png"></img>
+                <div class="dropdown-content">
+                  <Link className="profileOption" to={`/profile/${user.uid}`}>Profile</Link>
+                  <a href="/#" className="profileOption">Settings</a>
+                  <a href="/#" className="profileOption" onClick={() => signOut()}>Log Out</a> {/*sends u to homepage upon sign out */}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+            <>
+              <div className="navigationContainer">
+                <a className="nav" href="/#">Home</a>
+                <a href="/#" className='nav'>Filler</a>
+                <a href="/#" className='nav'>Filler</a>
+              </div>
+
+              <div className="userContainer">
+                <button className="signInButton" onClick={() => signInWithGoogle()}>Log In</button>
+              </div>
+            </>
+          )}
+      </>
+
     </header>
   );
 }
 
 export default Header;
+
