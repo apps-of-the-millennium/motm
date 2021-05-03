@@ -16,28 +16,23 @@ E0A890
 
 .homeBg {
   background-color: #151c2b;
-  height: 100rem;
+  height: 200rem; /*will cause extra scroll bar if not big enough */
   overflow: auto;
   
 }
 
 .postContainer {
   margin: 0 auto;
-  width: 62%;
-
+  width: 63%;
+  height: auto;
   /* background: red; */
  
   display: flex;
   flex-flow: row wrap; 
+
   justify-content: space-around;
   /* column-gap: 1.2rem;
   row-gap: 2rem; */
-
-  /* background: red; */
-  /* overflow: hidden; */
-
-
-  
 
 }
 
@@ -54,7 +49,6 @@ E0A890
 .topContainer {
   display: table;
   margin: 0 auto;
-  
 }
 
 
