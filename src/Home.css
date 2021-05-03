@@ -31,6 +31,11 @@ E0A890
   flex-flow: row wrap; 
 
   justify-content: space-around;
+
+  /*to make a flex container justify-content left and add overflow items to left we
+  can use the below CSS or the additional filler children trick (see Home.js) 
+  remove this once we decide if a solution is better or that it doesnt matter which solution
+  we use
   /* column-gap: 1.2rem;
   row-gap: 2rem; */
 
