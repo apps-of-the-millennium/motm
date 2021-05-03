@@ -1,28 +1,24 @@
 .mediaContainer {
     width: 10rem;
-    height: 17rem;
+    height: 18rem;
+    /* background: cyan; */
     
 }
 
 .mediaPost {
     width: 100%;
-    height: 85%;
+    height: 100%;
     /* display: grid; */
     /* place-items: center; */
     /* max-width: 40rem;
     max-height: 30rem;
     min-width: 10rem;
     min-height: 15rem; */
-    background-color: white;
+    /* background-color: white; */
     /* border: 1px solid lightgray; */
     /* border-radius: 15%; */
     margin-bottom: 4rem;
-    text-align: center;
 
-    
-    
-
-    
 }
 
 .mediaPost .mediaPostImg {
@@ -47,9 +43,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
-    font-size: 1rem;
+    font-size: small;
     margin-top: 5px;
-    color: rgb(174, 176, 247);
+    color: rgb(176, 178, 214);
 }
 
 .mediaContainer .mediaPostInfoBox {
@@ -57,7 +53,7 @@
     height: 45%;
     margin: 0 10%;
     position: relative;
-    bottom: 110%;
+    bottom: 120%;
     /* left: 110%; */
     background: #0b2f58;
     border-radius: 3%;
@@ -167,7 +163,7 @@
 
 .mediaContainer .mediaPostButtons {
     position: relative;
-    bottom: 80%;
+    bottom: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;

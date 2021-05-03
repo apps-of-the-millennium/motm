@@ -23,12 +23,22 @@ E0A890
 
 .postContainer {
   margin: 0 auto;
-  width: 63%;
-  
+  width: 62%;
+
+  /* background: red; */
  
   display: flex;
   flex-flow: row wrap; 
   justify-content: space-around;
+  /* column-gap: 1.2rem;
+  row-gap: 2rem; */
+
+  /* background: red; */
+  /* overflow: hidden; */
+
+
+  
+
 }
 
 .filling-empty-space-childs {
@@ -38,6 +48,7 @@ E0A890
   padding-bottom: 0 !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  /* background:white; */
 }
 
 .topContainer {

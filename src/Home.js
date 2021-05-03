@@ -92,7 +92,7 @@ class Home extends React.Component {
 
 
           </div>) : (
-            <div>
+            <>
               <h3 style={{ textAlign: "center", color: `#cfd2f5`, marginTop: "5rem", marginBottom: "3rem" }}>SEARCH RESULTS</h3>
               <div className="postContainer" >
                 {
@@ -105,7 +105,7 @@ class Home extends React.Component {
 
                 }
 
-                {/* needs to be n-1 of max columns of filler children */}
+                {/* Leaving here temporary: needs to be n-1 of max columns of filler children */}
                 <div className="filling-empty-space-childs "></div>
                 <div className="filling-empty-space-childs"></div>
                 <div className="filling-empty-space-childs"></div>
@@ -113,7 +113,7 @@ class Home extends React.Component {
                 <div className="filling-empty-space-childs"></div>
               </div>
 
-            </div>
+            </>
           )}
 
 
