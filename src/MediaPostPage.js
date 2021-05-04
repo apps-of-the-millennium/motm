@@ -1,19 +1,22 @@
 import React from 'react';
-import './MediaPost.css';
+import './MediaPostPage.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
-import { Link } from 'react-router-dom';
+
 // Might use later but for full page of MediaPost
 // import Rating from '@material-ui/lab/Rating';
 // import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import { AiFillHeart } from 'react-icons/ai';
-
+import { AiFillStar } from 'react-icons/ai';
 import { AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
 
-class MediaPost extends React.Component { //({ user, match }) => {
+
+const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+
+class MediaPostPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,16 +26,11 @@ class MediaPost extends React.Component { //({ user, match }) => {
             mediaInfo: {},
             mediaPostPic: '',
             currRating: 0,
-            completed: false,
-            hover: false,
+            // completed: false,
+            // hover: false,
+            openOptions: false,
             popUp: false,
             listType: "",
-            // userInfo: {
-            //     'bio': 'this is bio,
-            //     'favourites': [],
-            //     'userName' : 'My USERNAME',
-            //     'profilePic' : '',
-            // },
         };
     }
 
@@ -122,6 +120,15 @@ class MediaPost extends React.Component { //({ user, match }) => {
         });
     }
 
+    onClick = () => {
+        this.setState({ openOptions: !this.state.openOptions });
+    }
+
+    //trying to make it so the dropdown closes when u click outside, cant get to work
+    // onClickOutside = () => {
+    //     this.setState( { openOptions: false });
+    // }
+
     componentDidMount() {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
@@ -140,14 +147,12 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     <>
                         {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                <div className="mediaPost" >
-                                    {/* picture of media*/}
-                                    <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']} ></img>
-                                    {/* title */}
-                                    <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-                                </div>
-                            </Link>
+                            <div className="mediaPost" >
+                                {/* picture of media*/}
+                                <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']} ></img>
+                                {/* title */}
+                                <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+                            </div>
                             {(this.state.hover) ?
                                 <>
                                     <div className="mediaPostInfoBox">
@@ -175,31 +180,55 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 </> : ''}
                         </div>
                     </>
-
                 )
-            } else { //envData.MEDIA_P_TYPE.SIMPLE i.e top10 post style
+            } else {
+                console.log("MEDIA PP ID:", this.props.id);
                 return (
-                    <div className="mediaContainer2">
-                        {/* picture of media*/}
-                        <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
-                        {/* title */}
-                        <h1 className="mediaPostTitle2"><strong>{this.state.mediaInfo['title']}</strong></h1>
-                        {/* basic info depends on category temp will be actors*/}
-                        <div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-                        <div className="ratings2">
-                            <div className="star2"><AiFillHeart /></div>
-                            <h2 className="ratingValue2">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+
+                    <>
+                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
+                        {/* Cover Image */}
+                        <div className="coverContainer"></div>
+
+                        {/* Info */}
+                        <div className="infoContainer">
+                            <div className="infoGrid">
+                                {/* picture of media*/}
+                                <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
+                                {/* <div className="mediaPageImg"></div> */}
+                                {/* title */}
+                                <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
+                                {/* buttons */}
+                                <div className="mediaPageButtons">
+                                    <button onClick={this.onClick} className="dropbtn2">Add to ...<i class="arrow down"></i></button>
+                                    <button className="rateButton"><AiFillStar className="icon" /></button>
+                                    {(this.state.openOptions) ?
+                                        <div className="dropdown-content2">
+                                            <button className="listOptions" onClick={() => this.updateFavourite(this.props.id)}> Favourites <AiFillHeart className="icon" /></button>
+                                            <button className="listOptions" onClick={() => this.updateLater(this.props.id)}> Watch Later <AiFillClockCircle className="icon" /></button>
+                                            <button className="listOptions" onClick={() => this.updateCompleted(this.props.id)}>Completed <ImCheckmark className="icon" /></button>
+                                        </div>
+                                        : ''}
+                                </div>
+                                {/* description */}
+                                <div className="mediaPageDescription">{text}</div>
+                                <div className="mediaPageDescription">{text}</div>
+                            </div>
                         </div>
-                        <h2 className="releaseDate2">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
-                        <div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                        {/* limiting displayed tags to max 4 */}
-                        <div className="tagContainer2">
-                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
-                                return <div className="tag2">{keyName}</div>
-                            }) : "No tag"}
+
+                        {/* Other features */}
+                        <div className="extraContainer">
+                            <div className="extraInfoGrid"></div>
+                            <div className="relationsContainer"></div>
+                            <div className="recommendationsContainer"></div>
+
+
+
+
 
                         </div>
-                    </div>
+
+                    </>
                 )
             }
 
@@ -211,7 +240,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 };
 
-export default MediaPost;
+export default MediaPostPage;
 
 //Date released, Category type: tv show, movie, actor etc, tags, rating
 //Rating will be moved to full page view of mediaPost
@@ -221,3 +250,21 @@ export default MediaPost;
 //      <h1>Rate this Title:</h1>
 //      <Rating style={{fontSize: "3em"}} value={this.state.currRating} precision={0.5} emptyIcon={<StarBorderIcon fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
 //  </div>
+
+
+/* <h1 className="mediaPostTitle2"><strong>{this.state.mediaInfo['title']}</strong></h1>
+
+<div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+    <div className="ratings2">
+        <div className="star2"><AiFillHeart /></div>
+        <h2 className="ratingValue2">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+    </div>
+    <h2 className="releaseDate2">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
+    <div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+
+<div className="tagContainer2">
+    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
+        return <div className="tag2">{keyName}</div>
+    }) : "No tag"}
+
+</div> */
