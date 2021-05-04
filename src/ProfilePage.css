@@ -8,30 +8,36 @@ body {
     display: flex;
     flex-flow: column wrap;
     align-items: center;
-    text-align: center;
+    overflow: hidden;
 }
 
 .profilePic {
     border-radius: 50%;
     margin-top: 4em;
     border-style: dashed;
-    width: 20vw;
-    height: 20vw;
+    width: 10vw;
+    height: 10vw;
 }
 
 .userName {
-    margin: 2em;
+    margin: 1.5em;
 }
 
 .bio {
-
+    padding: 2em;
+    margin: 2em;
+    background: #121e38;
+    border-radius: 5%;
 }
 
-.favourites {
-    margin: 2em;
+.list {
+    padding: 2em;
     display: flex;
-    justify-content: space-around;
     width: 50vw;
+    flex-wrap: wrap;
+    gap: 2em;
+    background: #121e38;
+    border-radius: 5%;
 }
 
 .favourite {
@@ -44,4 +50,8 @@ body {
 .watchButton {
     width: 5vw;
     height: 5vw;
+}
+
+.title {
+    padding: 1em;
 }

@@ -1,8 +1,9 @@
 import React from 'react';
 import './ProfilePage.css';
-import { Link } from 'react-router-dom';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
+import envData from './envData';
+import MediaPost from './MediaPost';
 
 // const [favourites, setFavourites] = useState([]);
 
@@ -30,8 +31,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             userInfo: [],
             isLoaded: false,
             profilePic: '',
-            favourites: {},
-            viewWatchList: false,
+            favouriteList: [],
+            laterList: [],
+            completedList: [],
             // userInfo: {
             //     'bio':'my bio',
             //     'favourites': [],
@@ -41,7 +43,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         };
     }
 
-    async getPicture(url) {
+    async getProfilePicture(url) {
         //check if it is a url or path to firebase storage
         if (url.charAt(0) === '/') {
             const ref = firebase.storage().ref(url);
@@ -57,52 +59,28 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         }
     }
 
-    async getFavourite(favourite, url) {
-        const ref = firebase.storage().ref(url);
-        ref.getDownloadURL()
-           .then((url) => {
-                this.setState( prevState => ({
-                    ...prevState,
-                    favourites: {
-                        ...prevState.favourites,
-                        [favourite] : url
-                    }
-                }))
-            })
-            .catch((e) =>
-                console.log('Error retrieving favourite => ', e)
-            );
-    }
-
-    async viewWatchList(view) {
-        //if view in place do nothing
-        if (!view) {
-            firestore.collection('users').doc(this.props.user).collection('later').doc('books').get().then((doc) => {
-                if(doc.exists) {
-                    // console.log(doc.data());
-                    let laterList = doc.data()['readList'];
-                    console.log(laterList);
-                    laterList.map((later) =>
-                    <Link to={`/mediapost/${later}`}>
-                        <img className="favourite" src={this.getFavourite(later, "/mediaPosts/"+later+".jpg")} alt={later} />
-                    </Link>
-                    )
-                }
-                //no else needed already set to 0
-            })
-                
-        }
-    }
-
     componentDidMount() {
+        var lists = firestore.collection('users').doc(this.props.user).collection('lists');
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             if(doc.exists) {
-                this.setState({ userInfo: doc.data(), isLoaded: true });
-                this.getPicture(doc.data()['profilePic']);
-                doc.data()['favourites'].forEach( favourite =>
-                    this.getFavourite(favourite, "/mediaPosts/"+favourite+".jpg")
-                );
+                this.setState({ userInfo: doc.data() });
+                this.getProfilePicture(doc.data()['profilePic']);  
             }
+            lists.doc('laterList').get().then( (doc) => {
+                if(doc.exists) {
+                    this.setState({ laterList: doc.data()['laterList'] });
+                }
+            });
+            lists.doc('completedList').get().then( (doc) => {
+                if(doc.exists) {
+                    this.setState({ completedList: doc.data()['completedList'] })
+                }
+            })
+            lists.doc('favouriteList').get().then( (doc) => {
+                if(doc.exists) {
+                    this.setState({ favouriteList: doc.data()['favouriteList'], isLoaded: true  })
+                }
+            })
         })
     }
 
@@ -112,29 +90,47 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             return (
                 <>
                 <div className="profile">
-                    {/* Picture of Profile */}            
                     <img className="profilePic" src={this.state.profilePic} alt="profilePic" />
                     <h1 className="userName">{this.state.userInfo['userName']}</h1>
                     {/* Bio/Info */}
                     <p className="bio">{this.state.userInfo['bio']}</p>
-                    {/* Top 5 Favourites */}
-                    Favourites
-                    <div className="favourites">
+                    {/* Favourites List */}
+                    <h3 className="title">Favourites</h3>
+                    <div className="list">
                         {
-                            this.state.userInfo['favourites']
-                            .map((favourite) =>
-                                <Link to={`/mediapost/${favourite}`}>
-                                    <img className="favourite" src={this.state.favourites[favourite]} alt={favourite} />
-                                </Link>
-                            )
+                            this.state.favouriteList.map((post) => {
+                                if(post) {
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                }
+                                return (<></>)
+                            })
                         }
                     </div>
-                    WatchList
-                    <div className="watchList">
+                    {/* Later List */}
+                    <h3 className="title">Later</h3>
+                    <div className="list">
                         {
-                            // <button className="watchButton" onClick={() => this.viewWatchList(this.state.viewWatchList)} />
+                            this.state.laterList.map((post) => {
+                                if(post) {
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                }
+                                return (<></>)
+                            })
                         }
                     </div>
+                    {/* Completed List */}
+                    <h3 className="title">Completed</h3>
+                    <div className="list">
+                        {
+                            this.state.completedList.map((post) => {
+                                if(post) {
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                }
+                                return (<></>)
+                            })
+                        }
+                    </div>
+
                 </div>
             </>
             )
