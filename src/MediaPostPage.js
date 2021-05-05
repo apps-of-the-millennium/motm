@@ -4,6 +4,8 @@ import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 
+import randomColor from 'randomcolor';
+
 // Might use later but for full page of MediaPost
 // import Rating from '@material-ui/lab/Rating';
 // import StarBorderIcon from '@material-ui/icons/StarBorder';
@@ -12,6 +14,7 @@ import { AiFillHeart } from 'react-icons/ai';
 import { AiFillStar } from 'react-icons/ai';
 import { AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
+import { HiPencilAlt } from 'react-icons/hi';
 
 
 const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
@@ -183,6 +186,7 @@ class MediaPostPage extends React.Component {
                 )
             } else {
                 console.log("MEDIA PP ID:", this.props.id);
+                // console.log(randomColor());
                 return (
 
                     <>
@@ -218,9 +222,53 @@ class MediaPostPage extends React.Component {
 
                         {/* Other features */}
                         <div className="extraContainer">
-                            <div className="extraInfoGrid"></div>
-                            <div className="relationsContainer"></div>
+                            {/* info going down left side */}
+                            <div className="extraInfoContainer">
+                                <div className="extraInfoTitle">User Rating</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Category</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Release date</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Publisher</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+
+                                {/* even more info ...example # of times favorited, watch listed, completed ... */}
+                            </div>
+
+                            <div className="relationsContainer">test</div>
+
+                            <div style={{clear: 'both'}}></div> {/*sln to margin-top not working after floating elements see: https://stackoverflow.com/questions/4198269/margin-top-not-working-with-clear-both */}
+
+                            <div className="allTagsContainer">
+                                <div className="extraInfoTitle" style={{paddingBottom: "1rem"}}>Tags</div>
+                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
+                                                let color = randomColor({
+                                                    luminosity: 'light',
+                                                    // hue: 'blue'
+                                                 });
+                                                return <div className="tag" style={{background: color}}>{keyName}</div>
+                                            }) : <div className="extraInfoValue">No tags available :(</div>}
+
+                            </div>
+
+                            <button  className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+
+
+
+
+
+
+
+
+
+                           
+                            
                             <div className="recommendationsContainer"></div>
+                            
 
 
 

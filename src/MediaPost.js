@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 // import Rating from '@material-ui/lab/Rating';
 // import StarBorderIcon from '@material-ui/icons/StarBorder';
 
-import { AiFillHeart } from 'react-icons/ai';
+import { AiFillHeart, AiFillStar } from 'react-icons/ai';
 
 import { AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
@@ -154,7 +154,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                         {/* basic info depends on category temp will be actors*/}
                                         <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
                                         <div className="ratings">
-                                            <div className="star"><AiFillHeart /></div>
+                                            <div className="star"><AiFillStar /></div>
                                             <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
                                         </div>
                                         <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
