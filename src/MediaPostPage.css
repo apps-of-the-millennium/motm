@@ -260,6 +260,7 @@
     line-height: initial;
     border: none;
     cursor: pointer;
+    
 
     border-top-left-radius: 5px 10%;
     border-bottom-left-radius: 5px 10%;
@@ -279,9 +280,9 @@
     height: 1rem;
 }
 
-
-.reviewButton:hover {
-    background-color: #196597;
+.reviewButton .revLink {
+    text-decoration: none;
+    color:white;
 }
 
 

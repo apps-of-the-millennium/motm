@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import MediaPostPage from './MediaPostPage';
 import Header from './Header';
 import { firestore } from "./firebase";
+import ReviewEditPage from './ReviewEditPage';
 
 class App extends Component {
 
@@ -31,6 +32,13 @@ class App extends Component {
                 path="/mediapost/:id"
                 render={props => (
                   <MediaPostPage
+                    id={props.match.params.id} {...props} />
+                )}
+              />
+              <Route
+                path="/myreviews/write/:id"
+                render={props => (
+                  <ReviewEditPage
                     id={props.match.params.id} {...props} />
                 )}
               />
