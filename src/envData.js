@@ -1,6 +1,13 @@
 const mediaPostTypeEnum = {
-    FUNCTIONAL: 1,
-    SIMPLE: 2
+  FUNCTIONAL: 1,
+  SIMPLE: 2
+}
+
+//currently not used but may need later for refactoring
+const listTypes = {
+  favouritesList: 'Favourites List',
+  laterList: 'Later List',
+  completedList: 'Completed List'
 }
 
 const DUMMY_POSTS = [
@@ -48,6 +55,7 @@ Object.freeze(mediaPostTypeEnum);
 module.exports = {
     MEDIA_POST_TYPES: mediaPostTypeEnum,
     DUMMY_POSTS: DUMMY_POSTS,
+    LIST_TYPES: listTypes,
     getAllSubstrings: (str, size) => {
         if (str && str.length) {
             let i, j, result = [];

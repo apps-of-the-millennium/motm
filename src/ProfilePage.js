@@ -34,6 +34,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             favouriteList: [],
             laterList: [],
             completedList: [],
+            usersProfile: false,
             // userInfo: {
             //     'bio':'my bio',
             //     'favourites': [],
@@ -41,6 +42,19 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             //     'profilePic' : '',
             // },
         };
+    }
+
+    async setList(listType) {
+        var lists = firestore.collection('users').doc(this.props.user).collection('lists');
+        lists.doc(listType).get().then( (doc) => {
+            if(doc.exists) {
+                this.setState({ [listType]: doc.data()[listType] })
+            }
+        })
+    }
+
+    updateList = (listType) => {
+        this.setList(listType);
     }
 
     async getProfilePicture(url) {
@@ -66,6 +80,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                 this.setState({ userInfo: doc.data() });
                 this.getProfilePicture(doc.data()['profilePic']);  
             }
+            //refactor these functions, same functions diff variable
             lists.doc('laterList').get().then( (doc) => {
                 if(doc.exists) {
                     this.setState({ laterList: doc.data()['laterList'] });
@@ -76,6 +91,11 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                     this.setState({ completedList: doc.data()['completedList'] })
                 }
             })
+            //check if profile page is currently signed in users page
+            //may need refactoring as it doesn't work if you put this function above some others
+            if(this.props.user === firebase.auth().currentUser.uid) {
+                this.setState({usersProfile: true});
+            }
             lists.doc('favouriteList').get().then( (doc) => {
                 if(doc.exists) {
                     this.setState({ favouriteList: doc.data()['favouriteList'], isLoaded: true  })
@@ -100,7 +120,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                         {
                             this.state.favouriteList.map((post) => {
                                 if(post) {
-                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"favouriteList"} updateList={this.updateList} /> </div>)
                                 }
                                 return (<></>)
                             })
@@ -112,7 +132,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                         {
                             this.state.laterList.map((post) => {
                                 if(post) {
-                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"laterList"} updateList={this.updateList} />  </div>)
                                 }
                                 return (<></>)
                             })
@@ -124,7 +144,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                         {
                             this.state.completedList.map((post) => {
                                 if(post) {
-                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} /> </div>)
+                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"completedList"} updateList={this.updateList} /> </div>)
                                 }
                                 return (<></>)
                             })

@@ -7,9 +7,7 @@ import envData from './envData';
 // import Rating from '@material-ui/lab/Rating';
 // import StarBorderIcon from '@material-ui/icons/StarBorder';
 
-import { AiFillStar } from 'react-icons/ai';
-
-import { AiFillClockCircle } from 'react-icons/ai';
+import { AiFillStar, AiFillClockCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
 
 class MediaPost extends React.Component { //({ user, match }) => {
@@ -18,6 +16,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
         this.state = {
             isLoaded: true, //TEMPORARY SETTING TO ALWAYS TRUE
             postType: this.props.postType,
+            usersProfile: this.props.usersProfile,
 
             mediaInfo: {},
             mediaPostPic: '',
@@ -25,7 +24,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             completed: false,
             hover: false,
             popUp: false,
-            listType: "",
+            listType: this.props.listType,
+            popUpMessage: '',
             // userInfo: {
             //     'bio': 'this is bio,
             //     'favourites': [],
@@ -35,13 +35,23 @@ class MediaPost extends React.Component { //({ user, match }) => {
         };
     }
 
+    async deleteFromList(id, listType) {
+        var userId = firebase.auth().currentUser.uid;
+        firestore.collection('users').doc(userId).collection('lists').doc(listType).update({
+            [listType]: firebase.firestore.FieldValue.arrayRemove(id)
+        });
+        var updateList = this.props.updateList;
+        updateList(listType);
+    }
+
+    //refactor below functions, same functions with diff list names
     async updateFavourite(id) {
         var userId = firebase.auth().currentUser.uid;
         firestore.collection('users').doc(userId).collection('lists').doc('favouriteList').update({
             favouriteList: firebase.firestore.FieldValue.arrayUnion(id)
         });
-        this.setState({ popUp: true, listType: 'Favourites List' })
-        setTimeout(function () {
+        this.setState({ popUp: true, popUpMessage: 'Favourites List' })
+        setTimeout(function(){
             this.setState({ popUp: false });
         }.bind(this), 5000);
     }
@@ -51,8 +61,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
         firestore.collection('users').doc(userId).collection('lists').doc('laterList').update({
             laterList: firebase.firestore.FieldValue.arrayUnion(id)
         });
-        this.setState({ popUp: true, listType: 'Later List' });
-        setTimeout(function () {
+        this.setState({ popUp: true, popUpMessage: 'Later List' });
+        setTimeout(function(){
             this.setState({ popUp: false });
         }.bind(this), 5000);
     }
@@ -62,12 +72,12 @@ class MediaPost extends React.Component { //({ user, match }) => {
         firestore.collection('users').doc(userId).collection('lists').doc('completedList').update({
             completedList: firebase.firestore.FieldValue.arrayUnion(id)
         });
-        this.setState({ popUp: true, listType: 'Completed List' });
-        setTimeout(function () {
+        this.setState({ popUp: true, popUpMessage: 'Completed List' });
+        setTimeout(function(){
             this.setState({ popUp: false });
         }.bind(this), 5000);
     }
-
+    
     //will move this function to full page MediaPost
     async updateRating(newRating, mediaId) {
         var userId = firebase.auth().currentUser.uid;
@@ -135,9 +145,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
         if (this.state.isLoaded) {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
-
                     <>
-                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
+                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.popUpMessage}</div> : <></> }
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
                             <div className="mediaPost" >
                                 {/* picture of media*/}
@@ -145,31 +154,34 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 {/* title */}
                                 <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
                             </div>
-                            {(this.state.hover) ?
-                                    <>
-                                        <div className="mediaPostInfoBox">
-                                            {/* basic info depends on category temp will be actors*/}
-                                            <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-                                            <div className="ratings">
-                                                <div className="star"><AiFillStar /></div>
-                                                <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
-                                            </div>
-                                            <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
-                                            <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                                            {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-                                            <div className="tagContainer">
-                                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-                                                    return <div className="tag">{keyName}</div>
-                                                }) : "No tag"}
-                                            </div>
-                                        </div>
-
-                                        <div className="mediaPostButtons">
-                                            <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillStar className="icon" /></button>
-                                            <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
-                                            <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
-                                        </div>
-                                    </> : ''}
+                            {(this.state.hover) ? 
+                                (this.props.usersProfile) ? 
+                                <div className="mediaPostDelete">
+                                    <button className="invisible" onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><AiFillCloseCircle className="icon" color="#ff5464" /></button>
+                                </div> : <>
+                                <div className="mediaPostInfoBox">
+                                    {/* basic info depends on category temp will be actors*/}
+                                    <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+                                    <div className="ratings">
+                                        <div className="star"><AiFillStar /></div>
+                                        <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+                                    </div>
+                                    <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
+                                    <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                    {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
+                                    <div className="tagContainer">
+                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0,3).map((keyName, i) => {
+                                        return <div className="tag">{keyName}</div>
+                                        }) : "No tag"}
+                                    </div>
+                                </div>
+                                
+                                <div className="mediaPostButtons">
+                                    <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillStar className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
+                                </div>
+                                </> : ''}
                         </div>
                     </>
                 )
@@ -190,7 +202,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         <div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
                         {/* limiting displayed tags to max 4 */}
                         <div className="tagContainer2">
-                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
+                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0,4).map((keyName, i) => {
                                 return <div className="tag2">{keyName}</div>
                             }) : "No tag"}
 
