@@ -245,6 +245,11 @@
     
 }
 
+
+.revLink {
+    text-decoration: none;
+}
+
 .reviewButton {
     margin-left: 15%;
     margin-top: 1rem;
@@ -260,6 +265,7 @@
     line-height: initial;
     border: none;
     cursor: pointer;
+    
     
 
     border-top-left-radius: 5px 10%;
@@ -280,10 +286,6 @@
     height: 1rem;
 }
 
-.reviewButton .revLink {
-    text-decoration: none;
-    color:white;
-}
 
 
 .relationsContainer {

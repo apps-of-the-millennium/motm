@@ -1,5 +1,45 @@
 .pageContainer {
-    background-color:#070e1b;
+    background-color:#ebcba1;
     width: auto;
-    height: 50rem;
+    height: auto;
+
+    overflow: hidden; /* seems to be sln to prevent child margin-top from moving parent as well */
 }
+
+.pageContainer .form {
+    background: greenyellow;
+    margin-top: 10rem;
+    height: auto;
+
+    
+}
+
+.reviewText {
+
+  width: 50%;
+  min-height: 10rem;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: vertical;
+  overflow:auto;
+   /* resize: none; enables or disables the little grabber on the bottom right for user text box resizing */
+}
+
+/* .reviewSummary {
+
+  width: 50%;
+  height: 13rem;
+  min-height: 13rem;
+  padding: 5px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: vertical;
+  overflow:auto;
+} */

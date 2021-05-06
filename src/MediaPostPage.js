@@ -4,7 +4,6 @@ import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 import { Link } from 'react-router-dom';
-
 import randomColor from 'randomcolor';
 
 // Might use later but for full page of MediaPost
@@ -187,7 +186,7 @@ class MediaPostPage extends React.Component {
                 )
 
 
-                //=====================================================================================Actual MPP==============  
+            //=====================================================================================Actual MPP==============  
             } else {
                 console.log("MEDIA PP ID:", this.props.id);
                 // console.log(randomColor());
@@ -245,26 +244,23 @@ class MediaPostPage extends React.Component {
 
                             <div className="relationsContainer">test</div>
 
-                            <div style={{ clear: 'both' }}></div> {/*sln to margin-top not working after floating elements see: https://stackoverflow.com/questions/4198269/margin-top-not-working-with-clear-both */}
+                            <div style={{clear: 'both'}}></div> {/*sln to margin-top not working after floating elements see: https://stackoverflow.com/questions/4198269/margin-top-not-working-with-clear-both */}
 
                             <div className="allTagsContainer">
-                                <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
+                                <div className="extraInfoTitle" style={{paddingBottom: "1rem"}}>Tags</div>
                                 {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                    let color = randomColor({
-                                        luminosity: 'light',
-                                        // hue: 'blue'
-                                    });
-                                    return <div className="tag" style={{ background: color }}>{keyName}</div>
-                                }) : <div className="extraInfoValue">No tags available :(</div>}
+                                                let color = randomColor({
+                                                    luminosity: 'light',
+                                                    // hue: 'blue'
+                                                 });
+                                                return <div className="tag" style={{background: color}}>{keyName}</div>
+                                            }) : <div className="extraInfoValue">No tags available :(</div>}
 
                             </div>
-
-
-                            <button className="reviewButton">
-                                <Link className="revLink" to={`/myreviews/write/${this.props.id}`}>Write Review</Link>
-                                <HiPencilAlt className="icon" />
-                            </button>
-
+                            
+                            <Link className="revLink" to={`/myreviews/write/${this.props.id}`}>
+                                <button  className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+                            </Link>
 
 
 
@@ -274,9 +270,10 @@ class MediaPostPage extends React.Component {
 
 
 
-
+                           
+                            
                             <div className="recommendationsContainer"></div>
-
+                            
 
 
 
