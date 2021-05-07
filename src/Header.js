@@ -42,7 +42,7 @@ const Header = () => {
               <h3 className="welcomeMessage">Welcome, {user.displayName} </h3>
               <div className="dropBtn">
                 <img className='avatar' src={user.photoURL} alt="temp.png"></img>
-                <div class="dropdown-content">
+                <div className="dropdown-content">
                   <Link className="profileOption" to={`/profile/${user.uid}`}>Profile</Link>
                   <a href="/#" className="profileOption">Settings</a>
                   <a href="/#" className="profileOption" onClick={() => signOut()}>Log Out</a> {/*sends u to homepage upon sign out */}

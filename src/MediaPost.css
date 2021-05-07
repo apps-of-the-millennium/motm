@@ -21,6 +21,10 @@
 
 }
 
+.mediaContainer:hover .mediaPostTitle {
+    color: #dfe1fd;
+}
+
 .mediaPost .mediaPostImg {
     width: 10rem; /*100% buggy for posts without image */
     height: 15rem; /*100% bit buggy for posts without image*/
@@ -48,7 +52,7 @@
     text-align: left;
     font-size: small;
     /* margin-top: 5px; */
-    color: rgb(176, 178, 214);
+    color: #b0b2d6;
 }
 
 .mediaContainer .mediaPostInfoBox {
@@ -384,4 +388,8 @@ input::-moz-focus-inner,
 button::-moz-focus-inner {
   padding: 0;
   border: 0;
+}
+
+.mediaPageLink {
+    text-decoration: none;
 }
