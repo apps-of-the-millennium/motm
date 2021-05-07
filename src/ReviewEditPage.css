@@ -2,14 +2,19 @@
     background-color:#ebcba1;
     width: auto;
     height: auto;
+    min-height: 50rem;
 
-    overflow: hidden; /* seems to be sln to prevent child margin-top from moving parent as well */
+    overflow: auto; /* seems to be sln to prevent child margin-top from moving parent as well */
 }
 
 .pageContainer .form {
-    background: greenyellow;
-    margin-top: 10rem;
-    height: auto;
+    background: #151c2b;
+    /* margin-top: 5rem;
+    margin-left: 5rem; */
+    padding: 5rem;
+    height: 100rem;
+    /* overflow: auto; */
+    display: block;
 
     
 }
@@ -19,27 +24,100 @@
   width: 50%;
   min-height: 10rem;
   padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  font-size: 16px;
+  border: none;
+  background-color: #202e4d;
+  font-size: large;
   resize: vertical;
   overflow:auto;
+  outline: none;
+
+  color: #b0b2d6;
+
+  border-radius: .5rem;
+
+  margin-bottom: 2rem;
+  margin-top: .5rem;
+
+
+    /* -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; */
    /* resize: none; enables or disables the little grabber on the bottom right for user text box resizing */
 }
 
-/* .reviewSummary {
+.reviewSummary {
+    width: 50%;
+    min-height: 1.5rem;
+    padding: 12px 20px;
+    border: none;
+    background-color: #202e4d;
+    font-size: large;
+    resize: vertical;
+    overflow:auto;
+    outline: none;
+  
+    color: #b0b2d6;
+  
+    border-radius: .5rem;
+  
+    margin-bottom: 2rem;
+    margin-top: .5rem;
+}
 
-  width: 50%;
-  height: 13rem;
-  min-height: 13rem;
-  padding: 5px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  font-size: 16px;
-  resize: vertical;
-  overflow:auto;
-} */
+
+.formLabel {
+    color: #b0b2d6;
+    font-size: medium;
+    font-weight: 600;
+    
+}
+
+.formInput {
+    margin-bottom: 2rem;
+    margin-top: .5rem;
+    background-color: #202e4d;
+    color: #b0b2d6;
+    border: none;
+    border-radius: 2px;
+    padding: 5px;
+    font-size: medium;
+
+}
+
+
+.saveButton {
+    width: 50%;
+
+    background-color: #3498DB;
+    color: white;
+    
+    font-size: medium;
+    font-weight: 600;
+    text-align: center;
+    line-height: initial;
+    border: none;
+    cursor: pointer;
+    
+    padding: 6px 20px;
+    border-radius: 5px;
+
+}
+.saveButton:hover {
+    background-color: #3eabf3;
+}
+
+.warningMessage {
+    width: 50%;
+
+    background-color: #be3855;
+    color: white;
+    
+    font-size: medium;
+    font-weight: 600;
+    text-align: center;
+    line-height: initial;
+    border: none;
+    
+    padding: 6px 20px;
+    border-radius: 5px;
+}
