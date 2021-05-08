@@ -258,7 +258,8 @@ class MediaPostPage extends React.Component {
 
                             </div>
                             
-                            <Link className="revLink" to={`/myreviews/write/${this.props.id}`}>
+                            {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
+                            <Link className="revLink" to={{ pathname: `/myreviews/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo} }} >
                                 <button  className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
                             </Link>
 

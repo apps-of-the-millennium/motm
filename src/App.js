@@ -7,6 +7,9 @@ import MediaPostPage from './MediaPostPage';
 import Header from './Header';
 import { firestore } from "./firebase";
 import ReviewEditPage from './ReviewEditPage';
+import ReviewPage from './ReviewPage';
+
+import ScrollToTop from './ScrollToTop';
 
 class App extends Component {
 
@@ -18,6 +21,7 @@ class App extends Component {
       <>
         <AuthProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Header />
             <Switch>
               <Route path="/" component={Home} exact />
@@ -39,6 +43,13 @@ class App extends Component {
                 path="/myreviews/write/:id"
                 render={props => (
                   <ReviewEditPage
+                    id={props.match.params.id} {...props} />
+                )}
+              />
+              <Route
+                path="/review/:id"
+                render={props => (
+                  <ReviewPage
                     id={props.match.params.id} {...props} />
                 )}
               />

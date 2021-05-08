@@ -47,7 +47,9 @@
 
 .reviewSummary {
     width: 50%;
-    min-height: 1.5rem;
+    min-height: 1.25rem;
+    /* height: 1.25rem; */
+    height: max-content;
     padding: 12px 20px;
     border: none;
     background-color: #202e4d;
@@ -120,4 +122,6 @@
     
     padding: 6px 20px;
     border-radius: 5px;
+
+    margin-bottom: 1rem;
 }

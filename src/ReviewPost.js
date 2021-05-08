@@ -1,10 +1,10 @@
 import React from 'react';
-import './ReviewEditPage.css';
+import './ReviewPost.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 
-class Review extends React.Component {
+class ReviewPost extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -19,4 +19,4 @@ class Review extends React.Component {
     }
 }
 
-export default Review;
+export default ReviewPost;
