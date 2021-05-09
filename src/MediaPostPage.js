@@ -194,7 +194,7 @@ class MediaPostPage extends React.Component {
                 // console.log(randomColor());
                 return (
 
-                    <>
+                    <div className="container">
                         {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
                         {/* Cover Image */}
                         <div className="coverContainer"></div>
@@ -227,60 +227,60 @@ class MediaPostPage extends React.Component {
                         </div>
 
                         {/* Other features */}
-                        {/* <div className="contentContainer"> */}
-                        
-                        <div className="sidebar">
-                            {/* info going down left side */}
-                            <div className="extraInfoContainer">
-                                <div className="extraInfoTitle">User Rating</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
-                                <div className="extraInfoTitle">Category</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+                        <div className="contentContainer">
 
-                                <div className="extraInfoTitle">Release date</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+                            <div className="sidebar">
+                                {/* info going down left side */}
+                                <div className="extraInfoContainer">
+                                    <div className="extraInfoTitle">User Rating</div>
+                                    <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
-                                <div className="extraInfoTitle">Publisher</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                    <div className="extraInfoTitle">Category</div>
+                                    <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
 
-                                {/* even more info ...example # of times favorited, watch listed, completed ... */}
-                            </div>
+                                    <div className="extraInfoTitle">Release date</div>
+                                    <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
 
-                            <div style={{ clear: 'both' }}></div> {/*sln to margin-top not working after floating elements see: https://stackoverflow.com/questions/4198269/margin-top-not-working-with-clear-both */}
+                                    <div className="extraInfoTitle">Publisher</div>
+                                    <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
 
-                            <div className="allTagsContainer">
-                                <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                    let color = randomColor({
-                                        luminosity: 'light',
-                                        // hue: 'blue'
-                                    });
-                                    return <div className="tag" style={{ background: color }}>{keyName}</div>
-                                }) : <div className="extraInfoValue">No tags available :(</div>}
-
-                            </div>
-
-                            {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
-                            <Link className="revLink" to={{ pathname: `/myreviews/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
-                                <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
-                            </Link>
-                        </div>
-
-                        <div className="overviewContentContainer">
-                            <div className="reviewsContainer">
-                                <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                                <div className="reviewsGrid">
-                                    <ReviewPost />
-                                    <ReviewPost />
-                                    <ReviewPost />
-                                    <ReviewPost />
+                                    {/* even more info ...example # of times favorited, watch listed, completed ... */}
                                 </div>
 
+                                <div className="allTagsContainer">
+                                    <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
+                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
+                                        let color = randomColor({
+                                            luminosity: 'light',
+                                            // hue: 'blue'
+                                        });
+                                        return <div className="tag" style={{ background: color }}>{keyName}</div>
+                                    }) : <div className="extraInfoValue">No tags available :(</div>}
+
+                                </div>
+
+                                {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
+                                <Link className="revLink" to={{ pathname: `/myreviews/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
+                                    <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+                                </Link>
+                            </div>
+
+                            <div className="overviewContentContainer">
+                                <div className="reviewsContainer">
+                                    <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
+                                    <div className="reviewsGrid">
+                                        <ReviewPost />
+                                        <ReviewPost />
+                                        <ReviewPost />
+                                        <ReviewPost />
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-                        {/* </div> */}
-                    </>
+
+                    </div>
                 )
             }
 
