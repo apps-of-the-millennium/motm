@@ -1,0 +1,63 @@
+.reviewPostContainer {
+    display: grid;
+    grid-template-columns: 15% 85%;
+    grid-auto-flow: row;
+
+    width: 30rem;
+    height: 5rem;
+
+    /* background: #1c2942; */
+
+    border-radius: 5px;
+}
+
+
+.reviewUserImg {
+    background: #0d1422af;
+    height: 4rem;
+    width: 4rem;
+    border-radius: 4px;
+}
+
+
+
+.reviewContent {
+    background: #0d1422;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    position: relative;
+
+    margin-left: 5px;
+    border-radius: 4px;
+}   
+
+.reviewPostSummary {
+    /* background: rgb(172, 163, 163); */
+    display: block;
+    padding: 15px 30px;
+    text-overflow: ellipsis;
+    margin-right: 25px;
+    
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.4rem;
+    color: #b1afaf;
+
+
+    
+   
+
+}
+
+.reviewLikes {
+    /* background: rgb(78, 78, 78); */
+    display:block;
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    font-size: .9rem;
+
+    color: #b1afaf;
+}
+

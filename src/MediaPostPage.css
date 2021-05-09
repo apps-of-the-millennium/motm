@@ -179,14 +179,14 @@
 
 
 
-.extraContainer {
+.sidebar {
     background-color: #0c1320;
     height: 70rem;
     overflow: auto; /* otherwise margin-top in child affects whole parent and not just child */
 }
 
-.extraContainer .extraInfoContainer {
-    float: left;
+.sidebar .extraInfoContainer {
+    /* float: left; */
     display: block;
     margin-left: 15%; /*same as infoContainer */
     margin-top: 2rem;
@@ -211,7 +211,7 @@
 }
 
 
-.extraContainer .allTagsContainer{
+.sidebar .allTagsContainer{
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -288,20 +288,29 @@
 
 
 
-.relationsContainer {
-    display: block;
+.reviewsContainer {
+    display:block;
     float: left;
-    background: green;
     margin-left: 2rem;
     margin-top: 2rem;
 
-    
     width: auto;
-    height: 5rem;
+    height: auto;
     background: #141e30;
     
-    border-radius: 3%;
-    padding: 1rem;
-    
+    border-radius: 6px;
+    /* padding: 1rem; */
+    padding: 1.5rem;
 
+
+}
+
+.reviewsGrid {
+    display: grid;
+    grid-auto-flow: row;
+    /* align-items: center; */
+    grid-template-rows: 50% 50%;
+    grid-template-columns: 50% 50%;
+    row-gap: 1rem;
+    column-gap: .75rem;
 }

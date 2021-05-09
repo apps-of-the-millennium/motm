@@ -3,7 +3,6 @@ import './ReviewEditPage.css';
 import TextareaAutosize from 'react-textarea-autosize';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-import envData from './envData';
 
 
 /* KNOWN ISSUES:
@@ -24,14 +23,6 @@ idea: already have the findUserReview function, just call it to find the user re
 user now has ability to modify values and press save again, but this time, we use .doc(review_id).set(newData) so we dont add a new post
 */
 
-
-
-
-
-
-
-
-
 class ReviewEditPage extends React.Component {
     constructor(props) {
         super(props);
@@ -50,7 +41,7 @@ class ReviewEditPage extends React.Component {
         this.categoryPosts = null;
         this.reviewAuthor = null;
 
-        this.SUMMARY_MIN = 20;
+        this.SUMMARY_MIN = 120;
         this.SUMMARY_LETTER_MIN = 10;
         // this.SUMMARY_MAX
 
@@ -66,7 +57,7 @@ class ReviewEditPage extends React.Component {
                 this.reviewAuthor = firebase.auth().currentUser.uid;
                 this.category = this.mediaInfo['category'].toLowerCase();
                 this.categoryPosts = this.category.slice(0, -1) + 'Posts';
-                this.findUserReviews();
+                //this.findUserReviews();
             } else {
                 // No user is signed in.
             }
