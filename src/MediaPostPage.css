@@ -14,7 +14,6 @@
 .infoContainer {
     background-color: #141e30;
     height: 16rem;
-    z-index: 100;
 }
 
 .infoGrid {
@@ -172,7 +171,7 @@
 
 .contentContainer { /*this is the grid containing both sidebar and overview content */
     display: grid;
-    grid-template-columns: 12rem, auto;
+    grid-template-columns: 12rem auto;
     column-gap: 2rem;
     position: relative;
     background-color: #0c1320;
@@ -186,7 +185,6 @@
     margin-top: 1.5rem;
 
     width: 65%; /*change to fixed later? */
-    
 
 }
 
@@ -255,6 +253,7 @@
 
 .revLink {
     text-decoration: none;
+    color: white;
 }
 
 .reviewButton {
@@ -292,7 +291,7 @@
 
 
 .overviewContentContainer { /*this is the div next to sidebar */
-    width: max-content;
+    width: 100%;
 }
 
 .reviewsContainer {
@@ -303,7 +302,8 @@
     background: #141e30;
     
     border-radius: 4px;
-    padding: 1.5rem;
+    padding: 1rem;
+    padding-bottom: 2rem;
 
 }
 .reviewsGrid {

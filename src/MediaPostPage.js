@@ -36,6 +36,8 @@ class MediaPostPage extends React.Component {
             openOptions: false,
             popUp: false,
             listType: "",
+
+            reviews: []
         };
     }
 
@@ -114,6 +116,24 @@ class MediaPostPage extends React.Component {
         }
     }
 
+    retrieveUserReviews = ()  => {
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).collection('reviews').orderBy("likes", "desc").limit(4).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                const newReviewPost = {
+                    review_id: doc.id,
+                    allReviewInfo: doc.data()
+                }
+
+                this.setState({ reviews: [...this.state.reviews, newReviewPost] })
+            });
+        })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+    }
+
     onMouseEnterHandler = () => {
         this.setState({
             hover: true
@@ -133,6 +153,8 @@ class MediaPostPage extends React.Component {
     // onClickOutside = () => {
     //     this.setState( { openOptions: false });
     // }
+    componentWillMount() {
+    }
 
     componentDidMount() {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
@@ -141,7 +163,11 @@ class MediaPostPage extends React.Component {
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
                 this.getRating(this.props.id);
             }
-        })
+        });
+
+        this.retrieveUserReviews();
+        // console.log(this.state.reviews);
+        
     }
 
     render() {
@@ -261,7 +287,7 @@ class MediaPostPage extends React.Component {
                                 </div>
 
                                 {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
-                                <Link className="revLink" to={{ pathname: `/myreviews/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
+                                <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
                                     <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
                                 </Link>
                             </div>
@@ -269,12 +295,20 @@ class MediaPostPage extends React.Component {
                             <div className="overviewContentContainer">
                                 <div className="reviewsContainer">
                                     <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                                    <div className="reviewsGrid">
-                                        <ReviewPost />
-                                        <ReviewPost />
-                                        <ReviewPost />
-                                        <ReviewPost />
-                                    </div>
+                                    {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{fontStyle:'italic', fontWeight:'600'}}>There are no reviews for {this.state.mediaInfo['title']} yet...
+                                        <Link className="revLink" style={{fontStyle:'italic', fontWeight:'700'}} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
+                                        : (
+                                            <div className="reviewsGrid">
+                                                {this.state.reviews.map((post) => {
+                                                    return <ReviewPost review_id={post.review_id} allReviewInfo={post.allReviewInfo}/>
+                                                })}
+
+                                                {/* <ReviewPost />
+                                                <ReviewPost />
+                                                <ReviewPost />
+                                                <ReviewPost /> */}
+                                            </div>
+                                        )}
 
                                 </div>
                             </div>

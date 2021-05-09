@@ -30,6 +30,8 @@
 
     margin-left: 5px;
     border-radius: 4px;
+
+    min-height: 4rem;
 }   
 
 .reviewPostSummary {
@@ -43,6 +45,8 @@
     font-size: 1rem;
     line-height: 1.4rem;
     color: #b1afaf;
+
+    
 
 
     

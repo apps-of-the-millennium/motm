@@ -40,7 +40,7 @@ class App extends Component {
                 )}
               />
               <Route
-                path="/myreviews/write/:id"
+                path="/review/write/:id"
                 render={props => (
                   <ReviewEditPage
                     id={props.match.params.id} {...props} />

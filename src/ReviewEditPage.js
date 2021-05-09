@@ -33,31 +33,43 @@ class ReviewEditPage extends React.Component {
             score: 50,
             numberCompleted: 0,
 
-            duplicateReview: false //used to determine if this is users 2nd review, if so, do not let them submit
+            duplicateReview: false, //used to determine if this is users 2nd review, if so, do not let them submit
+
+            mediaInfo: this.props.location.state.mediaInfo
         };
 
-        this.mediaInfo = this.props.location.state.mediaInfo; //CRASHES SITE IF NO PROPS FOUND, TO BE FIXED?
         this.category = null;
         this.categoryPosts = null;
         this.reviewAuthor = null;
 
-        this.SUMMARY_MIN = 120;
-        this.SUMMARY_LETTER_MIN = 10;
-        // this.SUMMARY_MAX
 
-        this.REVIEW_MIN = 120;
-        this.REVIEW_LETTER_MIN = 110;
-        // this.REVIEW_MAX
+        this.SUMMARY_MIN = 20;
+        this.SUMMARY_LETTER_MIN = 10;
+        this.SUMMARY_MAX = 120;
+
+        this.REVIEW_MIN = 240;
+        this.REVIEW_LETTER_MIN = 200;
+        this.REVIEW_MAX = 4800;
     }
 
     componentDidMount() {
         //temporary fix to bypass user id == null error
+
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.reviewAuthor = firebase.auth().currentUser.uid;
-                this.category = this.mediaInfo['category'].toLowerCase();
-                this.categoryPosts = this.category.slice(0, -1) + 'Posts';
-                //this.findUserReviews();
+                //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
+                //we will retrieve info from DB (else statment) if that is the case
+                if (Object.keys(this.props.location.state.mediaInfo).length) { 
+                    console.log(this.props.location.state.mediaInfo)
+                    this.category = this.state.mediaInfo['category'].toLowerCase();
+                    this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                }
+                else {
+                   console.log('media info prop is empty...retrieving from firestore');
+                   this.getMediaPost();
+                }
+                //this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
             } else {
                 // No user is signed in.
             }
@@ -71,7 +83,7 @@ class ReviewEditPage extends React.Component {
         return (
             <div className="pageContainer">
                 <div className="form" >
-                    <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for MEDIA_TITLE as of writing this review?</label><br></br>
+                    <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
                     <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
                     {/* can determine max based on media post props data */}
 
@@ -79,13 +91,18 @@ class ReviewEditPage extends React.Component {
 
 
                     <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
-                    <TextareaAutosize className="reviewSummary" id="reviewSummary" onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
+                    <TextareaAutosize 
+                    className="reviewSummary" 
+                    id="reviewSummary" 
+                    // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
+                    minLength={this.SUMMARY_MIN}
+                    onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
 
 
                     <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
                     <TextareaAutosize
                         className="reviewText"
-                        maxLength="2400"
+                        maxLength={this.REVIEW_MAX}
                         minLength={this.REVIEW_MIN}
                         id="reviewText"
                         onChange={(e) => this.setState({ text: e.target.value })} value={this.state.text}>
@@ -119,7 +136,7 @@ class ReviewEditPage extends React.Component {
                                 (<div className="saveButton" onClick={this.handleSubmit}>Save</div>) : ''}
 
 
-                            {(this.state.summary.length < this.SUMMARY_MIN) ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_MIN} characters ({this.state.summary.length}) </div> :
+                            {(this.state.summary.length < this.SUMMARY_MIN || this.state.summary.length > this.SUMMARY_MAX) ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_MIN} and not exceed {this.SUMMARY_MAX} characters ({this.state.summary.length}) </div> :
                                 (this.getTextLetterCount(this.state.summary) < this.SUMMARY_LETTER_MIN ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_LETTER_MIN} letters ({this.getTextLetterCount(this.state.summary)}) </div>
                                     : '')}
 
@@ -215,6 +232,20 @@ class ReviewEditPage extends React.Component {
             .catch((error) => {
                 console.log("Error getting documents: ", error);
             });
+    }
+
+    //used for edgecase
+    getMediaPost = () => {
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
+            if (doc.exists) {
+                this.setState({ mediaInfo: doc.data() }, () => {
+                    this.category = this.state.mediaInfo['category'].toLowerCase();
+                    this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                });
+
+
+            }
+        });
     }
 
 }

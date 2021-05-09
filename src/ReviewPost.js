@@ -3,6 +3,7 @@ import './ReviewPost.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 
+import { Link } from 'react-router-dom';
 
 import { IoMdThumbsUp } from 'react-icons/io';
 
@@ -22,12 +23,27 @@ class ReviewPost extends React.Component {
     render() {
         return (
             <div className="reviewPostContainer">
-                <div className="reviewUserImg">Image</div>
+
+                {/*use this.props.location.state.allReviewInfo in another compo to retrieve the values passed in state from Link*/}
+
+                <Link to={`/profile/${this.props.allReviewInfo.uid}`} style={{textDecoration:"none"}}>
+                    <div className="reviewUserImg">Image</div>
+                </Link>
+                
+                <Link to={{pathname: `/review/${this.props.review_id}`, state: { allReviewInfo: this.props.allReviewInfo } }} style={{textDecoration:"none"}}> 
+                    <div className="reviewContent">
+                        <div className="reviewPostSummary" >{this.props.allReviewInfo.reviewInfo.summary}</div>
+                        <div className="reviewLikes"><IoMdThumbsUp /> {this.props.allReviewInfo.likes}</div>
+                    </div>
+                </Link>
+
+                {/* <div className="reviewUserImg">Image</div>
 
                 <div className="reviewContent">
-                    <div className="reviewPostSummary">{text120b}</div>
-                    <div className="reviewLikes"><IoMdThumbsUp/> 100</div>
-                </div>
+                    <div className="reviewPostSummary">{this.props.allReviewInfo.reviewInfo.summary} </div>
+                    <div className="reviewLikes"><IoMdThumbsUp /> {this.props.allReviewInfo.likes}</div>
+                </div> */}
+
             </div>
         )
     }
