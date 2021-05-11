@@ -4,9 +4,6 @@ import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 import { Link } from 'react-router-dom';
-// Might use later but for full page of MediaPost
-// import Rating from '@material-ui/lab/Rating';
-// import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import { AiFillStar, AiFillHeart, AiFillClockCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
@@ -79,35 +76,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
         }.bind(this), 5000);
     }
 
-    //will move this function to full page MediaPost
-    async updateRating(newRating, mediaId) {
-        var userId = firebase.auth().currentUser.uid;
-        firestore.collection('users').doc(userId).collection('ratings').doc('books').update({
-            [mediaId]: newRating,
-        })
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(userId).set(
-            { rating: newRating },
-            { merge: true }
-        )
-        this.setState({ currRating: newRating });
-    }
-
-    async getRating(mediaId) {
-        var userId = firebase.auth().currentUser.uid;
-        var userDoc = firestore.collection('users').doc(userId);
-        userDoc.collection('ratings').doc('books').get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ currRating: doc.data()[mediaId] });
-            }
-            //no else needed already set to 0
-        })
-        userDoc.collection('later').doc(mediaId).get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ laterColor: "blue" });
-            }
-        })
-    }
-
     async getPicture(url) {
         if (url) {
             const ref = firebase.storage().ref(url);
@@ -137,7 +105,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
-                this.getRating(this.props.id);
             }
         })
     }
@@ -228,12 +195,3 @@ class MediaPost extends React.Component { //({ user, match }) => {
 };
 
 export default MediaPost;
-
-//Date released, Category type: tv show, movie, actor etc, tags, rating
-//Rating will be moved to full page view of mediaPost
-//  <div className="ratings">
-//      <h2>Average Rating:  {this.state.mediaInfo['avgRating']}</h2>
-//      <h4>Add a graph here...</h4>
-//      <h1>Rate this Title:</h1>
-//      <Rating style={{fontSize: "3em"}} value={this.state.currRating} precision={0.5} emptyIcon={<StarBorderIcon fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
-//  </div>
