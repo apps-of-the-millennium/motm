@@ -16,17 +16,10 @@ E0A890
 
 .homeBg {
   background-color: #1c2331;
-  height: 100rem;
-  overflow: auto;
-  
+  height: 40rem;
 }
 
-.searchForm {
-  margin-top: 5%;
-  margin-left: 15%;
-}
-
-.postContainer {
+.appBody {
   margin: 0 auto;
   width: 70%;
   
@@ -35,19 +28,6 @@ E0A890
   flex-flow: row wrap; 
   justify-content: space-between;
 }
-
-.topContainer {
-  display: table;
-  margin: 0 auto;
-  
-}
-
-
-
-
-
-
-
 
 .loginContainer {
   background-color: #CE1483;
