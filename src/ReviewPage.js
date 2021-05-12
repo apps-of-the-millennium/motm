@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { IoMdThumbsDown, IoMdThumbsUp } from 'react-icons/io';
 
 /*EXTRA TODOS:
-    changing color of score based on number
     completed info
     user-select is super jank, cant deselect outside of summary box
 */
@@ -30,6 +29,7 @@ class ReviewPage extends React.Component {
         console.log(this.props.location.state.allReviewInfo);
         let timestamp = this.props.location.state.allReviewInfo.reviewInfo.timestamp;
         let containsSpoiler = this.props.location.state.allReviewInfo.reviewInfo.containsSpoiler;
+        let score = this.props.location.state.allReviewInfo.reviewInfo.score;
 
         return (
             <div className="reviewPageContainer">
@@ -42,8 +42,12 @@ class ReviewPage extends React.Component {
                     <div className="rp-infoContainer">
                         <div className="rp-info-1">
                             <div className='rp-info-label'>Review by </div>
-                            <div className='rp-info-username'><Link style={{ color: 'inherit', textDecoration: 'none' }} to={`/profile/${this.props.location.state.allReviewInfo.uid}`}> {this.props.location.state.allReviewInfo.username}</Link></div> 
-                            <div className='rp-info-date'>{new Date(timestamp.seconds * 1000).toLocaleDateString("en-US")}</div>
+                            <div style={{marginTop:'12px'}}>
+                                <span className='rp-info-username'><Link style={{ color: 'inherit', textDecoration: 'none' }} to={`/profile/${this.props.location.state.allReviewInfo.uid}`}> {this.props.location.state.allReviewInfo.username}</Link></span>
+                                <span className='rp-info-date'>{new Date(timestamp.seconds * 1000).toLocaleDateString("en-US")}</span>
+                            </div>
+
+
                         </div>
                         <div className="rp-info-2">
                             <div className='rp-info-label'>Completed</div>
@@ -51,7 +55,7 @@ class ReviewPage extends React.Component {
                         </div>
                         <div className="rp-info-3">
                             <div className='rp-info-label'>Score</div>
-                            <div className='rp-info-big-label'>{this.props.location.state.allReviewInfo.reviewInfo.score}<span style={{ fontSize: '12px' }}>/100</span></div>
+                            <div style={{background:this.getScoreColor(score)}} className='rp-info-big-label'>{score}<span style={{ fontSize: '12px' }}>/100</span></div>
                         </div>
                     </div>
                     {(containsSpoiler) ? <div style={{ width: '90%', margin: '1rem auto' }} className="warningMessage">Warning: Contains Spoilers</div> : <></>}
@@ -93,6 +97,15 @@ class ReviewPage extends React.Component {
     convertTimestamp = (timestamp) => {
         let date = new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 100000)
         return date;
+    }
+
+    getScoreColor = (score) => {
+        if (score >= 70) //high
+            return '#41ca95';
+        else if (score >= 50) //mid
+            return '#ecea58';
+        else //low
+            return '#fc5656';
     }
 }
 

@@ -26,7 +26,7 @@
 .rp-contentContainer { /*has both info and summary containers */
     width: 40%;
     height: auto;
-    background: #030a18;
+    background: #000818;
     margin: 0 auto;
     position: relative;
     bottom: 4rem;
@@ -39,7 +39,7 @@
 .rp-infoContainer {
     /* width: 80%; */
     border-radius: 4px;
-    height: 5rem;
+    height: auto;
     background: #141e30;
     margin: 0 auto;
 
@@ -50,7 +50,7 @@
     padding-top: 5px;
     padding-right: 10px;
     padding-left: 10px;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
     /* align-items: center; */
     
 }
@@ -60,7 +60,7 @@
 .rp-info-label{
     font-size: large;
     font-weight: 600;
-    color: #b1afaf;
+    color: #bfc2bf;
 }
 
 .rp-info-big-label {
@@ -76,10 +76,11 @@
 
 .rp-info-username {
     font-size:16px;
-    font-weight: 700;
-    background: #55b5f5;
+    font-weight: 600;
+    background: #29a5f8;
     border-radius: 4px;
     padding: 2px;
+    padding-left:4px;
     margin-top: 4px;
 
     width: max-content;
@@ -97,9 +98,12 @@
     border-radius: 4px;
     padding: 2px;
     margin-top: 4px;
+    margin-left: 6px;
 
-    padding-right: 1rem;
+    /* padding-right: 1rem; */
     width: max-content;
+
+    text-align: center;
 }
 
 
@@ -127,13 +131,18 @@
 }
 
 
+
+
+
 .rp-helpfulContainer {
     margin: 0 auto;
-    background: #070e1b;
+    background: #000818;;
     padding: .5rem;
     width: max-content;
     position: relative;
     bottom: 3rem;
+
+    border-radius: 4px;
 }
 .rp-helpful-title{
     color: #cecccc;
@@ -141,11 +150,6 @@
     font-weight: 600;
     user-select: none;
 }
-
-
-
-
-
 
 .rp-helpful-icon{
     width: 1.5rem;
