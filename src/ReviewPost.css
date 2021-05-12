@@ -14,9 +14,9 @@
 
 .reviewUserImg {
     background: #0d1422af;
-    height: 4rem;
-    width: 4rem;
-    border-radius: 4px;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
 }
 
 
@@ -33,6 +33,17 @@
 
     min-height: 4rem;
 }   
+.reviewContent:before {
+    content: "";
+      position: absolute;
+      right: 100%;
+      top: 15px;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-right: 18px solid #0d1422;
+      border-bottom: 12px solid transparent;
+}
 
 .reviewPostSummary {
     /* background: rgb(172, 163, 163); */

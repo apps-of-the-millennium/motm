@@ -41,6 +41,7 @@ class ReviewEditPage extends React.Component {
         this.category = null;
         this.categoryPosts = null;
         this.reviewAuthor = null;
+        this.reviewAuthorName = null;
 
 
         this.SUMMARY_MIN = 20;
@@ -58,6 +59,7 @@ class ReviewEditPage extends React.Component {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 this.reviewAuthor = firebase.auth().currentUser.uid;
+                this.reviewAuthorName = firebase.auth().currentUser.displayName;
                 //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
                 //we will retrieve info from DB (else statment) if that is the case
                 if (Object.keys(this.props.location.state.mediaInfo).length) { 
@@ -170,6 +172,8 @@ class ReviewEditPage extends React.Component {
 
         const newReview = {
             uid: this.reviewAuthor,
+            username: this.reviewAuthorName,
+            
             likes: 0,
             reviewInfo: {
                 text: this.state.text,
