@@ -14,19 +14,13 @@ E0A890
   
 }
 
-.homeBg {
-  background-color: #1c2331;
-  height: 40rem;
+.appBg {
+  background-color: #E0A890;
 }
 
 .appBody {
-  margin: 0 auto;
-  width: 70%;
-  
- 
-  display: flex;
-  flex-flow: row wrap; 
-  justify-content: space-between;
+  display: grid;
+  place-items: center;
 }
 
 .loginContainer {
