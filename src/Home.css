@@ -18,7 +18,8 @@ E0A890
   background-color: #151c2b;
   height: 200rem; /*will cause extra scroll bar if not big enough */
   overflow: auto;
-  
+  /* position: relative; */
+  min-height: 100vh;
 }
 
 .postContainer {

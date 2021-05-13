@@ -9,6 +9,7 @@ body {
     flex-flow: column wrap;
     align-items: center;
     overflow: hidden;
+    min-height: 100vh;
 }
 
 .profilePic {
@@ -38,6 +39,7 @@ body {
     gap: 2em;
     background: #121e38;
     border-radius: 5%;
+    margin-bottom: 2em;
 }
 
 .favourite {
@@ -53,5 +55,5 @@ body {
 }
 
 .title {
-    padding: 1em;
+    margin-bottom: 2em;
 }

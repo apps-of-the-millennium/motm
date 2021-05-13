@@ -5,6 +5,8 @@ import ProfilePage from './ProfilePage';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import MediaPostPage from './MediaPostPage';
 import Header from './Header';
+import Footer from './Footer';
+import ErrorPage from './ErrorPage';
 import { firestore } from "./firebase";
 
 class App extends Component {
@@ -34,8 +36,9 @@ class App extends Component {
                     id={props.match.params.id} {...props} />
                 )}
               />
-              <Route path="/" render={() => <div>404</div>} />
+              <Route path="/" render={() => <ErrorPage /> } />
             </Switch>
+            <Footer />
           </BrowserRouter>
         </AuthProvider>
       </>

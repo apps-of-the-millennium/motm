@@ -1,0 +1,9 @@
+.errorPage {
+    display: flex;
+    flex-direction: column;
+    background: gray;
+    position: relative;
+    min-height: 100vh;
+    justify-content: center;
+    text-align: center;
+}
