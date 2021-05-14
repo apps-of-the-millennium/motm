@@ -4,7 +4,7 @@
     grid-auto-flow: row;
 
     width: 30rem;
-    height: 5rem;
+    height: max-content;
 
     /* background: #1c2942; */
 
@@ -22,7 +22,7 @@
 
 
 .reviewContent {
-    background: #0d1422;
+    background: #141e30; /*#0d1422*/
     display: flex;
     align-items: center;
     justify-items: center;
@@ -32,6 +32,8 @@
     border-radius: 4px;
 
     min-height: 4rem;
+
+   
 }   
 .reviewContent:before {
     content: "";
@@ -41,28 +43,24 @@
       width: 0;
       height: 0;
       border-top: 12px solid transparent;
-      border-right: 18px solid #0d1422;
+      border-right: 18px solid #141e30;
       border-bottom: 12px solid transparent;
 }
 
 .reviewPostSummary {
     /* background: rgb(172, 163, 163); */
-    display: block;
+
     padding: 15px 30px;
-    text-overflow: ellipsis;
     margin-right: 25px;
+
+    text-overflow: ellipsis;
+    word-break: break-word;
+    /* white-space: pre-wrap; */
     
     font-style: italic;
     font-size: 1rem;
     line-height: 1.4rem;
     color: #b1afaf;
-
-    
-
-
-    
-   
-
 }
 
 .reviewLikes {

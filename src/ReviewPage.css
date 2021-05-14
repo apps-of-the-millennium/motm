@@ -17,9 +17,14 @@
 
 .rp-title{
     color: rgb(180, 180, 180);
-    font-size: 1.5rem;
-    font-style: italic;
+    font-size: 1.7rem;
+    /* font-style: italic; */
+    font-weight: 600;
+    cursor: pointer;
 
+}
+.rp-title:hover{
+    color: #29a5f8;
 }
 
 

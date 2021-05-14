@@ -30,7 +30,7 @@ class ReviewEditPage extends React.Component {
             containsSpoiler: false,
             text: '',
             summary: '',
-            score: 50,
+            score: 2.5,
             numberCompleted: 0,
 
             duplicateReview: false, //used to determine if this is users 2nd review, if so, do not let them submit
@@ -51,6 +51,8 @@ class ReviewEditPage extends React.Component {
         this.REVIEW_MIN = 240;
         this.REVIEW_LETTER_MIN = 200;
         this.REVIEW_MAX = 4800;
+
+        
     }
 
     componentDidMount() {
@@ -62,14 +64,14 @@ class ReviewEditPage extends React.Component {
                 this.reviewAuthorName = firebase.auth().currentUser.displayName;
                 //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
                 //we will retrieve info from DB (else statment) if that is the case
-                if (Object.keys(this.props.location.state.mediaInfo).length) { 
+                if (Object.keys(this.props.location.state.mediaInfo).length) {
                     console.log(this.props.location.state.mediaInfo)
                     this.category = this.state.mediaInfo['category'].toLowerCase();
                     this.categoryPosts = this.category.slice(0, -1) + 'Posts';
                 }
                 else {
-                   console.log('media info prop is empty...retrieving from firestore');
-                   this.getMediaPost();
+                    console.log('media info prop is empty...retrieving from firestore');
+                    this.getMediaPost();
                 }
                 //this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
             } else {
@@ -93,12 +95,12 @@ class ReviewEditPage extends React.Component {
 
 
                     <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
-                    <TextareaAutosize 
-                    className="reviewSummary" 
-                    id="reviewSummary" 
-                    // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
-                    minLength={this.SUMMARY_MIN}
-                    onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
+                    <TextareaAutosize
+                        className="reviewSummary"
+                        id="reviewSummary"
+                        // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
+                        minLength={this.SUMMARY_MIN}
+                        onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
 
 
                     <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
@@ -113,7 +115,7 @@ class ReviewEditPage extends React.Component {
 
                     {/* range will change based on if we want to do /5 with stars or just number */}
                     <label className="formLabel" htmlFor="score">Score</label><br></br>
-                    <input className="formInput" id="score" type="number" onChange={(e) => this.setState({ score: e.target.value })} value={this.state.score} min="0" max="100"></input><br></br>
+                    <input className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
 
 
                     <label className="formLabel" htmlFor="spoilers">Contains spoilers?</label><br></br>
@@ -134,7 +136,7 @@ class ReviewEditPage extends React.Component {
                         </>
                     ) :
                         <>
-                            {(this.state.text.length >= this.REVIEW_MIN && this.state.summary.length >= this.SUMMARY_MIN) ?
+                            {(this.state.text.length >= this.REVIEW_MIN && (this.state.summary.length >= this.SUMMARY_MIN && this.state.summary.length <= this.SUMMARY_MAX)) ?
                                 (<div className="saveButton" onClick={this.handleSubmit}>Save</div>) : ''}
 
 
@@ -155,11 +157,22 @@ class ReviewEditPage extends React.Component {
         )
     }
 
+    handleScoreChange = (e) => {
+        if (e.target.valueAsNumber > 5) {
+            this.setState({ score: 5 })
+        }
+        else if (e.target.valueAsNumber < 0) {
+            this.setState({ score: 0 })
+        }
+        else {
+
+            this.setState({ score: e.target.value })
+        }
+
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
-
-        //cant change name of collection
-
 
         // console.log(this.props.id); //given through Router in App.js  dont need thi: this.props.match.params.id
         // console.log(categoryPosts);
@@ -170,41 +183,71 @@ class ReviewEditPage extends React.Component {
         // let newTimestamp = timestamp ? timestamp.toMillis() : Date.now();
         // let displayTime = timestamp ? timestamp.toDate().toDateString() : Date.now();
 
-        const newReview = {
-            uid: this.reviewAuthor,
-            username: this.reviewAuthorName,
-            
-            likes: 0,
-            reviewInfo: {
-                text: this.state.text,
-                summary: this.state.summary,
-                containsSpoiler: this.state.containsSpoiler,
-                score: this.state.score,
-                numberCompleted: this.state.numberCompleted,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        //need to validate score value before submission:
+        if (isNaN(parseFloat(this.state.score))) {
+            alert("please enter a number for score dud");
+        }
 
-                title: this.mediaInfo['title'],
-                mid: this.props.id
-                //may need this if i dont pass all above info through props including these 2
-            }
-        };
+        else {
+            let roundedScore = Number.parseFloat(this.state.score).toPrecision(2); //round to 2 DIGITS (not 2 decimal places!) i.e 2.54321 => 2.5
 
-        //because this is the publishing review page, the number of likes is naturally 0 but will be modified by a button on different review components
-        firestore.collection('posts').doc(this.category).collection(this.categoryPosts).doc(this.props.id).collection('reviews').add(
-            newReview
-        ).then((docRef) => {
-            console.log("Review Document written with ID: ", docRef.id);
+            const newReview = {
+                uid: this.reviewAuthor,
+                username: this.reviewAuthorName,
+                likes: 0,
+                dislikes: 0,
 
-            //lets us change the url after the review document is added
-            this.props.history.push({
-                pathname: `/review/${docRef.id}`,
-                //search: '?query=abc',
-                state: { allReviewInfo: newReview } //this.props.location.state.allReviewInfo
-            })
-        })
-            .catch((error) => {
-                console.error("Error adding document: ", error);
+                reviewInfo: {
+                    text: this.state.text,
+                    summary: this.state.summary,
+                    containsSpoiler: this.state.containsSpoiler,
+                    score: roundedScore,
+                    numberCompleted: this.state.numberCompleted,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+
+                    title: this.state.mediaInfo['title'],
+                    mid: this.props.id
+                    //may need this if i dont pass all above info through props including these 2
+                }
+            };
+
+            let dbRef = firestore.collection('posts').doc(this.category).collection(this.categoryPosts).doc(this.props.id).collection('reviews');
+            //because this is the publishing review page, the number of likes is naturally 0 but will be modified by a button on different review components
+            dbRef.add(
+                newReview
+            ).then((docRef) => {
+                console.log("Review Document written with ID: ", docRef.id); //this.props.id represents the media post id here, docRef.id is newly added review id
+
+                //add review to the user reviews collection so that they can view it later
+                firestore.collection('users').doc(this.reviewAuthor).collection('reviews').doc(docRef.id).set(newReview).then(() => {
+                    console.log("Document successfully added to user reviews collection!");
+
+                    //lets us change the url after the review document is added
+                    this.props.history.push({
+                        pathname: `/review/${docRef.id}`,
+                        //search: '?query=abc',
+                        state: { allReviewInfo: newReview } //this.props.location.state.allReviewInfo
+                    });
+
+
+                }).catch((error) => {
+                    console.error("Error writing document to user: ", error);
+                });
+
+                //distribution counter for likes and dislikes
+                //for likes/dislikes distribution counter
+                const NUM_SHARDS = 10; //number of shards for distribution counter
+                let likeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('likesCounter')
+                let dislikeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('dislikesCounter')
+                this.createCounter(likeCounterDocRef, NUM_SHARDS);
+                this.createCounter(dislikeCounterDocRef, NUM_SHARDS);
+
+            }).catch((error) => {
+                console.error("Error adding document to mediapost reviews: ", error);
             });
+
+
+        }
 
     }
 
@@ -250,6 +293,23 @@ class ReviewEditPage extends React.Component {
 
             }
         });
+    }
+
+    //likes/dislikes distribution counter
+    createCounter = (ref, num_shards) => {
+        var batch = firestore.batch();
+    
+        // Initialize the counter document
+        batch.set(ref, { num_shards: num_shards });
+    
+        // Initialize each shard with count=0
+        for (let i = 0; i < num_shards; i++) {
+            const shardRef = ref.collection('shards').doc(i.toString());
+            batch.set(shardRef, { count: 0 });
+        }
+    
+        // Commit the write batch
+        return batch.commit();
     }
 
 }

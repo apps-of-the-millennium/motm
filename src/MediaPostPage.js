@@ -153,9 +153,7 @@ class MediaPostPage extends React.Component {
     // onClickOutside = () => {
     //     this.setState( { openOptions: false });
     // }
-    componentWillMount() {
-    }
-
+    
     componentDidMount() {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
@@ -236,7 +234,7 @@ class MediaPostPage extends React.Component {
                                 <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
                                 {/* buttons */}
                                 <div className="mediaPageButtons">
-                                    <button onClick={this.onClick} className="dropbtn2">Add to ...<i class="arrow down"></i></button>
+                                    <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
                                     <button className="rateButton"><AiFillStar className="icon" /></button>
                                     {(this.state.openOptions) ?
                                         <div className="dropdown-content2">
