@@ -37,7 +37,9 @@ class ReviewEditPage extends React.Component {
 
             duplicateReview: false, //used to determine if this is users 2nd review, if so, do not let them submit
 
-            mediaInfo: this.props.location.state.mediaInfo
+            mediaInfo: this.props.location.state.mediaInfo,
+
+            signed_in: false
         };
 
         this.category = null;
@@ -54,14 +56,33 @@ class ReviewEditPage extends React.Component {
         this.REVIEW_LETTER_MIN = 200;
         this.REVIEW_MAX = 4800;
 
-        
+
     }
 
     componentDidMount() {
-        //temporary fix to bypass user id == null error
 
+        if (typeof (Storage) !== "undefined") {
+            let session_containsSpoilers = sessionStorage.getItem(this.props.id + '.containsSpoiler') || 'false';
+            let convertedcontainsSpoilers = (session_containsSpoilers === 'true'); //string to bool conversion
+
+            let session_text = sessionStorage.getItem(this.props.id + '.text') || '';
+            let session_summary = sessionStorage.getItem(this.props.id + '.summary') || '';
+            let session_score = sessionStorage.getItem(this.props.id + '.score') || 2.5;
+            let session_numberCompleted = sessionStorage.getItem(this.props.id + '.numberCompleted') || 0;
+
+            this.setState({
+                containsSpoiler: convertedcontainsSpoilers,
+                text: session_text,
+                summary: session_summary,
+                score: session_score,
+                numberCompleted: session_numberCompleted,
+            })
+        }
+
+        //temporary fix to bypass user id == null error
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
+                this.setState({ signed_in: true });
                 this.reviewAuthor = firebase.auth().currentUser.uid;
                 this.reviewAuthorName = firebase.auth().currentUser.displayName;
                 //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
@@ -75,87 +96,102 @@ class ReviewEditPage extends React.Component {
                     console.log('media info prop is empty...retrieving from firestore');
                     this.getMediaPost();
                 }
-                //this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
+                this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
             } else {
+                this.setState({ signed_in: false });
                 // No user is signed in.
             }
         });
     }
 
+    componentDidUpdate() {
+        //save info to session storage
+        if (typeof (Storage) !== "undefined") {
+            sessionStorage.setItem(this.props.id + '.containsSpoiler', (this.state.containsSpoiler).toString());
+            sessionStorage.setItem(this.props.id + '.text', this.state.text);
+            sessionStorage.setItem(this.props.id + '.summary', this.state.summary);
+            sessionStorage.setItem(this.props.id + '.score', (this.state.score).toString());
+            sessionStorage.setItem(this.props.id + '.numberCompleted', (this.state.numberCompleted).toString());
+        }
+
+    }
+
     //Design Note: decided to change <form> to <div> and put onSubmit into onClick for the Save button instead, makes it clearer i guess.
     //However, the ability to use inputs is quite nice
     render() {
-        
+
         // console.log(this.props.location.state.mediaInfo);
         return (
 
             <div className="pageContainer">
-                <div className="form" >
-                    <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
-                    <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
-                    {/* can determine max based on media post props data */}
+                {(this.state.signed_in) ?
+                    <div className="form" >
+                        <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
+                        <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
+                        {/* can determine max based on media post props data */}
 
 
 
 
-                    <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
-                    <TextareaAutosize
-                        className="reviewSummary"
-                        id="reviewSummary"
-                        // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
-                        minLength={this.SUMMARY_MIN}
-                        onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
+                        <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
+                        <TextareaAutosize
+                            className="reviewSummary"
+                            id="reviewSummary"
+                            // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
+                            minLength={this.SUMMARY_MIN}
+                            onChange={(e) => this.setState({ summary: e.target.value })} value={this.state.summary}> </TextareaAutosize> <br></br>
 
 
-                    <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
-                    <TextareaAutosize
-                        className="reviewText"
-                        maxLength={this.REVIEW_MAX}
-                        minLength={this.REVIEW_MIN}
-                        id="reviewText"
-                        onChange={(e) => this.setState({ text: e.target.value })} value={this.state.text}>
-                    </TextareaAutosize><br></br>
+                        <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
+                        <TextareaAutosize
+                            className="reviewText"
+                            maxLength={this.REVIEW_MAX}
+                            minLength={this.REVIEW_MIN}
+                            id="reviewText"
+                            onChange={(e) => this.setState({ text: e.target.value })} value={this.state.text}>
+                        </TextareaAutosize><br></br>
 
 
-                    {/* range will change based on if we want to do /5 with stars or just number */}
-                    <label className="formLabel" htmlFor="score">Score</label><br></br>
-                    <input className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
+                        {/* range will change based on if we want to do /5 with stars or just number */}
+                        <label className="formLabel" htmlFor="score">Score</label><br></br>
+                        <input className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
 
 
-                    <label className="formLabel" htmlFor="spoilers">Contains spoilers?</label><br></br>
-                    <select className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select><br></br>
+                        <label className="formLabel" htmlFor="spoilers">Contains spoilers?</label><br></br>
+                        <select className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select><br></br>
 
-                    {/* <div className="saveButton" onClick={this.handleSubmit}>Save</div> */}
+                        {/* <div className="saveButton" onClick={this.handleSubmit}>Save</div> */}
 
 
-                    {/*submit with error messages COMMENTED OUT FOR TESTING PURPOSE ONLY
+                        {/*submit with error messages COMMENTED OUT FOR TESTING PURPOSE ONLY
                      NOTE: for some reason <button> has different CSS implications than div... so the save and edit button are set to div elements for now*/}
-                    {(this.state.duplicateReview) ? (
-                        <>
-                            <div className="warningMessage">You have already written a review </div>
-                            <div className="saveButton" >Edit</div>
-                        </>
-                    ) :
-                        <>
-                            {(this.state.text.length >= this.REVIEW_MIN && (this.state.summary.length >= this.SUMMARY_MIN && this.state.summary.length <= this.SUMMARY_MAX)) ?
-                                (<div className="saveButton" onClick={this.handleSubmit}>Save</div>) : ''}
+                        {(this.state.duplicateReview) ? (
+                            <>
+                                <div className="warningMessage">You have already written a review </div>
+                                <div className="saveButton" onClick={this.handleEdit}>Edit</div>
+                            </>
+                        ) :
+                            <>
+                                {(this.state.text.length >= this.REVIEW_MIN && (this.state.summary.length >= this.SUMMARY_MIN && this.state.summary.length <= this.SUMMARY_MAX)) ?
+                                    (<div className="saveButton" onClick={this.handleSubmit}>Save</div>) : ''}
 
 
-                            {(this.state.summary.length < this.SUMMARY_MIN || this.state.summary.length > this.SUMMARY_MAX) ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_MIN} and not exceed {this.SUMMARY_MAX} characters ({this.state.summary.length}) </div> :
-                                (this.getTextLetterCount(this.state.summary) < this.SUMMARY_LETTER_MIN ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_LETTER_MIN} letters ({this.getTextLetterCount(this.state.summary)}) </div>
-                                    : '')}
+                                {(this.state.summary.length < this.SUMMARY_MIN || this.state.summary.length > this.SUMMARY_MAX) ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_MIN} and not exceed {this.SUMMARY_MAX} characters ({this.state.summary.length}) </div> :
+                                    (this.getTextLetterCount(this.state.summary) < this.SUMMARY_LETTER_MIN ? <div className="warningMessage">Summary must have a minimum of {this.SUMMARY_LETTER_MIN} letters ({this.getTextLetterCount(this.state.summary)}) </div>
+                                        : '')}
 
-                            {(this.state.text.length < this.REVIEW_MIN) ?
-                                <div className="warningMessage">Review must have a minimum of {this.REVIEW_MIN} characters ({this.state.text.length}) </div> :
-                                (this.getTextLetterCount(this.state.text) < this.REVIEW_LETTER_MIN ? <div className="warningMessage">Review must have a minimum of {this.REVIEW_LETTER_MIN} letters ({this.getTextLetterCount(this.state.text)}) </div>
-                                    : '')}
-                        </>
-                    }
+                                {(this.state.text.length < this.REVIEW_MIN) ?
+                                    <div className="warningMessage">Review must have a minimum of {this.REVIEW_MIN} characters ({this.state.text.length}) </div> :
+                                    (this.getTextLetterCount(this.state.text) < this.REVIEW_LETTER_MIN ? <div className="warningMessage">Review must have a minimum of {this.REVIEW_LETTER_MIN} letters ({this.getTextLetterCount(this.state.text)}) </div>
+                                        : '')}
+                            </>
+                        }
 
-                </div>
+                    </div>
+                    : <div style={{ background: "#070e1b", color: "white" }}>Dude...sign in first</div>}
 
             </div>
         )
@@ -173,6 +209,12 @@ class ReviewEditPage extends React.Component {
             this.setState({ score: e.target.value })
         }
 
+    }
+
+    //TODO:
+    handleEdit = (e) => {
+        e.preventDefault();
+        alert('doesnt work');
     }
 
     handleSubmit = (e) => {
@@ -230,6 +272,16 @@ class ReviewEditPage extends React.Component {
                 firestore.collection('users').doc(this.reviewAuthor).collection('reviews').doc(docRef.id).set(newReview).then(() => {
                     console.log("Document successfully added to user reviews collection!");
 
+                    //distribution counter for likes and dislikes
+                    //for likes/dislikes distribution counter
+                    const NUM_SHARDS = 10; //number of shards for distribution counter
+                    let likeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('likesCounter')
+                    let dislikeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('dislikesCounter')
+                    this.createCounter(likeCounterDocRef, NUM_SHARDS);
+                    this.createCounter(dislikeCounterDocRef, NUM_SHARDS);
+
+                    sessionStorage.clear(); //clear sessionStorage upon successfull submit (this will remove ALL use removeItem if we need to retain other stuff)
+
                     //lets us change the url after the review document is added
                     this.props.history.push({
                         pathname: `/review/${docRef.id}`,
@@ -242,13 +294,7 @@ class ReviewEditPage extends React.Component {
                     console.error("Error writing document to user: ", error);
                 });
 
-                //distribution counter for likes and dislikes
-                //for likes/dislikes distribution counter
-                const NUM_SHARDS = 10; //number of shards for distribution counter
-                let likeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('likesCounter')
-                let dislikeCounterDocRef = dbRef.doc(docRef.id).collection('counters').doc('dislikesCounter')
-                this.createCounter(likeCounterDocRef, NUM_SHARDS);
-                this.createCounter(dislikeCounterDocRef, NUM_SHARDS);
+
 
             }).catch((error) => {
                 console.error("Error adding document to mediapost reviews: ", error);
@@ -272,8 +318,7 @@ class ReviewEditPage extends React.Component {
 
     //searches reviews of the currennt mediapost using users UID, if a review is found, prevent the user from writing another
     findUserReviews = () => {
-        const query = firestore
-            .collection('posts').doc(this.category)
+        const query = firestore.collection('posts').doc(this.category)
             .collection(this.categoryPosts).doc(this.props.id)
             .collection('reviews')
             .where('uid', '==', this.reviewAuthor);
@@ -306,16 +351,16 @@ class ReviewEditPage extends React.Component {
     //likes/dislikes distribution counter
     createCounter = (ref, num_shards) => {
         var batch = firestore.batch();
-    
+
         // Initialize the counter document
         batch.set(ref, { num_shards: num_shards });
-    
+
         // Initialize each shard with count=0
         for (let i = 0; i < num_shards; i++) {
             const shardRef = ref.collection('shards').doc(i.toString());
             batch.set(shardRef, { count: 0 });
         }
-    
+
         // Commit the write batch
         return batch.commit();
     }
