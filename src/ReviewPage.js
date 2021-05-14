@@ -50,30 +50,30 @@ class ReviewPage extends React.Component {
             if (user) {
                 this.current_user = user.uid;
                 await this.getBothUserReviewCollections();
-                this.updateLikeAndDislikeState();
+                // this.updateLikeAndDislikeState();
 
 
                 //=======SessionStorage stuff...noticeably faster than above method but I realized that we HAVE to call getBothUserReviewCollections regardless, so I am removing it for now===
-                // if (typeof (Storage) !== "undefined") {
-                //     let sessionLiked = sessionStorage.getItem(this.props.id + '.liked') || -1;
-                //     let sessionDisliked = sessionStorage.getItem(this.props.id + '.disliked') || -1;
+                if (typeof (Storage) !== "undefined") {
+                    let sessionLiked = sessionStorage.getItem(this.props.id + '.liked') || -1;
+                    let sessionDisliked = sessionStorage.getItem(this.props.id + '.disliked') || -1;
 
-                //     if (sessionLiked !== -1 && sessionDisliked !== -1) {
-                //         console.log('using Session Storage');
-                //         const convertLikedToBool = (sessionLiked === 'true');
-                //         const convertDislikedToBool = (sessionDisliked === 'true');
-                //         this.setState({ liked: convertLikedToBool, disliked: convertDislikedToBool }, () => { console.log('liked/disliked:', this.state.liked, this.state.disliked) });
-                //     } else {
-                //         console.log('using Firestore');
-                //         // await this.getBothUserReviewCollections();
-                //         this.updateLikeAndDislikeState();
+                    if (sessionLiked !== -1 && sessionDisliked !== -1) {
+                        console.log('using Session Storage');
+                        const convertLikedToBool = (sessionLiked === 'true');
+                        const convertDislikedToBool = (sessionDisliked === 'true');
+                        this.setState({ liked: convertLikedToBool, disliked: convertDislikedToBool }, () => { console.log('liked/disliked:', this.state.liked, this.state.disliked) });
+                    } else {
+                        console.log('using Firestore');
+                        // await this.getBothUserReviewCollections();
+                        this.updateLikeAndDislikeState();
                         
-                //     }
-                // } else {
-                //     console.log('using Firestore');
-                //     // await this.getBothUserReviewCollections();
-                //     this.updateLikeAndDislikeState();
-                // }
+                    }
+                } else {
+                    console.log('using Firestore');
+                    // await this.getBothUserReviewCollections();
+                    this.updateLikeAndDislikeState();
+                }
 
             }
         });
@@ -81,12 +81,12 @@ class ReviewPage extends React.Component {
     }
 
     //Possibily a huge issue with saving to local or session storage onClick, it doesnt work on the first click unless the setItem is directly invoked and NOT nested in a function
-    // componentDidUpdate() {
-    //     if (typeof (Storage) !== "undefined") {
-    //         sessionStorage.setItem(this.props.id + '.liked', (this.state.liked).toString());
-    //         sessionStorage.setItem(this.props.id + '.disliked', (this.state.disliked).toString());
-    //     }
-    // }
+    componentDidUpdate() {
+        if (typeof (Storage) !== "undefined") {
+            sessionStorage.setItem(this.props.id + '.liked', (this.state.liked).toString());
+            sessionStorage.setItem(this.props.id + '.disliked', (this.state.disliked).toString());
+        }
+    }
 
     async componentWillUnmount() {
         this.updateReviewLikedInfo();

@@ -4,6 +4,8 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 
+import Filter from 'bad-words';
+
 
 /* KNOWN ISSUES:
 textarea cheese issues
@@ -83,8 +85,10 @@ class ReviewEditPage extends React.Component {
     //Design Note: decided to change <form> to <div> and put onSubmit into onClick for the Save button instead, makes it clearer i guess.
     //However, the ability to use inputs is quite nice
     render() {
+        
         // console.log(this.props.location.state.mediaInfo);
         return (
+
             <div className="pageContainer">
                 <div className="form" >
                     <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
@@ -190,6 +194,10 @@ class ReviewEditPage extends React.Component {
 
         else {
             let roundedScore = Number.parseFloat(this.state.score).toPrecision(2); //round to 2 DIGITS (not 2 decimal places!) i.e 2.54321 => 2.5
+            let filter = new Filter();
+            //console.log(filter.clean("Don't be an ash0le"));
+            let filteredSummary = filter.clean(this.state.summary);
+            let filteredText = filter.clean(this.state.text);
 
             const newReview = {
                 uid: this.reviewAuthor,
@@ -198,8 +206,8 @@ class ReviewEditPage extends React.Component {
                 dislikes: 0,
 
                 reviewInfo: {
-                    text: this.state.text,
-                    summary: this.state.summary,
+                    text: filteredText,
+                    summary: filteredSummary,
                     containsSpoiler: this.state.containsSpoiler,
                     score: roundedScore,
                     numberCompleted: this.state.numberCompleted,
