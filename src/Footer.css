@@ -1,0 +1,22 @@
+.appFooter {
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    ". navigation ."; 
+    height: 4rem;
+    background: #121e38;
+}
+
+.navigationContainer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    grid-area: navigation;
+    background: #121e38;
+    height: 4rem;
+}
+
+.nav:hover {
+    color:#d6d9fd;
+}

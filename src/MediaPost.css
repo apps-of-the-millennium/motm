@@ -178,6 +178,13 @@
     
 }
 
+.mediaPostDelete {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    bottom: 122%;
+}
+
 .mediaPostButtons .icon {
     color: rgb(248, 247, 247);
     width: 1rem;
