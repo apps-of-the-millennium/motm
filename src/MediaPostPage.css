@@ -204,6 +204,7 @@
     padding: .5rem 2rem .25rem 0rem;
     
     margin-bottom: 1rem;
+    position: relative;
 }
  .rateButton {
     border-radius: 4px;
@@ -211,6 +212,13 @@
     width: 100%;
     background:none;
     margin-top: 5px;
+}
+.yourRatingValue {
+    position: absolute;
+    bottom: 9px;
+    right: 18px;
+    color: #b1afaf;
+    font-size: small;
 }
 
 .sidebar .extraInfoContainer {

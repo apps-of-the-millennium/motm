@@ -33,7 +33,8 @@ class MediaPostPage extends React.Component {
             popUp: false,
             listType: "",
 
-            reviews: []
+            reviews: [],
+            ratingBarValue: 0
         };
     }
 
@@ -288,10 +289,12 @@ class MediaPostPage extends React.Component {
                             <div className="sidebar">
                                 {/* info going down left side */}
                                 <div className="rateContainer">
-                                    <div style={{paddingLeft:'1rem'}} className="extraInfoTitle">Your Rating</div>
+                                    <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                     <button className="rateButton">
-                                        <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{color:'686868'}} fontSize="inherit" />} onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
+                                        <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
+                                            onChange={(event, newRating) => { this.setState({ ratingBarValue: newRating }); this.updateRating(newRating, this.props.id) }} />
                                     </button>
+                                    <span className="yourRatingValue">{this.state.ratingBarValue}</span>
                                 </div>
                                 <div className="extraInfoContainer">
                                     <div className="extraInfoTitle">Average Rating</div>
