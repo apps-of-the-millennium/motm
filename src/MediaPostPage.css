@@ -1,7 +1,15 @@
 .coverContainer {
-    background-color:#070e1b;
     width: auto;
     height: 15rem;
+    /* background: green; */
+}
+
+
+.container { /*has both info and contentContainer */
+    margin: 0 auto;
+    width: 100%;
+    height: 100rem; /*to change */
+    background-color:#070e1b;
 }
 
 .infoContainer {
@@ -13,11 +21,12 @@
     /* background-color: green; */
     width: 65%;
     height: 100%;
-    margin-left: 15%;
+    /* margin-left: 15%; */
+    margin: 0 auto;
 
     display: grid;
-    grid-template-columns: 15% 3% 82%;
-    grid-template-rows: 20% 70% 10%;
+    grid-template-columns: 15% 3% auto;
+    grid-template-rows: 20% 65% 15%;
     grid-template-areas: 
     "image . title"
     "image . description"
@@ -27,10 +36,10 @@
 .infoGrid .mediaPageImg {
     grid-area: image;
     /* background-color: greenyellow; */
-    bottom: 30%;
+    bottom: 35%;
     position: relative;
     width: 100%;
-    height: 120%;
+    height: 17rem;
 }
 .infoGrid .mediaPageTitle {
     grid-area: title;
@@ -54,67 +63,59 @@
  /* The container <div> - needed to position the dropdown content */
 .infoGrid .mediaPageButtons {
     grid-area: buttons;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
     
 }
 
-.rateButton {
-  display: flex;
-  /* justify-content: center; */
-  align-items: center;
-  /* float: right; */
+.trophyButton {
   height: 100%;
-  background: #3498db;
-  /* background: rgb(16, 75, 153); */
+  width: 20%;
+  background: #0267da;
   border: none;
   cursor: pointer;
-
-  border-radius: 16%;
-  padding-top: 1.1rem;
-  padding-bottom: 1.1rem;
-  margin-top: 1.25rem;
-
-  border-top-left-radius: 5px 10%;
-  border-bottom-left-radius: 5px 10%;
-  border-top-right-radius: 5px 10%;
-  border-bottom-right-radius: 5px 10%;
+  
+  display: flex;
+  justify-content: center;
+  
+  border-radius: 4px;
 }
-.rateButton:hover {
-    background: #196597;
+.trophyButton:hover {
+    background: #0276fc;
 }
-.rateButton .icon {
+.trophyButton .icon {
     color: rgb(247, 247, 7);
     width: 1.2rem;
     height: 1.2rem;
+    align-self: center;
 }
 
-/* Dropdown Button  Note: position is past the infoContainer height, probably because there isnt enough room..looks fine for now anyways*/
 .dropbtn2 { 
+    width:75%;
     background-color: #3498DB;
     color: white;
-    padding: .5rem 3.5rem .5rem 1rem;
     font-size: medium;
     text-align: left;
     line-height: initial;
     border: none;
     cursor: pointer;
 
-    border-top-left-radius: 5px 10%;
-    border-bottom-left-radius: 5px 10%;
-    border-top-right-radius: 5px 10%;
-    border-bottom-right-radius: 5px 10%;
-
+    padding-left: 1rem;
+    border-radius: 4px;
+    
     /*display: flex */ 
   }
   
   /* Dropdown button on hover & focus */
   .dropbtn2:hover {
-    background-color: #196597;
+    background-color: rgb(6, 120, 196);
   }
-  
+
   /* Dropdown Content */
   .mediaPageButtons .dropdown-content2 {
     position: absolute;
-    margin-top: 0.25rem;
+    top: 110%;
     min-width: 120px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -150,18 +151,16 @@
   .dropdown-content2 .listOptions:hover {background-color: #185177}
   .listOptions:hover .icon {color:#e2e0e0;}
   
-
   .arrow {
     border: solid rgb(43, 42, 42);
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
     position: relative;
-    left: 40%;
+    left: 2rem;
     bottom: 2px;
     
   }
-
   .down {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
@@ -169,25 +168,68 @@
 
 
 
+.contentContainer { /*this is the grid containing both sidebar and overview content */
+    display: grid;
+    grid-template-columns: 12rem auto;
+    column-gap: 2rem;
+    position: relative;
+    /* background-color: #0c1320; */
 
+    grid-auto-flow: column;
 
-.extraContainer {
-    background-color: #0c1320;
-    height: 70rem;
-    overflow: auto; /* otherwise margin-top in child affects whole parent and not just child */
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    margin: 0 auto;
+    margin-top: 1.5rem;
+
+    width: 65%; /*change to fixed later? */
+
 }
 
-.extraContainer .extraInfoContainer {
-    float: left;
+.sidebar {
+    height: auto;
+    width: 12rem;
+    /* overflow: auto;  otherwise margin-top in child affects whole parent and not just child */
+    /* margin-left: 15%; same as infoContainer */
+}
+
+.sidebar .rateContainer {
     display: block;
-    margin-left: 15%; /*same as infoContainer */
-    margin-top: 5rem;
     width: 10rem;
     height: auto;
     background: #141e30;
     
-    border-radius: 3%;
+    border-radius: 4px;
+    padding: .5rem 2rem .25rem 0rem;
+    
+    margin-bottom: 1rem;
+    position: relative;
+}
+ .rateButton {
+    border-radius: 4px;
+    border: none;
+    width: 100%;
+    background:none;
+    margin-top: 5px;
+}
+.yourRatingValue {
+    position: absolute;
+    bottom: 9px;
+    right: 18px;
+    color: #b1afaf;
+    font-size: small;
+}
+
+.sidebar .extraInfoContainer {
+    display: block;
+    width: 10rem;
+    height: auto;
+    background: #141e30;
+    
+    border-radius: 4px;
     padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .extraInfoTitle {
@@ -203,19 +245,17 @@
 }
 
 
-.extraContainer .allTagsContainer{
+.sidebar .allTagsContainer{
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
 
-
-    margin-left: 15%; /*same as infoContainer */
-    margin-top: 1rem;
+    margin-bottom: 1rem;
     width: 10rem;
     height: auto;
     background: #141e30;
     
-    border-radius: 3%;
+    border-radius: 4px;
     padding: 1rem;
 
     /*  */
@@ -237,9 +277,14 @@
     
 }
 
+
+.revLink {
+    text-decoration: none;
+    color: white;
+}
+
 .reviewButton {
-    margin-left: 15%;
-    margin-top: 1rem;
+    margin-bottom: 1rem;
 
     width: 12rem;
 
@@ -253,10 +298,7 @@
     border: none;
     cursor: pointer;
 
-    border-top-left-radius: 5px 10%;
-    border-bottom-left-radius: 5px 10%;
-    border-top-right-radius: 5px 10%;
-    border-bottom-right-radius: 5px 10%;
+    border-radius: 4px;
 
     display: flex;
     justify-content: space-evenly;
@@ -272,25 +314,32 @@
 }
 
 
-.reviewButton:hover {
-    background-color: #196597;
+
+
+
+.overviewContentContainer { /*this is the div next to sidebar */
+    width: 100%;
 }
 
+.reviewsContainer {
+    display:block;
 
-.relationsContainer {
-    display: block;
-    float: left;
-    background: green;
-    margin-left: 2rem;
-    margin-top: 2rem;
-
-    
     width: auto;
-    height: 5rem;
-    background: #141e30;
+    height: auto;
+    /* background: #141e30; */
     
-    border-radius: 3%;
+    border-radius: 4px;
     padding: 1rem;
-    
 
+}
+.reviewsGrid {
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: minmax(min-content, max-content); /*grid-template-rows: auto auto == same result?*/
+
+    grid-template-columns: 50% 50%;
+    row-gap: 1rem;
+    column-gap: .75rem;
+
+    height: auto;
 }
