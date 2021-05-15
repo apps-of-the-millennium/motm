@@ -175,7 +175,7 @@ class ReviewEditPage extends React.Component {
                             </>
                         ) :
                             <>
-                                {(this.state.text.length >= this.REVIEW_MIN && (this.state.summary.length >= this.SUMMARY_MIN && this.state.summary.length <= this.SUMMARY_MAX)) ?
+                                {(this.state.text.length >= this.REVIEW_MIN && (this.state.summary.length >= this.SUMMARY_MIN && this.state.summary.length <= this.SUMMARY_MAX) && this.getTextLetterCount(this.state.text) >= this.REVIEW_LETTER_MIN) ?
                                     (<div className="saveButton" onClick={this.handleSubmit}>Save</div>) : ''}
 
 

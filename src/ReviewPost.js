@@ -68,6 +68,7 @@ function ReviewPost(props) {
 
             <Link to={`/profile/${props.allReviewInfo.uid}`} style={{ textDecoration: "none" }}>
                 {/* <div className="reviewUserImg">Image</div> */}
+                {/* doesnt work for uploaded profile pics that are saved in cloud storage */}
                 <img className='reviewUserImg' src={(userInfo) ? userInfo.profilePic : '/'} alt="No img"></img>
             </Link>
 

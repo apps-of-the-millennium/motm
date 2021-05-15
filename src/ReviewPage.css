@@ -118,7 +118,7 @@
 
 
 
-.rp-summaryContainer {
+.rp-textContainer {
     height: auto;
     background: #141e30;
     margin: 0 auto;
@@ -129,7 +129,7 @@
 
 }
 
-.rp-summaryText {
+.rp-text {
     padding: 12px 20px;
     font-size: 18px;
     color: #b1afaf;

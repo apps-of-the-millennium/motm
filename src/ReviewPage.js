@@ -31,8 +31,8 @@ class ReviewPage extends React.Component {
         //design note: reviewId is kind of useless (can't use it as fall back when props do not exist, to try: loading the review page straight from url)
 
         //for changing color of score label based on score
-        this.HIGH_SCORE = 70;
-        this.MID_SCORE = 50;
+        this.HIGH_SCORE = 4;
+        this.MID_SCORE = 3;
 
         this.NUM_SHARDS = 10; //number of shards for distribution counter
 
@@ -52,7 +52,7 @@ class ReviewPage extends React.Component {
             if (user) {
                 this.current_user = user.uid;
                 await this.getBothUserReviewCollections();
-                // this.updateLikeAndDislikeState();
+                //this.updateLikeAndDislikeState();
 
 
                 //=======SessionStorage stuff...noticeably faster than above method but I realized that we HAVE to call getBothUserReviewCollections regardless, so I am removing it for now===
@@ -130,9 +130,9 @@ class ReviewPage extends React.Component {
                         </div>
                     </div>
                     {(containsSpoiler) ? <div style={{ width: '90%', margin: '1rem auto' }} className="warningMessage">Warning: Contains Spoilers</div> : <></>}
-                    <div className="rp-summaryContainer">
-                        {/* {this.props.location.state.allReviewInfo.reviewInfo.summary} */}
-                        <div className='rp-summaryText'>{testText}</div>
+                    <div className="rp-textContainer">
+                        {/* {this.props.location.state.allReviewInfo.reviewInfo.text} */}
+                        <div className='rp-text'>{this.props.location.state.allReviewInfo.reviewInfo.text}</div>
                     </div>
                 </div>
 

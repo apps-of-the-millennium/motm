@@ -30,7 +30,7 @@ const Header = () => {
         {!!user ? (
           <>
             <div className="navigationContainer">
-              <a className="nav" href="/#">Home</a>
+              <Link className="nav" to={`/`}>Home</Link>
               <Link className="nav" to={`/profile/${user.uid}`}>Profile</Link>
               <a href="/#" className='nav'>Filler</a>
               <a href="/#" className='nav'>Filler</a>
@@ -53,7 +53,7 @@ const Header = () => {
         ) : (
             <>
               <div className="navigationContainer">
-                <a className="nav" href="/#">Home</a>
+                <Link className="nav" to={`/`}>Home</Link>
                 <a href="/#" className='nav'>Filler</a>
                 <a href="/#" className='nav'>Filler</a>
               </div>
