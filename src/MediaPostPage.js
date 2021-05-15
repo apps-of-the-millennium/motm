@@ -33,8 +33,7 @@ class MediaPostPage extends React.Component {
             popUp: false,
             listType: "",
 
-            reviews: [],
-            ratingBarValue: 0
+            reviews: []
         };
     }
 
@@ -292,9 +291,9 @@ class MediaPostPage extends React.Component {
                                     <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                     <button className="rateButton">
                                         <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                            onChange={(event, newRating) => { this.setState({ ratingBarValue: newRating }); this.updateRating(newRating, this.props.id) }} />
+                                            onChange={(event, newRating) => this.updateRating(newRating, this.props.id) } />
                                     </button>
-                                    <span className="yourRatingValue">{this.state.ratingBarValue}</span>
+                                    <span className="yourRatingValue">{this.state.currRating}</span>
                                 </div>
                                 <div className="extraInfoContainer">
                                     <div className="extraInfoTitle">Average Rating</div>
