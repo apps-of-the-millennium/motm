@@ -191,7 +191,7 @@ class MediaPostPage extends React.Component {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
-                //this.getRating(this.props.id);
+                this.getRating(this.props.id);
             }
         });
 
