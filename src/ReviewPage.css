@@ -124,6 +124,8 @@
     margin: 0 auto;
     margin-top: 1rem;
     border-radius: 4px;
+    text-overflow: ellipsis;
+    word-break: break-word;
 
 }
 
