@@ -1,0 +1,61 @@
+.selector-container {
+    margin-top: 3rem;
+}
+
+.selector-label{
+    text-align: center;
+    color: #cfd2f5;
+}
+
+.selector-options {
+    display: grid;
+    grid-template-columns: repeat(5, 14rem);
+    justify-content: space-between;
+    column-gap: 1rem;
+    margin-top: 2rem;
+}
+
+
+
+.category {
+    display: grid;
+    grid-template-rows: 40px 60px;
+    align-content: center;
+    justify-content: center;
+    row-gap: 1rem;
+
+    /* background: grey; */
+    width: 14rem;
+    height: 14rem;
+
+    border-radius: 16px;
+    cursor: pointer;
+
+}
+
+.category-label {
+    color: #cfd2f5;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.category-icon {
+    color: #cfd2f5;
+    font-size: 60px;
+    justify-self: center;
+}
+
+.books { background: rgb(144, 61, 221); } 
+.books:hover {background: rgb(119, 16, 216);}
+
+.movies{ background: rgb(226, 57, 127);}
+.movies:hover{ background: rgb(207, 7, 90);}
+
+.shows{ background: rgb(43, 159, 226);}
+.shows:hover{ background: rgb(3, 128, 201);}
+
+.games{ background: rgb(52, 207, 104);}
+.games:hover{ background: rgb(1, 202, 68);}
+
+.music{ background: rgb(226, 147, 43);}
+.music:hover{ background: rgb(221, 127, 5);}
