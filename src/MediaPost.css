@@ -62,7 +62,7 @@
     position: relative;
     bottom: 120%;
     /* left: 110%; */
-    background: #0b2f58;
+    background: #13203b;
     border-radius: 3%;
 
     
@@ -154,9 +154,9 @@
 .tagContainer .tag {
     font-size: small;
     font-weight: 700; 
-    color: rgb(36, 36, 36);
+    color: #cfd2f5;
     width: max-content;
-    background: rgb(105, 187, 241);
+    background: #014d8b;
     text-align: center;
     border-top-left-radius: 10px 50%;
     border-bottom-left-radius: 10px 50%;
@@ -194,6 +194,7 @@
     border-radius: 50%;
 }
 
+
 .invisible {
     background: none;
 	color: inherit;
@@ -201,7 +202,8 @@
 	padding: 0;
 	font: inherit;
 	cursor: pointer;
-	outline: inherit;
+    outline: inherit;
+    
 }
 
 .popUp {

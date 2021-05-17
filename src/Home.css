@@ -14,7 +14,7 @@ E0A890
 }
 
 .homeBg {
-  background-color: #151c2b;
+  background-color: #0a1222;
   height: 200rem; /*will cause extra scroll bar if not big enough */
   overflow: auto;
   /* position: relative; */
@@ -47,21 +47,29 @@ E0A890
 .filters .filter-option {
   width: 12rem;
 }
+.filter-option .filter-value-container{
+  width: inherit;
+  position: relative;
+}
 
 .searchInput {
-  color: rgb(226, 228, 245);
-  height: 2rem;
+  color: #cfd2f5;
+  min-height: 38px;
   width: inherit;
-  background-color: #767a9b;
-  background-image: url('./images/search.svg');
+  background-color: #13203b;
+  /* background-image: url('./images/search.svg');
   background-position: -90% 5px;
   background-repeat: no-repeat;
-  background-size: 70% 70%;
-  padding-left: 2.5rem;
+  background-size: 70% 70%; */
+  padding-left: 40px;
   padding-right: 1rem;
 
   font-size: medium;
   font-weight: 500; 
+
+  border:none;
+  border-radius: 4px;
+  outline: none;
 
 }
 
@@ -83,16 +91,18 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  background:#46485c; 
+  background:#13203b; 
   padding:5px;
   border-radius:4px;
 
-  /* align-self: flex-end; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
 }
 
 .icons-style{
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #cfd2f5;
 }
 .icons-style:hover {color:#6196f7}

@@ -8,7 +8,7 @@ import CategorySelector from './CategorySelector';
 
 import envData from './envData';
 
-import { FaIcons } from 'react-icons/fa'; //make the filters into separate component?
+import { FaIcons, FaSearch } from 'react-icons/fa'; //make the filters into separate component?
 
 class Home extends React.Component {
   constructor(props) {
@@ -27,10 +27,16 @@ class Home extends React.Component {
       isCategorySelectVisible: false
     }
 
-    this.options = [
-      { value: 'action', label: 'Action' },
-      { value: 'comedy', label: 'Comedy' },
-      { value: 'horror', label: 'Horror' }
+    this.options = [ //probably move , 
+      //to use without a group heading remove label: and options: just keep the options objects
+      {
+        label: "Genres",
+        options: [
+          { value: 'action', label: 'Action' },
+          { value: 'comedy', label: 'Comedy' },
+          { value: 'horror', label: 'Horror' }
+        ]
+      }
     ]
   }
 
@@ -54,18 +60,24 @@ class Home extends React.Component {
           <div className="filtersContainer">
             <div className="filters">
               <div className="filter-option">
-                <div style={{ fontWeight: '700', color: `#cfd2f5` }}>Search</div>
-                <input className='searchInput'
-                  onChange={this.handleSearchNameChange}
-                  value={this.state.searchName}
-                  autoComplete="off"
-                  // placeholder="Search..."
-                  type="search"
-                  id="search" />
+                <div style={{ fontWeight: '500', color: `#cfd2f5`, marginBottom: '10px' }}>Search</div>
+                <div className="filter-value-container">
+                  <FaSearch style={{color:'#cfd2f5', position:'absolute', top:"11px", left:"12px"}} />
+                  <input className='searchInput'
+                    onChange={this.handleSearchNameChange}
+                    value={this.state.searchName}
+                    autoComplete="off"
+                    // placeholder="Search..."
+                    type="search"
+                    id="search" />
+                </div>
+
               </div>
 
               <div className="filter-option">
-                <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} />
+                <div className="filter-value-container">
+                  <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} label="Genres" />
+                </div>
               </div>
             </div>
             {this.state.category !== '' &&

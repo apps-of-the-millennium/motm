@@ -33,7 +33,7 @@ function CategorySelector(props) {
     //changes background color if the current category is the same category as the small button
     function myColor(categoryAtPosition) {
         if (currentCategory === categoryAtPosition) {
-          return "#101091";
+          return '#008cff';
         }
         return "";
     }
@@ -73,7 +73,7 @@ function CategorySelector(props) {
     }
     return (
         <div className="selector-popup-container">
-            <h3 className="selector-label left">Current Category</h3>
+            <h4 className="selector-label left">Current Category</h4>
             <div className="selector-options popup">
                 <div style={{background: myColor('books')}} onClick={() => {toggle('books'); props.onClickCategory('books')}} className="category-popup">
                     <ImBook  className="category-icon small" />
