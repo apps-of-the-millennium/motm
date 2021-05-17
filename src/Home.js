@@ -8,6 +8,7 @@ import CategorySelector from './CategorySelector';
 
 import envData from './envData';
 
+import { FaIcons } from 'react-icons/fa'; //make the filters into separate component?
 
 class Home extends React.Component {
   constructor(props) {
@@ -17,10 +18,13 @@ class Home extends React.Component {
       popularPosts: envData.DUMMY_POSTS,
       topPosts: envData.DUMMY_POSTS,
       searchPosts: [],
+
       searchName: '',
       searchTags: [],
 
-      category: ''
+      category: '',
+
+      isCategorySelectVisible: false
     }
 
     this.options = [
@@ -31,7 +35,12 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    // this.retrievePosts();
+    if (typeof (Storage) !== "undefined") {
+      let session_savedCategory = sessionStorage.getItem('savedCategory');
+      if (session_savedCategory) {
+        this.onClickCategory(session_savedCategory);
+      }
+    }
     //this.copyCollection();
     //this.editCollection();
   }
@@ -49,7 +58,7 @@ class Home extends React.Component {
                 <input className='searchInput'
                   onChange={this.handleSearchNameChange}
                   value={this.state.searchName}
-                  autocomplete="off"
+                  autoComplete="off"
                   // placeholder="Search..."
                   type="search"
                   id="search" />
@@ -59,16 +68,29 @@ class Home extends React.Component {
                 <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} />
               </div>
             </div>
-            <div className="extra-filters">Hi</div>
+            {this.state.category !== '' &&
+              <div className="extra-filters">
+                <div className="category-select-button" onClick={this.displayCategorySelector}><FaIcons className="icons-style" />
+                </div>
+                {this.state.isCategorySelectVisible &&
+                  <CategorySelector category={this.state.category} onClickCategory={this.onClickCategory} />
+                }
+              </div>
+            }
+
+
           </div>
 
           {(this.state.category === '') ?
-            <CategorySelector onClickCategory={this.onClickCategory} /> :
+            <CategorySelector category={this.state.category} onClickCategory={this.onClickCategory} /> :
             (searchVal === '' && searchTags.length === 0) ? (
               <div className="home-content">
                 {/* Note: the word trending represents a css subclass, i.e use style from content-section and then any extra css under subclass trending */}
                 <div className="content-section trending">
-                  <h3 className="section-label">TRENDING</h3>
+                  <div className="section-label">
+                    <h3>TRENDING</h3>
+                    <div style={{ fontSize: '12px' }}>view more</div>
+                  </div>
                   <div className="section-posts">
                     {
                       this.state.trendingPosts.map((post) => {
@@ -80,7 +102,10 @@ class Home extends React.Component {
                 </div>
 
                 <div className="content-section popular">
-                  <h3 className="section-label">POPULAR</h3>
+                  <div className="section-label">
+                    <h3>POPULAR</h3>
+                    <div style={{ fontSize: '12px' }}>view more</div>
+                  </div>
                   <div className="section-posts">
                     {
                       this.state.trendingPosts.map((post) => { //TODO: change to popularposts
@@ -92,15 +117,18 @@ class Home extends React.Component {
                 </div>
 
                 <div className="content-section top">
-                  <h3 className="section-label">TOP 10</h3>
-                  <ol className="section-posts">
+                  <div className="section-label">
+                    <h3>TOP 10</h3>
+                    <div style={{ fontSize: '12px' }}>view more</div>
+                  </div>
+                  {/* <ol className="section-posts">
                     {
-                      this.state.trendingPosts.map((post) => { //TODO: change to topPosts
+                      this.state.trendingPosts.map((post) => {
                         let postInfo = post.postInfo;
                         return (<li key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </li>)
                       })
                     }
-                  </ol>
+                  </ol> */}
                 </div>
 
               </div>) : (
@@ -131,7 +159,6 @@ class Home extends React.Component {
   }
 
   handleSearchNameChange = (e) => {
-
     this.setState({ searchName: e.target.value }, () => {
       this.retrieveSearchPosts();
     });
@@ -144,13 +171,24 @@ class Home extends React.Component {
   }
 
   onClickCategory = (categoryType) => {
-    this.setState({ category: categoryType }, () => {
-      this.retrievePosts();
-      this.retrieveSearchPosts(); //in case they tried to type stuff in search before category selection
-    });
+    if (this.state.category !== categoryType) {
+      this.setState({ category: categoryType }, () => {
+        this.retrievePosts();
+        this.retrieveSearchPosts(); //in case they tried to type stuff in search before category selection
+
+        if (typeof (Storage) !== "undefined") {
+          sessionStorage.setItem('savedCategory', this.state.category);
+        }
+
+      });
+    }
   }
 
-  //'posts' -> doc(category) -> collection(bookPosts)
+  displayCategorySelector = () => {
+    this.setState({ isCategorySelectVisible: !this.state.isCategorySelectVisible });
+  }
+
+
   retrieveSearchPosts = () => {
     if (this.state.category !== '') {
 
@@ -190,17 +228,23 @@ class Home extends React.Component {
   }
 
   retrievePosts = () => {
-    firestore.collection('posts').doc(this.state.category).collection('bookPosts').get().then((querySnapshot) => {
-      // const tempDocument = querySnapshot.docs.map(doc => {
-      querySnapshot.docs.forEach(doc => {
-        console.log(doc.id);
-        const newPost = {
-          docId: doc.id,
-          postInfo: doc.data()
-        }
-        this.setState({ trendingPosts: [...this.state.trendingPosts, newPost] }); //...arrayName basically used to append a new item to the original array (aka spread syntax)
+    //todo make separate functions for each post section (i.e trneding popular, top)
+
+    //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
+    this.setState({ trendingPosts: envData.DUMMY_POSTS }, () => {
+      firestore.collection('posts').doc(this.state.category).collection('bookPosts').get().then((querySnapshot) => {
+        // const tempDocument = querySnapshot.docs.map(doc => {
+        querySnapshot.docs.forEach(doc => {
+          console.log(doc.id);
+          const newPost = {
+            docId: doc.id,
+            postInfo: doc.data()
+          }
+          this.setState({ trendingPosts: [...this.state.trendingPosts, newPost] }); //...arrayName basically used to append a new item to the original array (aka spread syntax)
+        });
       });
     });
+
   }
 
   // retrievePopular = () => {

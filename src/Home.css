@@ -28,12 +28,10 @@ E0A890
 }
 
 .filtersContainer {
-  height: 7rem;
+  height: 8rem;
   display: grid;
   grid-template-columns: auto 50px;
   align-items: center;
-
-  /* margin-bottom: 3rem; */
   
 }
 
@@ -41,6 +39,9 @@ E0A890
   display: grid;
   grid-template-columns: repeat(2, 12rem);
   column-gap: 2rem;
+  height: 4rem;
+  align-items: flex-end;
+  
 }
 
 .filters .filter-option {
@@ -70,13 +71,46 @@ input[type="search"]::-webkit-search-cancel-button {
   left: 0.5rem;
 }
 
+.extra-filters {
+  display: flex;
+  height: 4rem;
+  position: relative;
+  justify-content: flex-end;
+  align-items: flex-end;
+  
+}
+.category-select-button {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  background:#46485c; 
+  padding:5px;
+  border-radius:4px;
+
+  /* align-self: flex-end; */
+  position: relative;
+}
+
+.icons-style{
+  font-size: 2rem;
+  color: #cfd2f5;
+}
+.icons-style:hover {color:#6196f7}
+
+
+
 .content-section{
   margin-top: 3rem;
 }
 .section-label{
-  /* change to flex if u wanna put some button far right */
+  display: flex;
+  justify-content: space-between;
+  align-content: flex-end;
+
   color: #cfd2f5;
   margin-bottom: 2rem;
+
+  user-select:none;
 }
 
 .section-posts {
@@ -90,7 +124,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .top{
-  display: table;
+  /* display: table; */
 }
 
 
