@@ -1,0 +1,128 @@
+.selector-container {
+    margin-top: 3rem;
+    user-select: none;
+}
+
+.selector-label{
+    color: #cfd2f5;
+    user-select: none;
+    font-weight: 500;
+}
+.left {
+    text-align: left;
+}
+.center{
+    text-align: center;
+}
+
+.selector-options {
+    display: grid;
+}
+.page {
+    grid-template-columns: repeat(5, 14rem);
+    margin-top: 2rem;
+    column-gap: 1rem;
+    justify-content: space-between;
+}
+.popup{
+    grid-template-columns: repeat(5, 3rem);
+    margin-top: 6px;
+    column-gap: 10px;
+}
+
+
+
+.category {
+    display: grid;
+    grid-template-rows: 40px 60px;
+    align-content: center;
+    justify-content: center;
+    row-gap: 1rem;
+
+    /* background: rgb(43, 104, 155); */
+    width: 14rem;
+    height: 14rem;
+
+    border-radius: 16px;
+    cursor: pointer;
+
+}
+
+.category-popup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    width: 3rem;
+    height: 3rem;
+    background: rgb(1, 77, 139);
+    cursor: pointer;
+
+    position: relative;
+}
+.hover-info{
+    /*https://stackoverflow.com/questions/3331353/transitions-on-the-css-display-property for info on delaying display */
+    display:none;
+    z-index: 100;
+    position: absolute;
+    top: 110%;
+    background: rgb(17, 17, 17);
+    color: #cfd2f5;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 4px 2px 4px;
+    border-radius: 4px;
+    user-select: none;
+}
+.category-popup:hover .hover-info {display: block; }
+
+.category-label {
+    color: #cfd2f5;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.category-icon {
+    color: #cfd2f5;
+    justify-self: center;
+}
+.big{
+    font-size: 60px;
+}
+.small{
+    font-size: 25px;
+}
+
+.books { background: rgb(144, 61, 221); } 
+.books:hover {background: rgb(119, 16, 216);}
+
+.movies{ background: rgb(226, 57, 127);}
+.movies:hover{ background: rgb(207, 7, 90);}
+
+.shows{ background: rgb(43, 159, 226);}
+.shows:hover{ background: rgb(3, 128, 201);}
+
+.games{ background: rgb(52, 207, 104);}
+.games:hover{ background: rgb(1, 202, 68);}
+
+.music{ background: rgb(226, 147, 43);}
+.music:hover{ background: rgb(221, 127, 5);}
+
+
+
+
+
+.selector-popup-container {
+    width: 30rem;
+    height: 5.5rem;
+    position: absolute;
+    background: #13203b;
+    z-index: 100;
+
+    top: 100%;
+    margin-top: 10px;
+
+    padding: 1rem;
+    border-radius: 4px;
+
+}

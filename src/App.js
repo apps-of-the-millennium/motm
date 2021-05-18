@@ -10,6 +10,7 @@ import ErrorPage from './ErrorPage';
 import { firestore } from "./firebase";
 import ReviewEditPage from './ReviewEditPage';
 import ReviewPage from './ReviewPage';
+import BrowsePage from './BrowsePage'
 
 import ScrollToTop from './ScrollToTop';
 
@@ -55,6 +56,10 @@ class App extends Component {
                     id={props.match.params.id} {...props} />
                 )}
               />
+              <Route
+                path="/browse"
+                render={() =>
+                  <BrowsePage/> } />
               <Route path="/" render={() => <ErrorPage /> } />
             </Switch>
             <Footer />

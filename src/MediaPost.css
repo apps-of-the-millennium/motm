@@ -58,12 +58,12 @@
 .mediaContainer .mediaPostInfoBox {
     width: 130%;
     height: 45%;
-    margin: 0 10%;
+    
     position: relative;
     bottom: 120%;
-    /* left: 110%; */
-    background: #0b2f58;
-    border-radius: 3%;
+    left: 105%;
+    background: #13203b;
+    border-radius: 4px;
 
     
     display: grid;
@@ -84,22 +84,17 @@
     grid-area: rating;
     /* color: rgb(161, 28, 28); */
     justify-self: center;
-    
+    display: flex;
 }
 
 .ratings .star {
     /* grid-area: ratingIcon; */
     color: yellow;
-    margin-top: 18%;
-    float: left;
+    margin-top: 25%;
 }
 
 .ratings .ratingValue {
     color: #75bdf8;
-    float: left;
-    margin-left: auto;
-    
-
 }
 
 .mediaPostInfoBox .releaseDate {
@@ -154,18 +149,15 @@
 .tagContainer .tag {
     font-size: small;
     font-weight: 700; 
-    color: rgb(36, 36, 36);
+    color: #cfd2f5;
     width: max-content;
-    background: rgb(105, 187, 241);
+    background: #014d8b;
     text-align: center;
-    border-top-left-radius: 10px 50%;
-    border-bottom-left-radius: 10px 50%;
-    border-top-right-radius: 10px 50%;
-    border-bottom-right-radius: 10px 50%;
-    padding-left: 3%;
-    padding-right: 3%;
-    margin-right: 2%;
-    margin-bottom: 1rem;
+    border-radius: 10px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-bottom: 2px;
+    margin-right: 8px;
 }
 
 .mediaContainer .mediaPostButtons {
@@ -194,6 +186,7 @@
     border-radius: 50%;
 }
 
+
 .invisible {
     background: none;
 	color: inherit;
@@ -201,7 +194,8 @@
 	padding: 0;
 	font: inherit;
 	cursor: pointer;
-	outline: inherit;
+    outline: inherit;
+    
 }
 
 .popUp {
@@ -215,10 +209,7 @@
     width: max-content;
     background: rgb(134, 255, 158);
     text-align: center;
-    border-top-left-radius: 10px 50%;
-    border-bottom-left-radius: 10px 50%;
-    border-top-right-radius: 10px 50%;
-    border-bottom-right-radius: 10px 50%;
+    border-radius: 10px;
     padding-left: 3%;
     padding-right: 3%;
     /* Can add animation later */
@@ -342,10 +333,7 @@
     width: max-content;
     background: #69bbf1;
     text-align: center;
-    border-top-left-radius: 10px 50%;
-    border-bottom-left-radius: 10px 50%;
-    border-top-right-radius: 10px 50%;
-    border-bottom-right-radius: 10px 50%;
+    border-radius: 10px;
     padding-left: 2%;
     padding-right: 2%;
     margin-right: 1%;
