@@ -3,29 +3,6 @@
 import React from 'react';
 import Select, { components } from "react-select";
 
-//TODO: attempt to use hooks, requires more research on how
-// function CustomSearch() {
-//     // const [newState, setNewState] = useState([]);
-
-//     return (
-//         <div>
-//             <span style={{ fontWeight: '700', color: `#cfd2f5`, display: 'inline-block' }}>Tag</span>
-//             <Select
-//                 className="searchTag"
-//                 options={this.options}
-//                 styles={customSelectStyle}
-//                 isMulti={true}
-//                 onChange={this.handleSearchTagChange}
-//                 hideSelectedOptions={false}
-//                 components={{
-//                     ValueContainer
-//                 }}
-//             />
-//         </div>
-//     );
-// }
-
-
 //Has custom styling for each component of the Select bar...requires more effort and research
 const customSelectStyle = {
   option: (provided, state) => ({
@@ -82,10 +59,6 @@ const customSelectStyle = {
     ...provided,
     color: '#cfd2f5',
   }),
-  
-  
-  
-
 }
 
 const ValueContainer = ({ children, getValue, ...props }) => { //not fit for mobile, elements will be expanded veritcally

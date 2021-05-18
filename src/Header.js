@@ -35,7 +35,7 @@ const Header = () => {
               <a href="/#" className='nav'>Filler</a>
               <a href="/#" className='nav'>Filler</a>
               <a href="/#" className='nav'>Filler</a>
-              <a href="/#" className='nav'>Filler</a>
+              <Link className="nav" to={`/browse`}>Browse</Link>
             </div>
 
             <div className="userContainer">

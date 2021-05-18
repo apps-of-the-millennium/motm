@@ -38,6 +38,8 @@ class Home extends React.Component {
         ]
       }
     ]
+
+    this.categoryPostString = '';
   }
 
   componentDidMount() {
@@ -62,7 +64,7 @@ class Home extends React.Component {
               <div className="filter-option">
                 <div style={{ fontWeight: '500', color: `#cfd2f5`, marginBottom: '10px' }}>Search</div>
                 <div className="filter-value-container">
-                  <FaSearch style={{color:'#cfd2f5', position:'absolute', top:"11px", left:"12px"}} />
+                  <FaSearch style={{ color: '#cfd2f5', position: 'absolute', top: "11px", left: "12px" }} />
                   <input className='searchInput'
                     onChange={this.handleSearchNameChange}
                     value={this.state.searchName}
@@ -100,7 +102,7 @@ class Home extends React.Component {
                 {/* Note: the word trending represents a css subclass, i.e use style from content-section and then any extra css under subclass trending */}
                 <div className="content-section trending">
                   <div className="section-label">
-                    <h3>TRENDING</h3>
+                    TRENDING
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
                   <div className="section-posts">
@@ -115,7 +117,7 @@ class Home extends React.Component {
 
                 <div className="content-section popular">
                   <div className="section-label">
-                    <h3>POPULAR</h3>
+                    POPULAR
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
                   <div className="section-posts">
@@ -130,7 +132,7 @@ class Home extends React.Component {
 
                 <div className="content-section top">
                   <div className="section-label">
-                    <h3>TOP 10</h3>
+                    TOP 10
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
                   {/* <ol className="section-posts">
@@ -185,6 +187,7 @@ class Home extends React.Component {
   onClickCategory = (categoryType) => {
     if (this.state.category !== categoryType) {
       this.setState({ category: categoryType }, () => {
+        this.categoryPostString = this.state.category.slice(0, -1) + 'Posts';
         this.retrievePosts();
         this.retrieveSearchPosts(); //in case they tried to type stuff in search before category selection
 
@@ -205,15 +208,17 @@ class Home extends React.Component {
     if (this.state.category !== '') {
 
       this.setState({ searchPosts: [] }, () => {
-        let searchValue = this.state.searchName.toString().toLowerCase().trim();
-        //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with 'bookPosts'
+
+        //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with this.categoryPostString
 
         //construct the ref
         //console.log(this.state.searchTags);
-        let ref = firestore.collection('posts').doc(this.state.category).collection('bookPosts');
+        let ref = firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString);
 
-        if (this.state.searchName)
+        if (this.state.searchName !== '') {
+          let searchValue = this.state.searchName.toString().toLowerCase().trim();
           ref = ref.where("titleSubStrings", "array-contains", searchValue)
+        }
 
         if (this.state.searchTags) {
           this.state.searchTags.forEach((tag) => {
@@ -244,7 +249,7 @@ class Home extends React.Component {
 
     //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
     this.setState({ trendingPosts: envData.DUMMY_POSTS }, () => {
-      firestore.collection('posts').doc(this.state.category).collection('bookPosts').get().then((querySnapshot) => {
+      firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).get().then((querySnapshot) => {
         // const tempDocument = querySnapshot.docs.map(doc => {
         querySnapshot.docs.forEach(doc => {
           console.log(doc.id);
@@ -270,7 +275,7 @@ class Home extends React.Component {
     firestore.collection("posts").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let allSubStrings = envData.getAllSubstrings(doc.data().title, 2);
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(doc.id).set({
+        firestore.collection('posts').doc('books').collection(this.categoryPostString).doc(doc.id).set({
           ...doc.data(), ...{ titleSubStrings: allSubStrings }
         });
 
@@ -283,10 +288,10 @@ class Home extends React.Component {
   }
 
   editCollection = () => {
-    firestore.collection('posts').doc('books').collection('bookPosts').get().then((querySnapshot) => {
+    firestore.collection('posts').doc('books').collection(this.categoryPostString).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let allSubStrings = envData.getAllSubstrings(doc.data().title.toLowerCase(), 2);
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(doc.id).set({
+        firestore.collection('posts').doc('books').collection(this.categoryPostString).doc(doc.id).set({
           ...doc.data(), ...{ titleSubStrings: allSubStrings }
         });
 

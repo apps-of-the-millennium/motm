@@ -119,7 +119,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                 <div className="mediaPost" >
                                     {/* picture of media*/}
-                                    <img className="mediaPostImg" src={this.state.mediaPostPic} ></img>
+                                    <img className="mediaPostImg" src={this.state.mediaPostPic} alt=""></img>
                                     {/* title */}
                                     <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
                                 </div>

@@ -26,7 +26,7 @@
 }
 .popup{
     grid-template-columns: repeat(5, 3rem);
-    margin-top: 5px;
+    margin-top: 6px;
     column-gap: 10px;
 }
 
@@ -57,7 +57,24 @@
     height: 3rem;
     background: rgb(1, 77, 139);
     cursor: pointer;
+
+    position: relative;
 }
+.hover-info{
+    /*https://stackoverflow.com/questions/3331353/transitions-on-the-css-display-property for info on delaying display */
+    display:none;
+    z-index: 100;
+    position: absolute;
+    top: 110%;
+    background: rgb(17, 17, 17);
+    color: #cfd2f5;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 4px 2px 4px;
+    border-radius: 4px;
+    user-select: none;
+}
+.category-popup:hover .hover-info {display: block; }
 
 .category-label {
     color: #cfd2f5;
@@ -97,7 +114,7 @@
 
 .selector-popup-container {
     width: 30rem;
-    /* height: 15rem; */
+    height: 5.5rem;
     position: absolute;
     background: #13203b;
     z-index: 100;

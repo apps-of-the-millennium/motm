@@ -14,7 +14,7 @@ E0A890
 }
 
 .homeBg {
-  background-color: #0a1222;
+  background-color: #081022;
   height: 200rem; /*will cause extra scroll bar if not big enough */
   overflow: auto;
   /* position: relative; */
@@ -112,15 +112,19 @@ input[type="search"]::-webkit-search-cancel-button {
 .content-section{
   margin-top: 3rem;
 }
+
+
 .section-label{
   display: flex;
   justify-content: space-between;
-  align-content: flex-end;
+  align-items: flex-end;
 
   color: #cfd2f5;
   margin-bottom: 2rem;
 
   user-select:none;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .section-posts {
