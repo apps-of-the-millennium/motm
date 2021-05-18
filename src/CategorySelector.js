@@ -1,6 +1,7 @@
 
 import React from 'react';
 import './CategorySelector.css';
+import { useState } from 'react';
 
 import { ImBook } from 'react-icons/im';
 import { MdLocalMovies } from 'react-icons/md';
