@@ -4,18 +4,9 @@ import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import envData from './envData';
 import MediaPost from './MediaPost';
-
-// const [favourites, setFavourites] = useState([]);
-
-// useEffect(() => {
-//     firestore.collection('users').doc(user).onSnapshot(snapshot => {
-//       //every time favourites is changed
-//       setFavourites(snapshot.docs.map(doc => ({
-//         docId: doc.id,
-//         post: doc.data()
-//       })));
-//     })
-// }, []);
+import { RiUserFollowFill, RiUserUnfollowFill } from 'react-icons/ri';
+import FollowList from './FollowList';
+import PropTypes from 'prop-types';
 
 // const changeUserName = async (userId, name) => {
 //     //check later for bad input
@@ -24,9 +15,17 @@ import MediaPost from './MediaPost';
 //     })
 // }
 
+//might not need this not sure if it's good practice though
+FollowList.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+};
+
 class ProfilePage extends React.Component { //({ user, match }) => {
     constructor(props) {
         super(props);
+        this.handleClose = this.handleClose.bind(this);
+        this.updateList = this.updateList.bind(this);
         this.state = {
             userInfo: [],
             isLoaded: false,
@@ -35,28 +34,82 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             laterList: [],
             completedList: [],
             usersProfile: false,
-            // userInfo: {
-            //     'bio':'my bio',
-            //     'favourites': [],
-            //     'userName' : 'My USERNAME',
-            //     'profilePic' : '',
-            // },
+            followers: [],
+            following: [],
+            followingCurr: false,
+            userId: '',
+            openFollowers: false,
+            openFollowing: false
         };
     }
 
-    async setList(listType) {
+    handleOpenFollow(followType) {
+        if(followType === 'followers') {
+            this.setState({ openFollowers: true });
+        } else {
+            this.setState({ openFollowing: true });
+        }
+    }
+    
+    closePopup() {
+        this.setState({ openFollowers: false, openFollowing: false });
+    }
+
+    handleClose() {
+        this.setState({ openFollowers: false, openFollowing: false });            
+    }
+
+    //refactor later to prevent spamming maybe a timeout or only run upon a componentDidUpdate
+    async updateFollowing(setFollowing) {
+        let currUser = this.state.userId;
+        let currProfile = this.props.user;
+        //in case of signed out user
+        if(currUser) {
+            // if we are following, merge else remove
+            if(setFollowing) {
+                //update the current users following list
+                let dbRef = firestore.collection('users').doc(currUser).collection('following');
+                dbRef.doc(currProfile).set({
+                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                }).then(() => {
+                    console.log("Following Document written with id: ", currUser);
+                })
+                //update the current profile we are on followers list
+                dbRef = firestore.collection('users').doc(currProfile).collection('followers');
+                dbRef.doc(currUser).set({
+                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+                }).then(() => {
+                    console.log("Following Document written with id: ", currUser);
+                })
+            } else {
+                //delete from users following list
+                let dbRef = firestore.collection('users').doc(currUser).collection('following');
+                dbRef.doc(currProfile).delete()
+                .then(() => {
+                    console.log("Following Document deleted with id: ", currProfile);
+                })
+                //delete from the current profile we are on followers list
+                dbRef = firestore.collection('users').doc(currProfile).collection('followers');
+                dbRef.doc(currUser).delete()
+                .then(() => {
+                    console.log("Following Document deleted with id: ", currProfile);
+                })
+            }
+        }
+        //set that we are currently following (for UI of the button)
+        this.setState({ followingCurr: setFollowing });
+    }
+
+    updateList(listType) {
         var lists = firestore.collection('users').doc(this.props.user).collection('lists');
         lists.doc(listType).get().then( (doc) => {
             if(doc.exists) {
-                this.setState({ [listType]: doc.data()[listType] })
+                this.setState({ [listType]: doc.data()[listType] });
             }
         })
     }
 
-    updateList = (listType) => {
-        this.setList(listType);
-    }
-
+    //will refactor as a global picture retrieval as it is needed in several pages
     async getProfilePicture(url) {
         //check if it is a url or path to firebase storage
         if (url.charAt(0) === '/') {
@@ -74,34 +127,79 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
+        //may want to refactor everything into smaller separate functions
+        firebase.auth().onAuthStateChanged((user) => {
+            if(this.props.user === user.uid) {
+                this.setState({ usersProfile: true });
+            }
+            this.setState({ userId: user.uid, isLoaded: true });
+        })
+        
         var lists = firestore.collection('users').doc(this.props.user).collection('lists');
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
+            //unsure if doc.exists needs to be checked all the time
             if(doc.exists) {
                 this.setState({ userInfo: doc.data() });
                 this.getProfilePicture(doc.data()['profilePic']);  
             }
-            //refactor these functions, same functions diff variable
-            lists.doc('laterList').get().then( (doc) => {
-                if(doc.exists) {
-                    this.setState({ laterList: doc.data()['laterList'] });
-                }
-            });
-            lists.doc('completedList').get().then( (doc) => {
-                if(doc.exists) {
-                    this.setState({ completedList: doc.data()['completedList'] })
-                }
-            })
-            //check if profile page is currently signed in users page
-            //may need refactoring as it doesn't work if you put this function above some others
-            if(this.props.user === firebase.auth().currentUser.uid) {
-                this.setState({usersProfile: true});
-            }
-            lists.doc('favouriteList').get().then( (doc) => {
-                if(doc.exists) {
-                    this.setState({ favouriteList: doc.data()['favouriteList'], isLoaded: true  })
-                }
-            })
         })
+
+        //may want to add a limit for this for scroll version
+        var followers = firestore.collection('users').doc(this.props.user).collection('followers').orderBy('timeStamp');
+        let followersArr = [];
+        followers.get().then((followers) => {
+            followers.forEach((follower) => {
+                followersArr.push(follower.id);
+            })
+            //if current logged in user is following the user set so icon changes
+            if(followersArr.includes(this.state.userId)) {
+                this.setState({ followingCurr: true });
+            }
+            this.setState({ followers: followersArr });
+        })
+
+        var following = firestore.collection('users').doc(this.props.user).collection('following').orderBy('timeStamp');
+        let followingArr = [];
+        following.get().then((following) => {
+            following.forEach((follow) => {
+                console.log(follow);
+                followingArr.push(follow.id);
+            })
+            this.setState({ following: followingArr });
+        })
+
+        //refactor these functions, same functions diff variable
+        lists.doc('laterList').get().then( (doc) => {
+            if(doc.exists) {
+                this.setState({ laterList: doc.data()['laterList'] });
+            }
+        })
+            
+        lists.doc('completedList').get().then( (doc) => {
+            if(doc.exists) {
+                this.setState({ completedList: doc.data()['completedList'] });
+            }
+        })
+        
+        lists.doc('favouriteList').get().then( (doc) => {
+            if(doc.exists) {
+                this.setState({ favouriteList: doc.data()['favouriteList'] });
+            }
+        })
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.user !== prevProps.user) {
+            this.handleClose();
+            this.componentDidMount();
+            //in case auth did not change but you changed from your page to elsewhere, change usersProfile
+            //contemplating changing the url for personal profile so that it can make editing your profile easier
+            if(this.props.user === firebase.auth().currentUser.uid) {
+                this.setState({ usersProfile: true });
+            } else {
+                this.setState({ usersProfile: false });
+            }
+        }
     }
 
     render() {
@@ -110,8 +208,26 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             return (
                 <>
                 <div className="profile">
+                    <FollowList open={this.state.openFollowers} followList={this.state.followers} onClose={this.handleClose} />
+                    <FollowList open={this.state.openFollowing} followList={this.state.following} onClose={this.handleClose} />
                     <img className="profilePic" src={this.state.profilePic} alt="profilePic" />
                     <h1 className="userName">{this.state.userInfo['userName']}</h1>
+                    <div className="follows">
+                        {
+                            // if it is your own profile do nothing otherwise show the follow or unfollow button
+                            (this.state.usersProfile) ?
+                                <> </> : (this.state.followingCurr) ?
+                                <button className="followBtn" onClick={ () => this.updateFollowing(false) }><RiUserUnfollowFill style={{fontSize: '2em'}} /></button> : <button className="followBtn" onClick={ () => this.updateFollowing(true) } ><RiUserFollowFill style={{fontSize: '2em'}} /></button> 
+                        }
+                        <div className="followText">
+                            <h3><button className="invisible" onClick={ () => this.handleOpenFollow('followers') }>{this.state.followers.length}</button></h3>
+                            <h3><button className="invisible" onClick={ () => this.handleOpenFollow('following') }>{this.state.following.length}</button></h3>
+                        </div>
+                        <div className="followText">
+                            <h3>Followers</h3>
+                            <h3>Following</h3>
+                        </div>
+                    </div>
                     {/* Bio/Info */}
                     <p className="bio">{this.state.userInfo['bio']}</p>
                     {/* Favourites List */}
