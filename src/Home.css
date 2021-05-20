@@ -39,7 +39,7 @@ E0A890
   display: grid;
   grid-template-columns: repeat(2, 12rem);
   column-gap: 2rem;
-  height: 4rem;
+  height: 5rem;
   align-items: flex-end;
   
 }
@@ -81,7 +81,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .extra-filters {
   display: flex;
-  height: 4rem;
+  height: 5rem;
   position: relative;
   justify-content: flex-end;
   align-items: flex-end;
