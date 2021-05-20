@@ -205,13 +205,12 @@
     transform: translateX(-50%);
     font-size: small;
     font-weight: 700; 
-    color: rgb(192, 192, 192);
+    color: rgb(1, 189, 10);
     width: max-content;
-    background: rgb(134, 255, 158);
+    background: rgb(212, 245, 218);
     text-align: center;
-    border-radius: 10px;
-    padding-left: 3%;
-    padding-right: 3%;
+    border-radius: 4px;
+    padding: 10px 60px 10px 20px;
     /* Can add animation later */
 }
 

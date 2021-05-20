@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { AiFillStar, AiFillHeart, AiFillClockCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
+import {IoIosCheckmarkCircle} from 'react-icons/io';
 
 class MediaPost extends React.Component { //({ user, match }) => {
     constructor(props) {
@@ -114,7 +115,10 @@ class MediaPost extends React.Component { //({ user, match }) => {
             if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
                 return (
                     <>
-                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.popUpMessage}</div> : <></>}
+                        {(this.state.popUp) && <div className="popUp">
+                            {this.state.mediaInfo['title']} was added to {this.state.popUpMessage}
+                            <IoIosCheckmarkCircle style={{fontSize:'16px', position:'absolute', right:'15px', top:'11px'}}/>
+                            </div>}
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
                             <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                 <div className="mediaPost" >
