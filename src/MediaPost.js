@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { AiFillStar, AiFillHeart, AiFillClockCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
-import {IoIosCheckmarkCircle} from 'react-icons/io';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 class MediaPost extends React.Component { //({ user, match }) => {
     constructor(props) {
@@ -117,8 +117,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     <>
                         {(this.state.popUp) && <div className="popUp">
                             {this.state.mediaInfo['title']} was added to {this.state.popUpMessage}
-                            <IoIosCheckmarkCircle style={{fontSize:'16px', position:'absolute', right:'15px', top:'11px'}}/>
-                            </div>}
+                            <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
+                        </div>}
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
                             <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                 <div className="mediaPost" >
@@ -133,7 +133,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                     <div className="mediaPostDelete">
                                         <button className="invisible" onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><AiFillCloseCircle className="icon" color="#ff5464" /></button>
                                     </div> :
-                                    
+
                                     <>
 
                                         <div className="mediaPostInfoBox">

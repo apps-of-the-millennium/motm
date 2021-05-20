@@ -8,6 +8,7 @@ import randomColor from 'randomcolor';
 import ReviewPost from './ReviewPost';
 import Rating from '@material-ui/lab/Rating';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import {IoIosCheckmarkCircle} from 'react-icons/io';
 
 import { AiFillHeart } from 'react-icons/ai';
 // import { AiFillStar } from 'react-icons/ai';
@@ -250,7 +251,10 @@ class MediaPostPage extends React.Component {
                 return (
 
                     <div className="container">
-                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
+                        {(this.state.popUp) && <div className="popUp">
+                            {this.state.mediaInfo['title']} was added to {this.state.listType}
+                            <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
+                        </div>}
                         {/* Cover Image */}
                         <div className="coverContainer"></div>
 
@@ -291,7 +295,7 @@ class MediaPostPage extends React.Component {
                                     <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                     <button className="rateButton">
                                         <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                            onChange={(event, newRating) => this.updateRating(newRating, this.props.id) } />
+                                            onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
                                     </button>
                                     <span className="yourRatingValue">{this.state.currRating}</span>
                                 </div>
