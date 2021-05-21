@@ -138,12 +138,13 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
                                         <div className="mediaPostInfoBox">
                                             {/* basic info depends on category temp will be actors*/}
-                                            <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-                                            <div className="ratings">
-                                                <div className="star"><AiFillStar /></div>
-                                                <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+                                            <div className="infobox-header">
+                                                <div className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+                                                <div className="ratings"><AiFillStar className="star" /> {(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
+
                                             </div>
-                                            <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
+                                            <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+
                                             <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
                                             {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
                                             <div className="tagContainer">

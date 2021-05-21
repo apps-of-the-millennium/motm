@@ -3,20 +3,34 @@
     grid-template-columns: 30% 40% 30%;
     grid-template-rows: auto;
     grid-template-areas: 
-    ". navigation ."; 
+    "left navigation right"; 
     height: 4rem;
     background: #121e38;
 }
 
-.navigationContainer {
+
+
+.footer-container {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    grid-area: navigation;
     background: #121e38;
     height: 4rem;
 }
+.center {
+    grid-area: navigation;
+}
+.left{
+    grid-area: left;
+}
 
+
+.nav{
+    color:#9da0b9;
+    font-weight: 700;
+    font-size: small;
+    text-decoration: none;
+}
 .nav:hover {
     color:#d6d9fd;
 }

@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+
+/*has global variables and more: ALSO ACTS AS DEFAULT SCHEME COLORS/VALUES WHEN A SPECIFIC THEME IS NOT DEFINED*/
+:root {
+  --color-background: #042a81;
+}
+
+/*defines a class and lets you override global variables with any colors or numbers etc u want */
+.site-theme-dark {
+  --color-background: #081022;
+}

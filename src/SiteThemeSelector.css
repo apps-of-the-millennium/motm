@@ -1,0 +1,26 @@
+.site-theme-container{
+    display: grid;
+    grid-template-columns: max-content repeat(2, 23px);
+    align-items: center;
+    column-gap: 12px;
+}
+
+.theme-select-label {
+    color: #9da0b9;
+    font-weight: 700;
+    font-size: 16px;
+    padding-right: 6x;
+}
+.theme-button {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 3px solid #9da0b9;
+    cursor: pointer;
+}
+.theme-button.default {
+    background: whitesmoke;
+}
+.theme-button.dark {
+    background: #081022;
+}

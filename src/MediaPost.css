@@ -1,24 +1,16 @@
 .mediaContainer {
     width: 10rem;
     height: 18rem;
+    position: relative;
     /* background: cyan; */
     
 }
 
 .mediaPost {
-    width: 100%;
-    height: 100%;
-    /* display: grid; */
-    /* place-items: center; */
-    /* max-width: 40rem;
-    max-height: 30rem;
-    min-width: 10rem;
-    min-height: 15rem; */
-    /* background-color: white; */
-    /* border: 1px solid lightgray; */
-    /* border-radius: 15%; */
-    margin-bottom: 4rem;
-
+    width: 10rem;
+    height: 18rem;
+    display: grid;
+    grid-template-rows: max-content auto;
 }
 
 .mediaContainer:hover .mediaPostTitle {
@@ -29,14 +21,6 @@
     width: 10rem; /*100% buggy for posts without image */
     height: 15rem; /*100% bit buggy for posts without image*/
 
-    /* height: fit-content;
-    width: fit-content;
-    object-fit: scale-down; */
-    /* max-height:100%;
-    max-width:100%; */
-    /* border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray; */
-    
     background: black;
     float: left;
     display: block;
@@ -56,59 +40,40 @@
 }
 
 .mediaContainer .mediaPostInfoBox {
-    width: 130%;
-    height: 45%;
-    
+    width: 150%;
+    height: 40%;
     position: relative;
-    bottom: 120%;
+    bottom: 95%;
     left: 105%;
     background: #13203b;
     border-radius: 4px;
+    z-index: 100;
+    padding: 16px;
+}
 
-    
+.infobox-header {
     display: grid;
-    grid-template-columns: 20% 20% 20% 20% 20%;
-    grid-template-rows: auto;
-    grid-template-areas: 
-    "header header header rating rating"
-    "header header header . ."
-    "author author author . ."
-    "type type type . ."
-    "type type type . ."
-    "tags tags tags tags tags";
-
-    
+    grid-template-columns: auto 60px;
 }
 
-.mediaPostInfoBox .ratings {
-    grid-area: rating;
-    /* color: rgb(161, 28, 28); */
-    justify-self: center;
-    display: flex;
+.ratings {
+    display:flex;
 }
-
-.ratings .star {
-    /* grid-area: ratingIcon; */
+.star {
     color: yellow;
-    margin-top: 25%;
+    align-self: center;
 }
-
-.ratings .ratingValue {
+.ratings {
     color: #75bdf8;
 }
 
 .mediaPostInfoBox .releaseDate {
-    grid-area: header;
-    margin-left: 10px;
     color:#cfd2f5;
-    font-size: medium;
-    align-self: center;
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.mediaPostInfoBox .mediaPostCategory {
-    grid-area: type;
-    margin-left: 10px;
-    align-self: start;
+.mediaPostCategory {
     font-size: medium;
     font-weight: 500;
     color: rgb(215, 218, 253);
@@ -116,16 +81,15 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    margin-top: 6px;
     
 }
 
 .mediaPostInfoBox .author {
-    grid-area: author;
-    margin-left: 10px;
     color:rgb(241, 170, 76);
     font-weight: 600;
     font-size: smaller;
-    align-self: end;
 
     white-space: nowrap;
     overflow: hidden;
@@ -135,15 +99,13 @@
 
 .mediaPostInfoBox .tagContainer {
     display: flex;
-    grid-area: tags;
-    margin-left: 10px;
-    margin-bottom: 10px;
     align-items: flex-start;
-
 
     flex-wrap: wrap;
     height: 1.2rem;
     overflow: hidden;
+
+    margin-top: 20px;
 }
 
 .tagContainer .tag {
@@ -160,14 +122,15 @@
     margin-right: 8px;
 }
 
-.mediaContainer .mediaPostButtons {
-    position: relative;
-    bottom: 100%;
+.mediaPostButtons {
+    position: absolute;
+    top: 70%;
+    width: 100%;
+
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
-    
 }
 
 .mediaPostDelete {

@@ -63,7 +63,7 @@ function CategorySelector(props) {
     }
     return (
         <div className="selector-popup-container">
-            <h4 className="selector-label left">Current Category</h4>
+            <div className="selector-label left">Current Category</div>
             <div className="selector-options popup">
                 <div style={{ background: myColor('books') }} onClick={() => { toggle('books'); props.onClickCategory('books') }} className="category-popup">
                     <div className='hover-info'>Books</div>

@@ -43,6 +43,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    
     if (typeof (Storage) !== "undefined") {
       let session_savedCategory = sessionStorage.getItem('savedCategory');
       if (session_savedCategory) {

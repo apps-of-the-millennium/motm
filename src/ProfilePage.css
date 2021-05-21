@@ -3,7 +3,8 @@ body {
 }
 
 .profile {
-    background: black;
+    background: var(--color-background);
+    /* background: black; */
     color: white;
     display: flex;
     flex-flow: column wrap;
