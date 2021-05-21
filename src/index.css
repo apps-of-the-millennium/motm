@@ -17,10 +17,18 @@ code {
 
 /*has global variables and more: ALSO ACTS AS DEFAULT SCHEME COLORS/VALUES WHEN A SPECIFIC THEME IS NOT DEFINED*/
 :root {
-  --color-background: #042a81;
+  --color-background: #ececec;
+  --color-text: #000000;
+  --color-text-hover: #6e6e6e;
+  --color-light-background: #ffffff;
+  --color-light-background-hover: #c2c0c0;
 }
 
 /*defines a class and lets you override global variables with any colors or numbers etc u want */
 .site-theme-dark {
   --color-background: #081022;
+  --color-text: #aeb1cf;
+  --color-text-hover: #ced1e9;
+  --color-light-background: #13203b;
+  --color-light-background-hover: #233968;
 }

@@ -90,17 +90,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
         }
     }
 
-    onMouseEnterHandler = () => {
-        this.setState({
-            hover: true
-        });
-    }
-    onMouseLeaveHandler = () => {
-        this.setState({
-            hover: false
-        });
-    }
-
     componentDidMount() {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
@@ -119,48 +108,53 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             {this.state.mediaInfo['title']} was added to {this.state.popUpMessage}
                             <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
                         </div>}
-                        <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                <div className="mediaPost" >
+                        <div className="mediaContainer">
+
+                            <div className="mediaPost">
+                                {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
+                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                     {/* picture of media*/}
                                     <img className="mediaPostImg" src={this.state.mediaPostPic} alt=""></img>
+                                </Link>
+
+                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                     {/* title */}
-                                    <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+                                    <div className="mediaPostTitle">{this.state.mediaInfo['title']}</div>
+                                </Link>
+
+                                <div className="mediaPostButtons">
+                                    <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
+                                    <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
                                 </div>
-                            </Link>
-                            {(this.state.hover) ?
-                                (this.props.usersProfile) ?
-                                    <div className="mediaPostDelete">
-                                        <button className="invisible" onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><AiFillCloseCircle className="icon" color="#ff5464" /></button>
-                                    </div> :
+                            </div>
 
-                                    <>
 
-                                        <div className="mediaPostInfoBox">
-                                            {/* basic info depends on category temp will be actors*/}
-                                            <div className="infobox-header">
-                                                <div className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
-                                                <div className="ratings"><AiFillStar className="star" /> {(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
+                            {(this.props.usersProfile) ?
+                                <div className="mediaPostDelete">
+                                    <button className="invisible" onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><AiFillCloseCircle className="icon" color="#ff5464" /></button>
+                                </div> :
+                                <>
+                                    <div className="mediaPostInfoBox">
+                                        {/* basic info depends on category temp will be actors*/}
+                                        <div className="infobox-header">
+                                            <div className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+                                            <div className="ratings"><AiFillStar className="star" /> {(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
-                                            </div>
-                                            <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-
-                                            <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                                            {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-                                            <div className="tagContainer">
-                                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-                                                    return <div className="tag">{keyName}</div>
-                                                }) : "No tag"}
-                                            </div>
                                         </div>
+                                        <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
 
-                                        <div className="mediaPostButtons">
-                                            <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon" /></button>
-                                            <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
-                                            <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
+                                        <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                        {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
+                                        <div className="tagContainer">
+                                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
+                                                return <div className="tag">{keyName}</div>
+                                            }) : "No tag"}
                                         </div>
-                                    </>
-                                : ''}
+                                    </div>
+                                </>
+                            }
+
                         </div>
                     </>
 

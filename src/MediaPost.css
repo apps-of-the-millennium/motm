@@ -2,8 +2,6 @@
     width: 10rem;
     height: 18rem;
     position: relative;
-    /* background: cyan; */
-    
 }
 
 .mediaPost {
@@ -11,10 +9,22 @@
     height: 18rem;
     display: grid;
     grid-template-rows: max-content auto;
+    
+    position: relative
 }
 
-.mediaContainer:hover .mediaPostTitle {
-    color: #dfe1fd;
+.mediaPost:hover .mediaPostTitle {
+    color: var(--color-text-hover);
+    transition: none;
+}
+.mediaPost:hover .mediaPostButtons {
+    display: flex;
+}
+.mediaPost:hover ~.mediaPostDelete {
+    display: flex;
+}
+.mediaPost:hover  ~ .mediaPostInfoBox {
+    display: block;
 }
 
 .mediaPost .mediaPostImg {
@@ -34,21 +44,35 @@
     /* overflow: hidden; */
     /* text-overflow: ellipsis; */
     text-align: left;
-    font-size: small;
+    font-size: medium;
+    font-weight: 700;
     /* margin-top: 5px; */
-    color: #b0b2d6;
+    color: var(--color-text);
+    transition: color 0.5s;
 }
 
-.mediaContainer .mediaPostInfoBox {
+.mediaPostInfoBox {
+    display:none;
     width: 150%;
     height: 40%;
     position: relative;
     bottom: 95%;
-    left: 105%;
-    background: #13203b;
+    left: 110%;
+    background: var(--color-light-background);
     border-radius: 4px;
     z-index: 100;
     padding: 16px;
+}
+.mediaPostInfoBox::before{
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: 24px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-right: 12px solid var(--color-light-background);
+    border-bottom: 12px solid transparent;
 }
 
 .infobox-header {
@@ -58,17 +82,18 @@
 
 .ratings {
     display:flex;
+    color: #75bdf8;
+    align-items: center;
+    font-weight: 700;
+    font-size: 18px;
 }
 .star {
-    color: yellow;
-    align-self: center;
-}
-.ratings {
-    color: #75bdf8;
+    color: rgb(231, 231, 0);
+    margin-top: 2px;
 }
 
 .mediaPostInfoBox .releaseDate {
-    color:#cfd2f5;
+    color:var(--color-text);
     font-size: 18px;
     font-weight: 700;
 }
@@ -76,7 +101,7 @@
 .mediaPostCategory {
     font-size: medium;
     font-weight: 500;
-    color: rgb(215, 218, 253);
+    color: var(--color-text);
 
     white-space: nowrap;
     overflow: hidden;
@@ -87,7 +112,7 @@
 }
 
 .mediaPostInfoBox .author {
-    color:rgb(241, 170, 76);
+    color:rgb(230, 162, 73);
     font-weight: 600;
     font-size: smaller;
 
@@ -127,7 +152,7 @@
     top: 70%;
     width: 100%;
 
-    display: flex;
+    display: none;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
@@ -135,9 +160,9 @@
 
 .mediaPostDelete {
     position: relative;
-    display: flex;
+    display: none;
     justify-content: flex-end;
-    bottom: 122%;
+    bottom: 100%;
 }
 
 .mediaPostButtons .icon {

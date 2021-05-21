@@ -63,9 +63,9 @@ class Home extends React.Component {
           <div className="filtersContainer">
             <div className="filters">
               <div className="filter-option">
-                <div style={{ fontWeight: '500', color: `#cfd2f5`, marginBottom: '10px' }}>Search</div>
+                <div style={{ fontWeight: '500', color: `var(--color-text)`, transition:'color 1s', marginBottom: '10px' }}>Search</div>
                 <div className="filter-value-container">
-                  <FaSearch style={{ color: '#cfd2f5', position: 'absolute', top: "11px", left: "12px" }} />
+                  <FaSearch style={{ color: 'var(--color-text)', transition:'color 1s', position: 'absolute', top: "11px", left: "12px" }} />
                   <input className='searchInput'
                     onChange={this.handleSearchNameChange}
                     value={this.state.searchName}

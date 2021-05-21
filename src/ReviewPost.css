@@ -37,14 +37,14 @@
 }   
 .reviewContent:before {
     content: "";
-      position: absolute;
-      right: 100%;
-      top: 15px;
-      width: 0;
-      height: 0;
-      border-top: 12px solid transparent;
-      border-right: 18px solid #141e30;
-      border-bottom: 12px solid transparent;
+    position: absolute;
+    right: 100%;
+    top: 15px;
+    width: 0;
+    height: 0;
+    border-top: 12px solid transparent;
+    border-right: 18px solid #141e30;
+    border-bottom: 12px solid transparent;
 }
 .reviewContent:hover {
     background: #182338;

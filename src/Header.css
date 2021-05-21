@@ -12,7 +12,7 @@
     flex-direction: row;
     justify-content: center;
     grid-area: logo;
-    background: #0e1931
+    background: #121e38
 
 }
 
@@ -25,7 +25,7 @@
   
 .logoContainer .appHeaderTitle {
     align-self: center;
-    color:#b2b5d1;
+    color:#cfd2f5;
     font-weight: 700;
 }
 
@@ -42,14 +42,14 @@
 }
 
 .navigationContainer .nav {
-    color:#9da0b9;
+    color:#cfd2f5;
     font-weight: 700;
     font-size: small;
     text-decoration: none;
 }
 
 .nav:hover {
-    color:#d6d9fd;
+    color:#fcfcfd;
 }
 
 
@@ -58,14 +58,14 @@
     grid-area: user;
     display: flex;
     flex-direction: row;
-    background: #0e1931;
+    background: #121e38;
     justify-content: center;
     align-items: center;
 }
 
 .userContainer .welcomeMessage {
     font-size: medium;
-    color:#9da0b9;
+    color:#cfd2f5;
     margin-right: 1rem;
 }
 
@@ -86,7 +86,7 @@
 .dropBtn .dropdown-content {
     display: none;
     position: relative;
-    background: #142344;
+    background: #121e38;
     min-width: 8rem;
     z-index: 1;
     text-align: center;
@@ -97,7 +97,7 @@
 
   /* Links inside the dropdown */
 .dropdown-content .profileOption {
-    color: #c6c9e7;
+    color: #cfd2f5;
     text-align: center;
     text-decoration: none;
     display: block;

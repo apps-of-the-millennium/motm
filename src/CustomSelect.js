@@ -8,18 +8,19 @@ const customSelectStyle = {
   option: (provided, state) => ({
     ...provided,
     // color: state.isSelected ? 'yellow' : 'black',
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
     paddingLeft: '20px',
-    background: state.isSelected ?  '#213663' : '#13203b',
+    background: state.isSelected ?  'var(--color-light-background-hover)' : 'var(--color-light-background)',
     "&:hover": { //& always refers to the parent selector when nested
-      backgroundColor: '#213663'
+      backgroundColor: 'var(--color-light-background-hover)'
     }
   }),
   control: (provided, state) => ({
     ...provided,
     //minHeight is default to 38px, adjust Search input to match if looking to change
     width: 'inherit',
-    background: '#13203b',
+    background: 'var(--color-light-background)',
+    transition:'background 1s',
     
     border: state.isFocused ? 0 : 0,
     // This line disable the blue border
@@ -30,26 +31,31 @@ const customSelectStyle = {
   }),
   menu: (provided) => ({
     ...provided,
-    backgroundColor: '#13203b'
+    backgroundColor: 'var(--color-light-background)',
+    transition:'backgroundColor 1s'
   }),
   placeholder: (provided) => ({
     ...provided,
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
+    transition:'color 1s',
     paddingBottom: "2px",
   }),
   noOptionsMessage: (provided) => ({
     ...provided,
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
+    transition:'color 1s',
     textAlign: 'left'
   }),
   valueContainer: (provided) => ({
     ...provided,
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
+    transition:'color 1s',
     cursor:"text",
   }),
   input: (provided) => ({
     ...provided,
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
+    transition:'color 1s'
   }),
   indicatorSeparator: (provided) => ({
     ...provided,
@@ -57,7 +63,8 @@ const customSelectStyle = {
   }),
   groupHeading: (provided) => ({
     ...provided,
-    color: '#cfd2f5',
+    color: 'var(--color-text)',
+    transition:'color 1s'
   }),
 }
 
@@ -83,7 +90,7 @@ class CustomSelect extends React.Component {
   render() {
     return (
       <div>
-        <div style={{ fontWeight: '500', color: `#cfd2f5` , marginBottom:'10px' }}>{this.props.label}</div>
+        <div style={{ fontWeight: '500', color: `var(--color-text)` , marginBottom:'10px' }}>{this.props.label}</div>
         <Select
           closeMenuOnSelect={false}
           // placeholder={'any'}

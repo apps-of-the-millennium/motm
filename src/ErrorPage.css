@@ -1,7 +1,8 @@
 .errorPage {
     display: flex;
     flex-direction: column;
-    background: gray;
+    background: var(--color-background);
+    transition: background 1s;
     position: relative;
     min-height: 100vh;
     justify-content: center;

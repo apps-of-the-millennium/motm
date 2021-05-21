@@ -4,7 +4,8 @@
 }
 
 .selector-label{
-    color: #cfd2f5;
+    color: var(--color-text);
+    transition: color 1s;
     user-select: none;
     font-weight: 500;
 }
@@ -67,7 +68,8 @@
     position: absolute;
     top: 110%;
     background: rgb(17, 17, 17);
-    color: #cfd2f5;
+    color: #ced1e9;
+    /* transition: color 1s;; */
     font-size: 12px;
     font-weight: 600;
     padding: 2px 4px 2px 4px;
@@ -77,13 +79,15 @@
 .category-popup:hover .hover-info {display: block; }
 
 .category-label {
-    color: #cfd2f5;
+    color: var(--color-text);
+    transition: color 1s;;
     font-size: 30px;
     font-weight: 600;
 }
 
 .category-icon {
-    color: #cfd2f5;
+    color: #dfe2fa;
+    /* transition: color 1s;; */
     justify-self: center;
 }
 .big{
@@ -116,7 +120,8 @@
     width: 30rem;
     height: 5.5rem;
     position: absolute;
-    background: #13203b;
+    background: var(--color-light-background);
+    transition: background 1s;
     z-index: 100;
 
     top: 100%;
