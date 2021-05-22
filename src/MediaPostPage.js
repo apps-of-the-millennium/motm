@@ -2,7 +2,7 @@ import React from 'react';
 import './MediaPostPage.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-import envData from './envData';
+// import envData from './envData';
 import { Link } from 'react-router-dom';
 import randomColor from 'randomcolor';
 import ReviewPost from './ReviewPost';
@@ -22,7 +22,7 @@ class MediaPostPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoaded: true, //TEMPORARY SETTING TO ALWAYS TRUE
+            isLoaded: false,
             postType: this.props.postType,
 
             mediaInfo: {},
@@ -33,42 +33,69 @@ class MediaPostPage extends React.Component {
             openOptions: false,
             popUp: false,
             listType: "",
-
+            addedComplete: false,
+            addedFavourite: false,
+            addedLater: false,
+            timer: '',
             reviews: []
         };
     }
 
-    async updateFavourite(id) {
-        var userId = firebase.auth().currentUser.uid;
-        firestore.collection('users').doc(userId).collection('lists').doc('favouriteList').update({
-            favouriteList: firebase.firestore.FieldValue.arrayUnion(id)
-        });
-        this.setState({ popUp: true, listType: 'Favourites List' })
-        setTimeout(function () {
-            this.setState({ popUp: false });
-        }.bind(this), 5000);
+    async setPopup(listType) {
+        clearTimeout(this.state.timer);
+        switch(listType) {
+            case 'f':
+                console.log('IN FAVS')
+                this.setState({ popUp: true, listType: 'Favourites List' });
+                break;
+            case 'l':
+                this.setState({ popUp: true, listType: 'Later List' });
+                break;
+            case 'c':
+                this.setState({ popUp: true, listType: 'Completed List' });
+                break;
+            //default for future for lists
+            default:
+                this.setState({ popUp: true, listType: 'List' });
+                break;
+        }
+        this.setState({timer: setTimeout(() => this.setState({ popUp: false }), 5000)});
     }
 
-    async updateLater(id) {
-        var userId = firebase.auth().currentUser.uid;
-        firestore.collection('users').doc(userId).collection('lists').doc('laterList').update({
-            laterList: firebase.firestore.FieldValue.arrayUnion(id)
-        });
-        this.setState({ popUp: true, listType: 'Later List' });
-        setTimeout(function () {
-            this.setState({ popUp: false });
-        }.bind(this), 5000);
+    async updateFavourite(id, needsUpdate) {
+        //if we added to Favourites while on the page
+        if(needsUpdate) {
+            //if there is no user (might be able to take this out since I won't allow non users to change the needsUpdate)
+            if(this.state.userId) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('favouriteList').set(
+                    { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }
+                );
+                
+            } 
+        }
     }
 
-    async updateCompleted(id) {
-        var userId = firebase.auth().currentUser.uid;
-        firestore.collection('users').doc(userId).collection('lists').doc('completedList').update({
-            completedList: firebase.firestore.FieldValue.arrayUnion(id)
-        });
-        this.setState({ popUp: true, listType: 'Completed List' });
-        setTimeout(function () {
-            this.setState({ popUp: false });
-        }.bind(this), 5000);
+    async updateLater(id, needsUpdate) {
+        if(needsUpdate) {
+            if(this.state.userId) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('laterList').set(
+                    { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }    
+                );
+            }
+        }
+    }
+
+    async updateCompleted(id, needsUpdate) {
+        if(needsUpdate) {
+            if(this.state.userId) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('completedList').set(
+                    { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }
+                );
+            }
+        }
     }
 
     async updateAvg(mediaId) {
@@ -93,46 +120,48 @@ class MediaPostPage extends React.Component {
     }
 
     async updateRating(newRating, mediaId) {
-        var userId = firebase.auth().currentUser.uid;
-        if (!newRating) {
-            //if newRating doesn't exist user deleted their rating and delete from that books rating
-            firestore.collection('users').doc(userId).collection('ratings').doc('books').update(
-                { [mediaId]: firebase.firestore.FieldValue.delete() },
-                { merge: true }
-            )
-            firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
-                { ratings: { [userId]: firebase.firestore.FieldValue.delete() } },
-                { merge: true }
-            ).then(() => {
-                this.updateAvg(mediaId);
-            }).catch((error) => {
-                console.log(error);
-            })
-        } else {
-            firestore.collection('users').doc(userId).collection('ratings').doc('books').update({
-                [mediaId]: newRating,
-            })
-            firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
-                { ratings: { [userId]: newRating } },
-                { merge: true }
-            ).then(() => {
-                this.updateAvg(mediaId);
-            }).catch((error) => {
-                console.log(error);
-            })
+        if(this.state.userId) {
+            if (!newRating) {
+                //if newRating doesn't exist user deleted their rating and delete from that books rating
+                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set(
+                    { [mediaId]: firebase.firestore.FieldValue.delete() },
+                    { merge: true }
+                )
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
+                    { ratings: { [this.state.userId]: firebase.firestore.FieldValue.delete() } },
+                    { merge: true }
+                ).then(() => {
+                    this.updateAvg(mediaId);
+                }).catch((error) => {
+                    console.log(error);
+                })
+            } else {
+                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set({
+                    [mediaId]: newRating,
+                })
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
+                    { ratings: { [this.state.userId]: newRating } },
+                    { merge: true }
+                ).then(() => {
+                    this.updateAvg(mediaId);
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
+            this.setState({ currRating: newRating }); 
         }
-        this.setState({ currRating: newRating });
     }
 
     async getRating(mediaId) {
-        var userId = firebase.auth().currentUser.uid;
-        var userDoc = firestore.collection('users').doc(userId);
-        userDoc.collection('ratings').doc('books').get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ currRating: doc.data()[mediaId] });
-            }
-            //no else needed already set to 0
-        })
+        if(this.state.userId) {
+            var userDoc = firestore.collection('users').doc(this.state.userId);
+            userDoc.collection('ratings').doc('books').get().then((doc) => {
+                if (doc.exists) {
+                    this.setState({ currRating: doc.data()[mediaId] });
+                }
+                //no else needed already set to 0
+            })
+        }
     }
 
     async getPicture(url) {
@@ -186,7 +215,25 @@ class MediaPostPage extends React.Component {
     //     this.setState( { openOptions: false });
     // }
 
+    //update any information for the user when they leave the page (to prevent spam)
+    async componentWillUnmount() {
+        if(this.props.id) {
+            this.updateRating(this.state.currRating, this.props.id);
+            this.updateCompleted(this.props.id, this.state.addedComplete);
+            this.updateFavourite(this.props.id, this.state.addedFavourite);
+            this.updateLater(this.props.id, this.state.addedLater);
+        }
+        
+    }
+
     componentDidMount() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user) {
+                this.setState({ userId: user.uid });
+            }
+            this.setState({ isLoaded: true });
+        })
+
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
@@ -202,50 +249,49 @@ class MediaPostPage extends React.Component {
 
     render() {
         if (this.state.isLoaded) {
-            if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
-                return (
+            // if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
+            //     return (
+            //         <>
+            //             {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
+            //             <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
+            //                 <div className="mediaPost" >
+            //                     {/* picture of media*/}
+            //                     <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']} ></img>
+            //                     {/* title */}
+            //                     <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
+            //                 </div>
+            //                 {(this.state.hover) ?
+            //                     <>
+            //                         <div className="mediaPostInfoBox">
+            //                             {/* basic info depends on category temp will be actors*/}
+            //                             <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+            //                             <div className="ratings">
+            //                                 <div className="star"><AiFillHeart /></div>
+            //                                 <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
+            //                             </div>
+            //                             <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
+            //                             <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+            //                             {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
+            //                             <div className="tagContainer">
+            //                                 {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
+            //                                     return <div className="tag">{keyName}</div>
+            //                                 }) : "No tag"}
+            //                             </div>
+            //                         </div>
 
-                    <>
-                        {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
-                        <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
-                            <div className="mediaPost" >
-                                {/* picture of media*/}
-                                <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']} ></img>
-                                {/* title */}
-                                <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-                            </div>
-                            {(this.state.hover) ?
-                                <>
-                                    <div className="mediaPostInfoBox">
-                                        {/* basic info depends on category temp will be actors*/}
-                                        <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-                                        <div className="ratings">
-                                            <div className="star"><AiFillHeart /></div>
-                                            <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
-                                        </div>
-                                        <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
-                                        <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                                        {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-                                        <div className="tagContainer">
-                                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-                                                return <div className="tag">{keyName}</div>
-                                            }) : "No tag"}
-                                        </div>
-                                    </div>
-
-                                    <div className="mediaPostButtons">
-                                        <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon" /></button>
-                                        <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
-                                        <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
-                                    </div>
-                                </> : ''}
-                        </div>
-                    </>
-                )
+            //                         <div className="mediaPostButtons">
+            //                             <button className="invisible" onClick={() => this.setState({ addedFavourite: true })}><AiFillHeart className="icon" /></button>
+            //                             <button className="invisible" onClick={() => this.setState({ addedLater: true })}><AiFillClockCircle className="icon" /></button>
+            //                             <button className="invisible" onClick={() => this.setState({ addedComplete: true })}><ImCheckmark className="icon" /></button>
+            //                         </div>
+            //                     </> : ''}
+            //             </div>
+            //         </>
+            //     )
 
 
                 //=====================================================================================Actual MPP==============  
-            } else {
+            // } else {
                 // console.log("MEDIA PP ID:", this.props.id);
                 // console.log(randomColor());
                 return (
@@ -273,9 +319,9 @@ class MediaPostPage extends React.Component {
                                     <div className="trophyButton"><ImTrophy className="icon" /></div>
                                     {(this.state.openOptions) ?
                                         <div className="dropdown-content2">
-                                            <button className="listOptions" onClick={() => this.updateFavourite(this.props.id)}> Favourites <AiFillHeart className="icon" /></button>
-                                            <button className="listOptions" onClick={() => this.updateLater(this.props.id)}> Watch Later <AiFillClockCircle className="icon" /></button>
-                                            <button className="listOptions" onClick={() => this.updateCompleted(this.props.id)}>Completed <ImCheckmark className="icon" /></button>
+                                            <button className="listOptions" onClick={() => this.setPopup('f')}><AiFillHeart className="icon" /> Favourites </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('l')}><AiFillClockCircle className="icon" /> Watch Later </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('c')}><ImCheckmark className="icon" /> Completed </button>
                                         </div>
                                         : ''}
                                 </div>
@@ -295,7 +341,7 @@ class MediaPostPage extends React.Component {
                                     <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                     <button className="rateButton">
                                         <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                            onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
+                                            onChange={(event, newRating) => this.setState({currRating: newRating})} />
                                     </button>
                                     <span className="yourRatingValue">{this.state.currRating}</span>
                                 </div>
@@ -357,7 +403,7 @@ class MediaPostPage extends React.Component {
 
                     </div>
                 )
-            }
+            // }
 
         } else {
             return (
