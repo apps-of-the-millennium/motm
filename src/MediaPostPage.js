@@ -294,7 +294,7 @@ class MediaPostPage extends React.Component {
                                 <div className="rateContainer">
                                     <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                     <button className="rateButton">
-                                        <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
+                                        <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
                                             onChange={(event, newRating) => this.updateRating(newRating, this.props.id)} />
                                     </button>
                                     <span className="yourRatingValue">{this.state.currRating}</span>
