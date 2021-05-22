@@ -22,7 +22,8 @@
 
 
 .reviewContent {
-    background: #141e30; /*#0d1422*/
+    background: var(--color-background-light); /*#0d1422*/
+    transition: background .25s;
     display: flex;
     align-items: center;
     justify-items: center;
@@ -43,12 +44,21 @@
     width: 0;
     height: 0;
     border-top: 12px solid transparent;
-    border-right: 18px solid #141e30;
+    border-right: 18px solid var(--color-background-light);
     border-bottom: 12px solid transparent;
+    transition: border .25s;
 }
 .reviewContent:hover {
-    background: #182338;
+    background: var(--color-background-light-hover);
+    transition: none;
 }
+
+.reviewContent:hover::before {
+    border-right: 18px solid var(--color-background-light-hover);
+    transition: none;
+}
+
+
 
 .reviewPostSummary {
     /* background: rgb(172, 163, 163); */
@@ -63,7 +73,8 @@
     font-style: italic;
     font-size: 1rem;
     line-height: 1.4rem;
-    color: #b1afaf;
+    color: var(--color-text);
+    transition: color 1s;
 }
 
 .reviewLikes {
@@ -74,6 +85,7 @@
     right: 10px;
     font-size: .9rem;
 
-    color: #b1afaf;
+    color: var(--color-text);
+    transition: color 1s;
 }
 

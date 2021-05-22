@@ -66,28 +66,28 @@ function CategorySelector(props) {
             <div className="selector-label left">Current Category</div>
             <div className="selector-options popup">
                 <div style={{ background: myColor('books') }} onClick={() => { toggle('books'); props.onClickCategory('books') }} className="category-popup">
-                    <div className='hover-info'>Books</div>
+                    <div className='hover-info bottom'>Books</div>
                     <ImBook className="category-icon small" />
                 </div>
 
                 <div style={{ background: myColor('movies') }} onClick={() => { toggle('movies'); props.onClickCategory('movies') }} className="category-popup">
-                    <div className='hover-info'>Movies</div>
+                    <div className='hover-info bottom'>Movies</div>
                     <MdLocalMovies className="category-icon small" />
                 </div>
 
                 <div style={{ background: myColor('shows') }} onClick={() => { toggle('shows'); props.onClickCategory('shows') }} className="category-popup">
-                    <div className='hover-info'>Shows</div>
+                    <div className='hover-info bottom'>Shows</div>
                     <RiSlideshow3Fill className="category-icon small" />
                 </div>
 
                 <div style={{ background: myColor('games') }} onClick={() => { toggle('games'); props.onClickCategory('games') }} className="category-popup">
-                    <div className='hover-info'>Games</div>
+                    <div className='hover-info bottom'>Games</div>
                     <FaGamepad className="category-icon small" />
                 </div>
 
                 {/* its "musics" because i slice the "s" from all the other categories in order to obtain category + "Posts" for firestore retrieval */}
                 <div style={{ background: myColor('musics') }} onClick={() => { toggle('musics'); props.onClickCategory('musics') }} className="category-popup">
-                    <div className='hover-info'>Music</div>
+                    <div className='hover-info bottom'>Music</div>
                     <FaMusic className="category-icon small" />
                 </div>
             </div>

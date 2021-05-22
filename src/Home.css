@@ -46,7 +46,7 @@
   transition: all .2s ease-out; */
   min-height: 38px;
   width: inherit;
-  background: var(--color-light-background);
+  background: var(--color-background-light);
   transition: background 1s; 
   /* background-image: url('./images/search.svg');
   background-position: -90% 5px;
@@ -85,7 +85,7 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  background:var(--color-light-background); 
+  background:var(--color-background-light); 
   transition: background 1s;
   padding:5px;
   border-radius:4px;
@@ -99,9 +99,8 @@ input[type="search"]::-webkit-search-cancel-button {
 .icons-style{
   font-size: 1.5rem;
   color: var(--color-text);
-  transition: color 1s;
 }
-.icons-style:hover {color:#6196f7}
+.icons-style:hover {color:#6196f7;}
 
 
 

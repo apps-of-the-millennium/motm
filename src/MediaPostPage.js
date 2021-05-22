@@ -299,7 +299,7 @@ class MediaPostPage extends React.Component {
                                     </button>
                                     <span className="yourRatingValue">{this.state.currRating}</span>
                                 </div>
-                                <div className="extraInfoContainer">
+                                <div className="extraInfoContainer info">
                                     <div className="extraInfoTitle">Average Rating</div>
                                     <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
@@ -315,7 +315,7 @@ class MediaPostPage extends React.Component {
                                     {/* even more info ...example # of times favorited, watch listed, completed ... */}
                                 </div>
 
-                                <div className="allTagsContainer">
+                                <div className="extraInfoContainer tags">
                                     <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
                                     {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
                                         let color = randomColor({

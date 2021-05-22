@@ -26,11 +26,11 @@
 
 
 .nav{
-    color:#cfd2f5;
+    color:#b0b2c5;
     font-weight: 700;
     font-size: small;
     text-decoration: none;
 }
 .nav:hover {
-    color:rgb(245, 245, 255);
+    color:#6c9dd8;
 }

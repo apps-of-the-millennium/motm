@@ -9,7 +9,6 @@
     height: 18rem;
     display: grid;
     grid-template-rows: max-content auto;
-    
     position: relative
 }
 
@@ -25,16 +24,16 @@
 }
 .mediaPost:hover  ~ .mediaPostInfoBox {
     display: block;
+    /* opacity: 1; */
 }
 
 .mediaPost .mediaPostImg {
     width: 10rem; /*100% buggy for posts without image */
     height: 15rem; /*100% bit buggy for posts without image*/
-
-    background: black;
-    float: left;
+    background: rgb(0, 0, 0);
     display: block;
     overflow: hidden;
+    border-radius: 8px;
 }
 
 .mediaPost .mediaPostTitle {
@@ -55,10 +54,12 @@
     display:none;
     width: 150%;
     height: 40%;
-    position: relative;
-    bottom: 95%;
+    /* opacity: 0;
+    transition: opacity .35s; */
+    position: absolute;
+    top: 5%;
     left: 110%;
-    background: var(--color-light-background);
+    background: var(--color-background-light);
     border-radius: 4px;
     z-index: 100;
     padding: 16px;
@@ -71,7 +72,7 @@
     width: 0;
     height: 0;
     border-top: 12px solid transparent;
-    border-right: 12px solid var(--color-light-background);
+    border-right: 12px solid var(--color-background-light);
     border-bottom: 12px solid transparent;
 }
 
@@ -248,7 +249,8 @@
 
     text-align: left;
     font-size: 1rem;
-    color: rgb(174, 176, 247);
+    color: var(--color-text);
+    transition: color 1s;
 }
 
 
@@ -276,7 +278,8 @@
 .mediaContainer2 .releaseDate2 {
     grid-area: releaseDate;
     align-self: left;
-    color:#cfd2f5;
+    color:var(--color-text);
+    transition: color 1s;
     font-size: medium;
 }
 
@@ -285,7 +288,8 @@
     margin-left: 10px;
     font-size: medium;
     font-weight: 500;
-    color: rgb(215, 218, 253);
+    color:var(--color-text);
+    transition: color 1s;
     align-self: center;
 
     white-space: nowrap;
@@ -368,3 +372,4 @@ button::-moz-focus-inner {
 .mediaPageLink {
     text-decoration: none;
 }
+

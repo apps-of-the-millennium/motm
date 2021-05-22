@@ -4,11 +4,13 @@
     height: auto;
     min-height: 50rem;
 
+    color: var(--color-text);
     overflow: auto; /* seems to be sln to prevent child margin-top from moving parent as well */
 }
 
 .pageContainer .form {
-    background: #070e1b;
+    background: var(--color-background);
+    transition: background 1s;
     /* margin-top: 5rem;
     margin-left: 5rem; */
     padding: 5rem;
@@ -25,13 +27,15 @@
   min-height: 10rem;
   padding: 12px 20px;
   border: none;
-  background-color: #202e4d;
+  background-color: var(--color-background-light);
+  transition: background-color 1s;
   font-size: large;
   resize: vertical;
   overflow:auto;
   outline: none;
 
-  color: #b0b2d6;
+  color: var(--color-text);
+  transition: color 1s;
 
   border-radius: .5rem;
 
@@ -52,13 +56,15 @@
     height: max-content;
     padding: 12px 20px;
     border: none;
-    background-color: #202e4d;
+    background-color: var(--color-background-light);
+    transition: background-color 1s;
     font-size: large;
     resize: vertical;
     overflow:auto;
     outline: none;
   
-    color: #b0b2d6;
+    color: var(--color-text);
+    transition: color 1s;
   
     border-radius: .5rem;
   
@@ -68,7 +74,7 @@
 
 
 .formLabel {
-    color: #b0b2d6;
+    
     font-size: medium;
     font-weight: 600;
     
@@ -77,12 +83,16 @@
 .formInput {
     margin-bottom: 2rem;
     margin-top: .5rem;
-    background-color: #202e4d;
-    color: #b0b2d6;
+    background-color: var(--color-background-light);
+    transition: background-color 1s;
+    
     border: none;
     border-radius: 2px;
     padding: 5px;
     font-size: medium;
+
+    color: var(--color-text);
+    transition: color 1s;
 
 }
 

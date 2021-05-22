@@ -10,16 +10,16 @@ const customSelectStyle = {
     // color: state.isSelected ? 'yellow' : 'black',
     color: 'var(--color-text)',
     paddingLeft: '20px',
-    background: state.isSelected ?  'var(--color-light-background-hover)' : 'var(--color-light-background)',
+    background: state.isSelected ?  'var(--color-background-light-hover)' : 'var(--color-background-light)',
     "&:hover": { //& always refers to the parent selector when nested
-      backgroundColor: 'var(--color-light-background-hover)'
+      backgroundColor: 'var(--color-background-light-hover)'
     }
   }),
   control: (provided, state) => ({
     ...provided,
     //minHeight is default to 38px, adjust Search input to match if looking to change
     width: 'inherit',
-    background: 'var(--color-light-background)',
+    background: 'var(--color-background-light)',
     transition:'background 1s',
     
     border: state.isFocused ? 0 : 0,
@@ -31,7 +31,7 @@ const customSelectStyle = {
   }),
   menu: (provided) => ({
     ...provided,
-    backgroundColor: 'var(--color-light-background)',
+    backgroundColor: 'var(--color-background-light)',
     transition:'backgroundColor 1s'
   }),
   placeholder: (provided) => ({

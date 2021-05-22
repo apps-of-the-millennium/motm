@@ -6,7 +6,7 @@
 }
 
 .theme-select-label {
-    color: #cfd2f5;
+    color: #b0b2c5;
     font-weight: 700;
     font-size: 16px;
     padding-right: 6x;
@@ -17,10 +17,16 @@
     border-radius: 4px;
     border: 3px solid #9da0b9;
     cursor: pointer;
+
+    position: relative;
 }
 .theme-button.default {
     background: whitesmoke;
 }
 .theme-button.dark {
     background: #081022;
+}
+
+.theme-button:hover .hover-info.top {
+    display: block;
 }

@@ -63,20 +63,34 @@
 }
 .hover-info{
     /*https://stackoverflow.com/questions/3331353/transitions-on-the-css-display-property for info on delaying display */
-    display:none;
+    display:block;
     z-index: 100;
     position: absolute;
-    top: 110%;
+    
     background: rgb(17, 17, 17);
     color: #ced1e9;
     /* transition: color 1s;; */
     font-size: 12px;
     font-weight: 600;
-    padding: 2px 4px 2px 4px;
+    padding: 1px 4px 1px 4px;
     border-radius: 4px;
     user-select: none;
+
+    /*center the hover box */
+    left: 50%;
+    transform: translate(-50%, 0);
 }
-.category-popup:hover .hover-info {display: block; }
+.hover-info.bottom{
+    top: 110%;
+    display: none;
+}
+.hover-info.top{
+    display:none;
+    bottom: 120%
+}
+
+
+.category-popup:hover .hover-info.bottom {display: block; }
 
 .category-label {
     color: var(--color-text);
@@ -120,7 +134,7 @@
     width: 30rem;
     height: 5.5rem;
     position: absolute;
-    background: var(--color-light-background);
+    background: var(--color-background-light);
     transition: background 1s;
     z-index: 100;
 
