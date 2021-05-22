@@ -90,7 +90,7 @@ class CustomSelect extends React.Component {
   render() {
     return (
       <div>
-        <div style={{ fontWeight: '500', color: `var(--color-text)` , marginBottom:'10px' }}>{this.props.label}</div>
+        <div style={{ fontWeight: '500', color: `var(--color-text)`, transition:'color 1s', marginBottom:'10px' }}>{this.props.label}</div>
         <Select
           closeMenuOnSelect={false}
           // placeholder={'any'}

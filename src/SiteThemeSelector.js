@@ -24,11 +24,13 @@ function SiteThemeSelector(props) {
 
             <div className="theme-button default" onClick={() => onClickTheme('')}>
                 <div className="hover-info top">Default</div>
+                A
             </div>
 
 
             <div className="theme-button dark" onClick={() => onClickTheme('site-theme-dark')}>
                 <div className="hover-info top">Dark</div>
+                A
             </div>
         </div>
     );
