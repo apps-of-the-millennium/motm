@@ -36,6 +36,8 @@ class MediaPostPage extends React.Component {
 
             reviews: []
         };
+
+        this.tags = []; //contains objects {tag_name: asdf, tag_color: asdf}
     }
 
     async updateFavourite(id) {
@@ -181,10 +183,17 @@ class MediaPostPage extends React.Component {
         this.setState({ openOptions: !this.state.openOptions });
     }
 
-    //trying to make it so the dropdown closes when u click outside, cant get to work
-    // onClickOutside = () => {
-    //     this.setState( { openOptions: false });
-    // }
+    generateColoredTags = () => {
+        if (this.state.mediaInfo['tags'])  {
+            Object.keys(this.state.mediaInfo['tags']).forEach((keyName, i) => {
+                let color = randomColor({
+                    luminosity: 'light',
+                    // hue: 'blue'
+                });
+                this.tags.push({ tag_name: keyName, tag_color: color});
+            });
+        }
+    }
 
     componentDidMount() {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
@@ -192,12 +201,12 @@ class MediaPostPage extends React.Component {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
                 this.getRating(this.props.id);
+                this.generateColoredTags();
             }
         });
 
         this.retrieveUserReviews();
         // console.log(this.state.reviews);
-
     }
 
     render() {
@@ -317,12 +326,8 @@ class MediaPostPage extends React.Component {
 
                                 <div className="extraInfoContainer tags">
                                     <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                        let color = randomColor({
-                                            luminosity: 'light',
-                                            // hue: 'blue'
-                                        });
-                                        return <div className="tag" style={{ background: color }}>{keyName}</div>
+                                    {(this.tags.length !== 0) ? (this.tags).map((tag) => {
+                                        return <div className="tag" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
                                     }) : <div className="extraInfoValue">No tags available :(</div>}
 
                                 </div>
