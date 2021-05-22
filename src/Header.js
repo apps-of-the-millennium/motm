@@ -4,7 +4,7 @@ import firebase from 'firebase/app';
 import { AuthContext } from "./context";
 import './Header.css';
 import { Link } from 'react-router-dom';
-
+import { RiLoginBoxFill } from 'react-icons/ri';
 
 function signInWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -59,7 +59,7 @@ const Header = () => {
               </div>
 
               <div className="userContainer">
-                <button className="signInButton" onClick={() => signInWithGoogle()}>Log In</button>
+                <div className="signInButton" onClick={() => signInWithGoogle()}>Log In <RiLoginBoxFill/></div>
               </div>
             </>
           )}

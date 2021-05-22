@@ -3,8 +3,11 @@ body {
 }
 
 .profile {
-    background: black;
-    color: white;
+    background: var(--color-background);
+    
+    /* background: black; */
+    color: var(--color-text);
+    transition: 1s;
     display: flex;
     flex-flow: column wrap;
     align-items: center;
@@ -52,7 +55,8 @@ body {
 .bio {
     padding: 2em;
     margin: 2em;
-    background: #121e38;
+    background: var(--color-background-light);
+    transition: background 1s;
     border-radius: 5%;
 }
 
@@ -62,8 +66,9 @@ body {
     width: 50vw;
     flex-wrap: wrap;
     gap: 2em;
-    background: #121e38;
-    border-radius: 5%;
+    background: var(--color-background-light);
+    transition: background 1s;
+    border-radius: 4px;
     margin-bottom: 2em;
 }
 

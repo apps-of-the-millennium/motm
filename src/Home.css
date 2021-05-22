@@ -1,21 +1,7 @@
-/* color scheme
-CE1483
-E0A890
-129490
-065143
-70B77E
-*/
-
-* {
-  margin: 0;
-}
-
-@media (max-width: 600px) {
-}
-
 .homeBg {
-  background-color: #081022;
-  height: 200rem; /*will cause extra scroll bar if not big enough */
+  background: var(--color-background);        /*#081022;*/
+  transition: background 1s;
+  height: auto; /*will cause extra scroll bar if not big enough */
   overflow: auto;
   /* position: relative; */
   min-height: 100vh;
@@ -53,10 +39,15 @@ E0A890
 }
 
 .searchInput {
-  color: #cfd2f5;
+  /* -webkit-transition: all 1s ease-out;
+  -moz-transition: all 2s ease-out;
+  -ms-transition: all 2s ease-out;
+  -o-transition: all .2s ease-out;
+  transition: all .2s ease-out; */
   min-height: 38px;
   width: inherit;
-  background-color: #13203b;
+  background: var(--color-background-light);
+  transition: background 1s; 
   /* background-image: url('./images/search.svg');
   background-position: -90% 5px;
   background-repeat: no-repeat;
@@ -71,11 +62,16 @@ E0A890
   border-radius: 4px;
   outline: none;
 
+  color: var(--color-text);
+
 }
+
+
 
 input[type="search"]::-webkit-search-cancel-button {
   /* Remove default */
   position: relative;
+  
   left: 0.5rem;
 }
 
@@ -91,7 +87,8 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 2rem;
   height: 2rem;
   cursor: pointer;
-  background:#13203b; 
+  background:var(--color-background-light); 
+  transition: background 1s;
   padding:5px;
   border-radius:4px;
 
@@ -103,14 +100,14 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .icons-style{
   font-size: 1.5rem;
-  color: #cfd2f5;
+  color: var(--color-text);
 }
-.icons-style:hover {color:#6196f7}
+.icons-style:hover {color:#6196f7;}
 
 
 
 .content-section{
-  margin-top: 3rem;
+  margin-top: 4rem;
 }
 
 
@@ -119,7 +116,8 @@ input[type="search"]::-webkit-search-cancel-button {
   justify-content: space-between;
   align-items: flex-end;
 
-  color: #cfd2f5;
+  color: var(--color-text);
+  transition: color 1s;
   margin-bottom: 2rem;
 
   user-select:none;
