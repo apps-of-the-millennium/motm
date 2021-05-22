@@ -93,8 +93,7 @@
 .category-popup:hover .hover-info.bottom {display: block; }
 
 .category-label {
-    color: var(--color-text);
-    transition: color 1s;;
+    color: #000000;
     font-size: 30px;
     font-weight: 600;
 }
@@ -120,7 +119,7 @@
 .shows{ background: rgb(43, 159, 226);}
 .shows:hover{ background: rgb(3, 128, 201);}
 
-.games{ background: rgb(52, 207, 104);}
+.games{ background: rgb(29, 216, 92);}
 .games:hover{ background: rgb(1, 202, 68);}
 
 .music{ background: rgb(226, 147, 43);}
