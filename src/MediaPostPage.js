@@ -45,14 +45,13 @@ class MediaPostPage extends React.Component {
         clearTimeout(this.state.timer);
         switch(listType) {
             case 'f':
-                console.log('IN FAVS')
-                this.setState({ popUp: true, listType: 'Favourites List' });
+                this.setState({ popUp: true, listType: 'Favourites List', addedFavourite: true });
                 break;
             case 'l':
-                this.setState({ popUp: true, listType: 'Later List' });
+                this.setState({ popUp: true, listType: 'Later List', addedLater: true });
                 break;
             case 'c':
-                this.setState({ popUp: true, listType: 'Completed List' });
+                this.setState({ popUp: true, listType: 'Completed List', addedComplete: true });
                 break;
             //default for future for lists
             default:
@@ -123,12 +122,11 @@ class MediaPostPage extends React.Component {
         if(this.state.userId) {
             if (!newRating) {
                 //if newRating doesn't exist user deleted their rating and delete from that books rating
-                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set(
-                    { [mediaId]: firebase.firestore.FieldValue.delete() },
-                    { merge: true }
-                )
+                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').update({
+                    [mediaId]: firebase.firestore.FieldValue.delete()
+                })
                 firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
-                    { ratings: { [this.state.userId]: firebase.firestore.FieldValue.delete() } },
+                    { ratings: { [this.state.userId]: firebase.firestore.FieldValue.delete() }},
                     { merge: true }
                 ).then(() => {
                     this.updateAvg(mediaId);
@@ -136,9 +134,10 @@ class MediaPostPage extends React.Component {
                     console.log(error);
                 })
             } else {
-                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set({
-                    [mediaId]: newRating,
-                })
+                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set(
+                    { [mediaId]: newRating },
+                    { merge: true }, 
+                )
                 firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
                     { ratings: { [this.state.userId]: newRating } },
                     { merge: true }
@@ -148,7 +147,6 @@ class MediaPostPage extends React.Component {
                     console.log(error);
                 })
             }
-            this.setState({ currRating: newRating }); 
         }
     }
 
@@ -216,14 +214,28 @@ class MediaPostPage extends React.Component {
     // }
 
     //update any information for the user when they leave the page (to prevent spam)
-    async componentWillUnmount() {
+    componentWillUnmount() {
         if(this.props.id) {
             this.updateRating(this.state.currRating, this.props.id);
             this.updateCompleted(this.props.id, this.state.addedComplete);
             this.updateFavourite(this.props.id, this.state.addedFavourite);
             this.updateLater(this.props.id, this.state.addedLater);
+            for (var key in localStorage) {
+                if (key.substring(0,(this.props.id).length) === this.props.id) {
+                  localStorage.removeItem(key);
+                }
+            }
+        }        
+    }
+
+    componentDidUpdate() {
+        //save info to local storage
+        if (typeof (Storage) !== "undefined") {
+            localStorage.setItem(this.props.id + '.completedList', (this.state.addedComplete).toString());
+            localStorage.setItem(this.props.id + '.favouriteList', (this.state.addedFavourite).toString());
+            localStorage.setItem(this.props.id + '.laterList', (this.state.addedLater).toString());
+            localStorage.setItem(this.props.id + '.rating', (this.state.currRating));
         }
-        
     }
 
     componentDidMount() {
@@ -234,6 +246,26 @@ class MediaPostPage extends React.Component {
             this.setState({ isLoaded: true });
         })
 
+        if (typeof (Storage) !== "undefined") {
+            let local_completedStr = localStorage.getItem(this.props.id + '.completedList') || 'false';
+            let local_completed = (local_completedStr === 'true'); //string to bool conversion
+
+            let local_favouriteStr = localStorage.getItem(this.props.id + '.favouriteList') || 'false';
+            let local_favourite = (local_favouriteStr === 'true');
+            
+            let local_laterStr = localStorage.getItem(this.props.id + '.laterList') || 'false';
+            let local_later = (local_laterStr === 'true');
+            
+            let local_rating = localStorage.getItem(this.props.id + '.rating') || 0;
+
+            this.setState({
+                addedComplete: local_completed,
+                addedFavourite: local_favourite,
+                addedLater: local_later,
+                currRating: local_rating,
+            })
+        }
+
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
@@ -243,168 +275,119 @@ class MediaPostPage extends React.Component {
         });
 
         this.retrieveUserReviews();
-        // console.log(this.state.reviews);
 
     }
 
     render() {
         if (this.state.isLoaded) {
-            // if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
-            //     return (
-            //         <>
-            //             {(this.state.popUp) ? <div className="popUp">{this.state.mediaInfo['title']} was added to {this.state.listType}</div> : <></>}
-            //             <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>
-            //                 <div className="mediaPost" >
-            //                     {/* picture of media*/}
-            //                     <img className="mediaPostImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']} ></img>
-            //                     {/* title */}
-            //                     <h1 className="mediaPostTitle"><strong>{this.state.mediaInfo['title']}</strong></h1>
-            //                 </div>
-            //                 {(this.state.hover) ?
-            //                     <>
-            //                         <div className="mediaPostInfoBox">
-            //                             {/* basic info depends on category temp will be actors*/}
-            //                             <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-            //                             <div className="ratings">
-            //                                 <div className="star"><AiFillHeart /></div>
-            //                                 <h2 className="ratingValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</h2>
-            //                             </div>
-            //                             <h2 className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</h2>
-            //                             <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-            //                             {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-            //                             <div className="tagContainer">
-            //                                 {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-            //                                     return <div className="tag">{keyName}</div>
-            //                                 }) : "No tag"}
-            //                             </div>
-            //                         </div>
-
-            //                         <div className="mediaPostButtons">
-            //                             <button className="invisible" onClick={() => this.setState({ addedFavourite: true })}><AiFillHeart className="icon" /></button>
-            //                             <button className="invisible" onClick={() => this.setState({ addedLater: true })}><AiFillClockCircle className="icon" /></button>
-            //                             <button className="invisible" onClick={() => this.setState({ addedComplete: true })}><ImCheckmark className="icon" /></button>
-            //                         </div>
-            //                     </> : ''}
-            //             </div>
-            //         </>
-            //     )
+            return (
+                <div className="container">
+                    {(this.state.popUp) && <div className="popUp">
+                        {this.state.mediaInfo['title']} was added to {this.state.listType}
+                        <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
+                    </div>}
+                    {/* Cover Image */}
+                    <div className="coverContainer"></div>
 
 
-                //=====================================================================================Actual MPP==============  
-            // } else {
-                // console.log("MEDIA PP ID:", this.props.id);
-                // console.log(randomColor());
-                return (
-
-                    <div className="container">
-                        {(this.state.popUp) && <div className="popUp">
-                            {this.state.mediaInfo['title']} was added to {this.state.listType}
-                            <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
-                        </div>}
-                        {/* Cover Image */}
-                        <div className="coverContainer"></div>
-
-
-                        {/* Info */}
-                        <div className="infoContainer">
-                            <div className="infoGrid">
-                                {/* picture of media*/}
-                                <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
-                                {/* <div className="mediaPageImg"></div> */}
-                                {/* title */}
-                                <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
-                                {/* buttons */}
-                                <div className="mediaPageButtons">
-                                    <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
-                                    <div className="trophyButton"><ImTrophy className="icon" /></div>
-                                    {(this.state.openOptions) ?
-                                        <div className="dropdown-content2">
-                                            <button className="listOptions" onClick={() => this.setPopup('f')}><AiFillHeart className="icon" /> Favourites </button>
-                                            <button className="listOptions" onClick={() => this.setPopup('l')}><AiFillClockCircle className="icon" /> Watch Later </button>
-                                            <button className="listOptions" onClick={() => this.setPopup('c')}><ImCheckmark className="icon" /> Completed </button>
-                                        </div>
-                                        : ''}
-                                </div>
-                                {/* description */}
-                                <div className="mediaPageDescription">{text}</div>
-                                <div className="mediaPageDescription">{text}</div>
+                    {/* Info */}
+                    <div className="infoContainer">
+                        <div className="infoGrid">
+                            {/* picture of media*/}
+                            <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
+                            {/* <div className="mediaPageImg"></div> */}
+                            {/* title */}
+                            <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
+                            {/* buttons */}
+                            <div className="mediaPageButtons">
+                                <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
+                                <div className="trophyButton"><ImTrophy className="icon" /></div>
+                                {(this.state.openOptions) ?
+                                    <div className="dropdown-content2">
+                                        <button className="listOptions" onClick={() => this.setPopup('f')}><AiFillHeart className="icon" /> Favourites </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('l')}><AiFillClockCircle className="icon" /> Watch Later </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('c')}><ImCheckmark className="icon" /> Completed </button>
+                                    </div>
+                                    : ''}
                             </div>
+                            {/* description */}
+                            <div className="mediaPageDescription">{text}</div>
+                            <div className="mediaPageDescription">{text}</div>
                         </div>
-
-                        {/* Other features */}
-
-                        <div className="contentContainer">
-
-                            <div className="sidebar">
-                                {/* info going down left side */}
-                                <div className="rateContainer">
-                                    <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
-                                    <button className="rateButton">
-                                        <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                            onChange={(event, newRating) => this.setState({currRating: newRating})} />
-                                    </button>
-                                    <span className="yourRatingValue">{this.state.currRating}</span>
-                                </div>
-                                <div className="extraInfoContainer">
-                                    <div className="extraInfoTitle">Average Rating</div>
-                                    <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
-
-                                    <div className="extraInfoTitle">Category</div>
-                                    <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-
-                                    <div className="extraInfoTitle">Release date</div>
-                                    <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
-
-                                    <div className="extraInfoTitle">Publisher</div>
-                                    <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-
-                                    {/* even more info ...example # of times favorited, watch listed, completed ... */}
-                                </div>
-
-                                <div className="allTagsContainer">
-                                    <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                        let color = randomColor({
-                                            luminosity: 'light',
-                                            // hue: 'blue'
-                                        });
-                                        return <div className="tag" style={{ background: color }}>{keyName}</div>
-                                    }) : <div className="extraInfoValue">No tags available :(</div>}
-
-                                </div>
-
-                                {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
-                                <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
-                                    <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
-                                </Link>
-                            </div>
-
-                            <div className="overviewContentContainer">
-                                <div className="reviewsContainer">
-                                    <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                                    {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
-                                        <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
-                                        : (
-                                            <div className="reviewsGrid">
-                                                {this.state.reviews.map((post) => {
-                                                    return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
-                                                })}
-
-                                                {/* <ReviewPost />
-                                                <ReviewPost />
-                                                <ReviewPost />
-                                                <ReviewPost /> */}
-                                            </div>
-                                        )}
-
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
-                )
-            // }
 
+                    {/* Other features */}
+
+                    <div className="contentContainer">
+
+                        <div className="sidebar">
+                            {/* info going down left side */}
+                            <div className="rateContainer">
+                                <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
+                                <button className="rateButton">
+                                    <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
+                                        onChange={(event, newRating) => this.setState({currRating: newRating})} />
+                                </button>
+                                <span className="yourRatingValue">{this.state.currRating}</span>
+                            </div>
+                            <div className="extraInfoContainer">
+                                <div className="extraInfoTitle">Average Rating</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Category</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Release date</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+
+                                <div className="extraInfoTitle">Publisher</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+
+                                {/* even more info ...example # of times favorited, watch listed, completed ... */}
+                            </div>
+
+                            <div className="allTagsContainer">
+                                <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
+                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
+                                    let color = randomColor({
+                                        luminosity: 'light',
+                                        // hue: 'blue'
+                                    });
+                                    return <div className="tag" style={{ background: color }}>{keyName}</div>
+                                }) : <div className="extraInfoValue">No tags available :(</div>}
+
+                            </div>
+
+                            {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
+                            <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
+                                <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+                            </Link>
+                        </div>
+
+                        <div className="overviewContentContainer">
+                            <div className="reviewsContainer">
+                                <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
+                                {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
+                                    <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
+                                    : (
+                                        <div className="reviewsGrid">
+                                            {this.state.reviews.map((post) => {
+                                                return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
+                                            })}
+
+                                            {/* <ReviewPost />
+                                            <ReviewPost />
+                                            <ReviewPost />
+                                            <ReviewPost /> */}
+                                        </div>
+                                    )}
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            )
         } else {
             return (
                 <h1>LOADING...</h1>

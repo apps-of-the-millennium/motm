@@ -25,9 +25,33 @@ class MediaPost extends React.Component { //({ user, match }) => {
             popUp: false,
             listType: this.props.listType,
             popUpMessage: '',
+            addedFavourite: false,
+            addedLater: false,
+            addedComplete: false,
+            timer: '',
             //not sure if this is the most secure way / best way in case sign out / auth state change
             userId: '',
         };
+    }
+
+    async setPopup(listType) {
+        clearTimeout(this.state.timer);
+        switch(listType) {
+            case 'f':
+                this.setState({ popUp: true, popUpMessage: 'added to Favourites List', addedFavourite: true });
+                break;
+            case 'l':
+                this.setState({ popUp: true, popUpMessage: 'added to Later List', addedLater: true });
+                break;
+            case 'c':
+                this.setState({ popUp: true, popUpMessage: 'added to Completed List', addedComplete: true });
+                break;
+            //default for future for lists
+            default:
+                this.setState({ popUp: true });
+                break;
+        }
+        this.setState({ timer: setTimeout(() => this.setState({ popUp: false }), 5000) });
     }
 
     deleteFromList(id, listType) {
@@ -41,44 +65,50 @@ class MediaPost extends React.Component { //({ user, match }) => {
     //refactor below functions, same functions with diff list names
     updateFavourite(id) {
         if(this.state.userId) {
-            firestore.collection('users').doc(this.state.userId).collection('lists').doc('favouriteList').set(
-                { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
-                { merge: true }
-            );
-            this.setState({ popUp: true, popUpMessage: 'Favourites List' });
-            setTimeout(function () {
-                this.setState({ popUp: false });
-            }.bind(this), 5000);
+            if(!this.state.addedFavourite) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('favouriteList').set(
+                    { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }
+                );
+                this.setState({ popUpMessage: 'Favourites List' });
+                this.setPopup('f');
+            } else {
+                this.setState({ popUpMessage: 'already added to Favourites' });
+                this.setPopup('');
+            }
         }
-        
     }
 
     updateLater(id) {
         if(this.state.userId) {
-            firestore.collection('users').doc(this.state.userId).collection('lists').doc('laterList').set(
-                { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
-                { merge: true }
-            );
-            this.setState({ popUp: true, popUpMessage: 'Later List' });
-            setTimeout(function () {
-                this.setState({ popUp: false });
-            }.bind(this), 5000);
+            if(!this.state.addedLater) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('laterList').set(
+                    { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }
+                );
+                this.setState({ popUpMessage: 'Later List' });
+                this.setPopup('l');
+            } else {
+                this.setState({ popUpMessage: 'already added to Later List' });
+                this.setPopup('');
+            }
         }
-        
     }
 
     updateCompleted(id) {
         if(this.state.userId) {
-            firestore.collection('users').doc(this.state.userId).collection('lists').doc('completedList').set(
-                { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
-                { merge: true }
-            );
-            this.setState({ popUp: true, popUpMessage: 'Completed List' });
-            setTimeout(function () {
-                this.setState({ popUp: false });
-            }.bind(this), 5000);
+            if(!this.state.addedComplete) {
+                firestore.collection('users').doc(this.state.userId).collection('lists').doc('completedList').set(
+                    { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
+                    { merge: true }
+                );
+                this.setState({ popUpMessage: 'Completed List' });
+                this.setPopup('c');
+            } else {
+                this.setState({ popUpMessage: 'already added to Completed List' });
+                this.setPopup('');
+            }
         }
-        
     }
 
     getPicture(url) {
@@ -127,7 +157,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                 return (
                     <>
                         {(this.state.popUp) && <div className="popUp">
-                            {this.state.mediaInfo['title']} was added to {this.state.popUpMessage}
+                            {this.state.mediaInfo['title']} was {this.state.popUpMessage}
                             <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
                         </div>}
                         <div className="mediaContainer" onMouseEnter={this.onMouseEnterHandler} onMouseLeave={this.onMouseLeaveHandler}>

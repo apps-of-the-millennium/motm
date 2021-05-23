@@ -59,8 +59,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         this.setState({ openFollowers: false, openFollowing: false });            
     }
 
-    //refactor later to prevent spamming maybe a timeout or only run upon a componentDidUpdate
-    async updateFollowing(setFollowing) {
+    updateFollowing(setFollowing) {
         let currUser = this.state.userId;
         let currProfile = this.props.user;
         //in case of signed out user
@@ -69,16 +68,18 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             if(setFollowing) {
                 //update the current users following list
                 let dbRef = firestore.collection('users').doc(currUser).collection('following');
-                dbRef.doc(currProfile).set({
-                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                }).then(() => {
+                dbRef.doc(currProfile).set(
+                    { timeStamp: firebase.firestore.FieldValue.serverTimestamp() },
+                    { merge: true },
+                ).then(() => {
                     console.log("Following Document written with id: ", currUser);
                 })
                 //update the current profile we are on followers list
                 dbRef = firestore.collection('users').doc(currProfile).collection('followers');
-                dbRef.doc(currUser).set({
-                    timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
-                }).then(() => {
+                dbRef.doc(currUser).set(
+                    { timeStamp: firebase.firestore.FieldValue.serverTimestamp() },
+                    { merge: true },
+                ).then(() => {
                     console.log("Following Document written with id: ", currUser);
                 })
             } else {
@@ -126,6 +127,17 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         }
     }
 
+    //this is causing issues
+    // componentWillUnmount() {
+    //     this.updateFollowing(this.state.followingCurr);
+    //     //only one thing I set idk if I have to for loop it
+    //     for (var key in localStorage) {
+    //         if (key.substring(0,(this.props.user).length) === this.props.user) {
+    //             localStorage.removeItem(key);
+    //         }
+    //     }
+    // }
+
     componentDidMount() {
         //may want to refactor everything into smaller separate functions
         firebase.auth().onAuthStateChanged((user) => {
@@ -134,6 +146,15 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             }
             this.setState({ userId: user.uid, isLoaded: true });
         })
+
+        // if (typeof (Storage) !== "undefined") {
+        //     let local_followedStr = localStorage.getItem(this.props.user + '.followed') || 'false';
+        //     let local_followed = (local_followedStr === 'true'); //string to bool conversion
+
+        //     this.setState({
+        //         followingCurr: local_followed,
+        //     })
+        // }
         
         var lists = firestore.collection('users').doc(this.props.user).collection('lists');
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
@@ -162,7 +183,6 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         let followingArr = [];
         following.get().then((following) => {
             following.forEach((follow) => {
-                console.log(follow);
                 followingArr.push(follow.id);
             })
             this.setState({ following: followingArr });
@@ -189,12 +209,15 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidUpdate(prevProps) {
+        // if (typeof (Storage) !== "undefined") {
+        //     localStorage.setItem(this.props.user + '.followed', (this.state.followingCurr).toString());
+        // }
         if(this.props.user !== prevProps.user) {
             this.handleClose();
             this.componentDidMount();
             //in case auth did not change but you changed from your page to elsewhere, change usersProfile
             //contemplating changing the url for personal profile so that it can make editing your profile easier
-            if(this.props.user === firebase.auth().currentUser.uid) {
+            if(this.props.user === this.state.userId) {
                 this.setState({ usersProfile: true });
             } else {
                 this.setState({ usersProfile: false });

@@ -18,13 +18,11 @@ export const AuthProvider = ({ children }) => {
               firestore.collection('users').doc(userId).set({
                   userName: user.displayName,
                   bio: "",
-                  favourites: [],
                   //can include temp pic later or retrieve their current
                   profilePic: user.photoURL,
                   //add more defaults later
-                //watchlist etc
             })
-            // firestore.collection('users').doc(userId).collection('later');
+            //probably don't need these
             firestore.collection('users').doc(userId).collection('ratings').doc('books').set({});
           }
         });
