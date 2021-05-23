@@ -2,21 +2,24 @@
     margin: 0 auto;
     width: 100%;
     height: 100rem; /*to change */
-    background-color:#0e1931;
+    background-color:var(--color-background-light);
+    transition: background-color 1s;
 
     user-select: none;
 }
 
 .rp-coverContainer {
     height: 15rem;
-    background: #070e1b;
+    background: var(--color-background);
+    transition: background 1s;
     display: flex;
     justify-content: center; /* align horizontal */
     align-items: center; /* align vertical */
 }
 
 .rp-title{
-    color: rgb(180, 180, 180);
+    color: var(--color-text);
+    transition: color 1s;
     font-size: 1.7rem;
     /* font-style: italic; */
     font-weight: 600;
@@ -31,7 +34,8 @@
 .rp-contentContainer { /*has both info and summary containers */
     width: 40%;
     height: auto;
-    background: #000818;
+    background: var(--color-background-dark);
+    transition: background 1s;
     margin: 0 auto;
     position: relative;
     bottom: 4rem;
@@ -45,7 +49,8 @@
     /* width: 80%; */
     border-radius: 4px;
     height: auto;
-    background: #141e30;
+    background: var(--color-background-light);
+    transition: background 1s;
     margin: 0 auto;
 
     display: grid;
@@ -65,7 +70,8 @@
 .rp-info-label{
     font-size: large;
     font-weight: 600;
-    color: #bfc2bf;
+    color: var(--color-text);
+    transition: color 1s;
 }
 
 .rp-info-big-label {
@@ -120,7 +126,8 @@
 
 .rp-textContainer {
     height: auto;
-    background: #141e30;
+    background: var(--color-background-light);
+    transition: background 1s;
     margin: 0 auto;
     margin-top: 1rem;
     border-radius: 4px;
@@ -132,7 +139,8 @@
 .rp-text {
     padding: 12px 20px;
     font-size: 18px;
-    color: #b1afaf;
+    color: var(--color-text);
+    transition: color 1s;
 
     user-select: text;
 }
@@ -143,7 +151,8 @@
 
 .rp-helpfulContainer {
     margin: 0 auto;
-    background: #000818;;
+    background: var(--color-background-dark);
+    transition: background 1s;
     padding: .5rem;
     width: max-content;
     position: relative;
@@ -152,7 +161,8 @@
     border-radius: 4px;
 }
 .rp-helpful-title{
-    color: #cecccc;
+    color: var(--color-text);
+    transition: color 1s;
     font-size: 20px;
     font-weight: 600;
     user-select: none;

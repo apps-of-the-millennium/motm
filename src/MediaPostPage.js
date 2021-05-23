@@ -319,18 +319,17 @@ class MediaPostPage extends React.Component {
                     {/* Other features */}
 
                     <div className="contentContainer">
-
                         <div className="sidebar">
                             {/* info going down left side */}
                             <div className="rateContainer">
                                 <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                 <button className="rateButton">
-                                    <Rating style={{ fontSize: "2em" }} value={this.state.currRating} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
+                                    <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
                                         onChange={(event, newRating) => this.setState({currRating: newRating})} />
                                 </button>
                                 <span className="yourRatingValue">{this.state.currRating}</span>
                             </div>
-                            <div className="extraInfoContainer">
+                            <div className="extraInfoContainer info">
                                 <div className="extraInfoTitle">Average Rating</div>
                                 <div className="extraInfoValue">{(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
@@ -346,7 +345,7 @@ class MediaPostPage extends React.Component {
                                 {/* even more info ...example # of times favorited, watch listed, completed ... */}
                             </div>
 
-                            <div className="allTagsContainer">
+                            <div className="extraInfoContainer tags">
                                 <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
                                 {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
                                     let color = randomColor({
@@ -364,28 +363,44 @@ class MediaPostPage extends React.Component {
                             </Link>
                         </div>
 
-                        <div className="overviewContentContainer">
-                            <div className="reviewsContainer">
-                                <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                                {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
-                                    <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
-                                    : (
-                                        <div className="reviewsGrid">
-                                            {this.state.reviews.map((post) => {
-                                                return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
-                                            })}
+                        <div className="allTagsContainer">
+                            <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
+                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
+                                let color = randomColor({
+                                    luminosity: 'light',
+                                    // hue: 'blue'
+                                });
+                                return <div className="tag" style={{ background: color }}>{keyName}</div>
+                            }) : <div className="extraInfoValue">No tags available :(</div>}
 
-                                            {/* <ReviewPost />
-                                            <ReviewPost />
-                                            <ReviewPost />
-                                            <ReviewPost /> */}
-                                        </div>
-                                    )}
-
-                            </div>
                         </div>
+
+                        {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
+                        <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
+                            <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+                        </Link>
                     </div>
 
+                    <div className="overviewContentContainer">
+                        <div className="reviewsContainer">
+                            <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
+                            {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
+                                <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
+                                : (
+                                    <div className="reviewsGrid">
+                                        {this.state.reviews.map((post) => {
+                                            return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
+                                        })}
+
+                                        {/* <ReviewPost />
+                                        <ReviewPost />
+                                        <ReviewPost />
+                                        <ReviewPost /> */}
+                                    </div>
+                                )}
+
+                        </div>
+                    </div>
                 </div>
             )
         } else {
