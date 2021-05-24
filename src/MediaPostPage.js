@@ -100,23 +100,18 @@ class MediaPostPage extends React.Component {
     }
 
     async updateAvg(mediaId) {
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').get().then((doc) => {
-            if (doc.exists) {
-                let userRatings = doc.data()['ratings'];
-                let iterator = Object.values(userRatings);
-                let size = iterator.length;
-                let sum = 0;
-                for (var i = 0; i < size; i++) {
-                    sum += iterator[i];
-                }
-                console.log("sum: " + sum);
-                console.log("size: " + size);
-                console.log(Object.values(userRatings));
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).set(
-                    { avgRating: (sum / size) },
-                    { merge: true }
-                )
-            }
+        firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').get().then((snapshot) => {
+            let sum = 0;
+            let size = snapshot.docs.length;
+            snapshot.docs.forEach((doc) => {
+                let userRating = doc.data()['rating'];
+                sum += userRating;
+            })
+            console.log(sum + '/' + size);
+            firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).set(
+                { avgRating: Math.round((sum / size) * 10) / 10 },
+                { merge: true }
+            )
         })
     }
 
@@ -127,10 +122,7 @@ class MediaPostPage extends React.Component {
                 firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').update({
                     [mediaId]: firebase.firestore.FieldValue.delete()
                 })
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
-                    { ratings: { [this.state.userId]: firebase.firestore.FieldValue.delete() }},
-                    { merge: true }
-                ).then(() => {
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.state.userId).delete().then(() => {
                     this.updateAvg(mediaId);
                 }).catch((error) => {
                     console.log(error);
@@ -140,9 +132,8 @@ class MediaPostPage extends React.Component {
                     { [mediaId]: newRating },
                     { merge: true }, 
                 )
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc('userRatings').set(
-                    { ratings: { [this.state.userId]: newRating } },
-                    { merge: true }
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.state.userId).set(
+                    { rating: newRating },
                 ).then(() => {
                     this.updateAvg(mediaId);
                 }).catch((error) => {
@@ -190,9 +181,9 @@ class MediaPostPage extends React.Component {
                 this.setState({ reviews: [...this.state.reviews, newReviewPost] })
             });
         })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
     }
 
     onMouseEnterHandler = () => {
@@ -360,12 +351,8 @@ class MediaPostPage extends React.Component {
 
                             <div className="extraInfoContainer tags">
                                 <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                                {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                    let color = randomColor({
-                                        luminosity: 'light',
-                                        // hue: 'blue'
-                                    });
-                                    return <div className="tag" style={{ background: color }}>{keyName}</div>
+                                {(this.tags.length !== 0) ? (this.tags).map((tag) => {
+                                    return <div className="tag" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
                                 }) : <div className="extraInfoValue">No tags available :(</div>}
 
                             </div>
