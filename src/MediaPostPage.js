@@ -205,7 +205,9 @@ class MediaPostPage extends React.Component {
     }
 
     onClick = () => {
-        this.setState({ openOptions: !this.state.openOptions });
+        if(this.state.userId) {
+            this.setState({ openOptions: !this.state.openOptions });            
+        }
     }
 
     //trying to make it so the dropdown closes when u click outside, cant get to work
@@ -312,7 +314,6 @@ class MediaPostPage extends React.Component {
                             </div>
                             {/* description */}
                             <div className="mediaPageDescription">{text}</div>
-                            <div className="mediaPageDescription">{text}</div>
                         </div>
                     </div>
 
@@ -324,8 +325,11 @@ class MediaPostPage extends React.Component {
                             <div className="rateContainer">
                                 <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                 <button className="rateButton">
-                                    <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                        onChange={(event, newRating) => this.setState({currRating: newRating})} />
+                                    {(this.state.userId) ? 
+                                        <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
+                                        onChange={(event, newRating) => this.setState({currRating: newRating})} /> :
+                                        <Rating name="rating" style={{ fontSize: "2em" }} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />} disabled />
+                                    }
                                 </button>
                                 <span className="yourRatingValue">{this.state.currRating}</span>
                             </div>
@@ -363,42 +367,24 @@ class MediaPostPage extends React.Component {
                             </Link>
                         </div>
 
-                        <div className="allTagsContainer">
-                            <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).map((keyName, i) => {
-                                let color = randomColor({
-                                    luminosity: 'light',
-                                    // hue: 'blue'
-                                });
-                                return <div className="tag" style={{ background: color }}>{keyName}</div>
-                            }) : <div className="extraInfoValue">No tags available :(</div>}
+                        <div className="overviewContentContainer">
+                            <div className="reviewsContainer">
+                                <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
+                                {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
+                                    <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
+                                    : (
+                                        <div className="reviewsGrid">
+                                            {this.state.reviews.map((post) => {
+                                                return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
+                                            })}
 
-                        </div>
-
-                        {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
-                        <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
-                            <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
-                        </Link>
-                    </div>
-
-                    <div className="overviewContentContainer">
-                        <div className="reviewsContainer">
-                            <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                            {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
-                                <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
-                                : (
-                                    <div className="reviewsGrid">
-                                        {this.state.reviews.map((post) => {
-                                            return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
-                                        })}
-
-                                        {/* <ReviewPost />
-                                        <ReviewPost />
-                                        <ReviewPost />
-                                        <ReviewPost /> */}
-                                    </div>
-                                )}
-
+                                            {/* <ReviewPost />
+                                            <ReviewPost />
+                                            <ReviewPost />
+                                            <ReviewPost /> */}
+                                        </div>
+                                    )}
+                            </div>
                         </div>
                     </div>
                 </div>

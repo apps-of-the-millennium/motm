@@ -3,20 +3,37 @@ import { auth } from "./firebase";
 import firebase from 'firebase/app';
 import { AuthContext } from "./context";
 import './Header.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { RiLoginBoxFill } from 'react-icons/ri';
 
-function signInWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider);
-}
+// function signInWithGoogle() {
+//   const provider = new firebase.auth.GoogleAuthProvider();
+//   auth.signInWithPopup(provider).then(() => {
+//     history.push('/');
+//   })
+// }
 
-function signOut() {
-  firebase.auth().signOut();
-}
+// function signOut() {
+//   firebase.auth().signOut();
+//   history.push('/');
+// }
 
 const Header = () => {
   const { user } = useContext(AuthContext);
+  const history = useHistory();
+
+  function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(() => {
+      history.push('/');
+    })
+  }
+  
+  function signOut() {
+    firebase.auth().signOut().then(() => {
+      history.push('/');
+    })
+  }
 
   return (
     <header className="appHeader">
