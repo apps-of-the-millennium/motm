@@ -306,9 +306,9 @@ class MediaPostPage extends React.Component {
                                 <div className="trophyButton"><ImTrophy className="icon" /></div>
                                 {(this.state.openOptions) ?
                                     <div className="dropdown-content2">
-                                        <button className="listOptions" onClick={() => this.setPopup('f')}><AiFillHeart className="icon" /> Favourites </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('l')}><AiFillClockCircle className="icon" /> Watch Later </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('c')}><ImCheckmark className="icon" /> Completed </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="icon" />  </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="icon" />  </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="icon" />  </button>
                                     </div>
                                     : ''}
                             </div>
