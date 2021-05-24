@@ -39,6 +39,8 @@ class MediaPostPage extends React.Component {
             timer: '',
             reviews: []
         };
+
+        this.tags = []; //contains objects {tag_name: asdf, tag_color: asdf}
     }
 
     async setPopup(listType) {
@@ -210,10 +212,17 @@ class MediaPostPage extends React.Component {
         }
     }
 
-    //trying to make it so the dropdown closes when u click outside, cant get to work
-    // onClickOutside = () => {
-    //     this.setState( { openOptions: false });
-    // }
+    generateColoredTags = () => {
+        if (this.state.mediaInfo['tags'])  {
+            Object.keys(this.state.mediaInfo['tags']).forEach((keyName, i) => {
+                let color = randomColor({
+                    luminosity: 'light',
+                    // hue: 'blue'
+                });
+                this.tags.push({ tag_name: keyName, tag_color: color});
+            });
+        }
+    }
 
     //update any information for the user when they leave the page (to prevent spam)
     componentWillUnmount() {
@@ -273,11 +282,11 @@ class MediaPostPage extends React.Component {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
                 this.getRating(this.props.id);
+                this.generateColoredTags();
             }
         });
 
         this.retrieveUserReviews();
-
     }
 
     render() {
