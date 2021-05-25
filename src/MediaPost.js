@@ -69,8 +69,10 @@ class MediaPost extends React.Component { //({ user, match }) => {
                 firestore.collection('users').doc(this.state.userId).collection('lists').doc('favouriteList').set(
                     { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
-                );
-                this.setPopup('f');
+                ).then(() => {
+                    this.setPopup('f');
+                });
+                
             } else {
                 this.setState({ popUpMessage: 'already added to Favourites' });
                 this.setPopup('');
@@ -84,8 +86,10 @@ class MediaPost extends React.Component { //({ user, match }) => {
                 firestore.collection('users').doc(this.state.userId).collection('lists').doc('laterList').set(
                     { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
-                );
-                this.setPopup('l');
+                ).then(() => {
+                    this.setPopup('l');
+                });
+                
             } else {
                 this.setState({ popUpMessage: 'already added to Later List' });
                 this.setPopup('');
@@ -99,8 +103,9 @@ class MediaPost extends React.Component { //({ user, match }) => {
                 firestore.collection('users').doc(this.state.userId).collection('lists').doc('completedList').set(
                     { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
-                );
-                this.setPopup('c');
+                ).then(() => {
+                    this.setPopup('c');
+                });
             } else {
                 this.setState({ popUpMessage: 'already added to Completed List' });
                 this.setPopup('');
