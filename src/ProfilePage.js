@@ -8,6 +8,8 @@ import { RiUserFollowFill, RiUserUnfollowFill } from 'react-icons/ri';
 import FollowList from './FollowList';
 import PropTypes from 'prop-types';
 
+import ActivityFeed from './ActivityFeed';
+
 // const changeUserName = async (userId, name) => {
 //     //check later for bad input
 //     firestore.collection('users').doc(userId).set({
@@ -287,6 +289,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                     </div>
 
                 </div>
+
+
+                <ActivityFeed userId={this.props.user} currentUID={this.state.userId}/>
             </>
             )
         } else {

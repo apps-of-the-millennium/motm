@@ -200,6 +200,7 @@
     text-align: center;
     border-radius: 4px;
     padding: 10px 60px 10px 20px;
+    z-index: 120;
     /* Can add animation later */
 }
 

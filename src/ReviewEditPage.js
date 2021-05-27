@@ -89,7 +89,7 @@ class ReviewEditPage extends React.Component {
                 //we will retrieve info from DB (else statment) if that is the case
                 if (Object.keys(this.props.location.state.mediaInfo).length) {
                     console.log(this.props.location.state.mediaInfo)
-                    this.category = this.state.mediaInfo['category'].toLowerCase();
+                    this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
                     this.categoryPosts = this.category.slice(0, -1) + 'Posts';
                 }
                 else {

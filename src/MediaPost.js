@@ -9,6 +9,8 @@ import { AiFillStar, AiFillHeart, AiFillClockCircle, AiFillCloseCircle } from 'r
 import { ImCheckmark } from 'react-icons/im';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 
+import addNotificationToUserActivity from './firestoreHelperFunctions';
+
 class MediaPost extends React.Component { //({ user, match }) => {
     constructor(props) {
         super(props);
@@ -71,6 +73,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     { merge: true }
                 ).then(() => {
                     this.setPopup('f');
+                    addNotificationToUserActivity(this.state.userId, this.props.id, `Favourited `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
                 });
                 
             } else {
@@ -88,6 +91,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     { merge: true }
                 ).then(() => {
                     this.setPopup('l');
+                    addNotificationToUserActivity(this.state.userId, this.props.id, `Plans to watch `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
                 });
                 
             } else {
@@ -105,6 +109,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     { merge: true }
                 ).then(() => {
                     this.setPopup('c');
+                    addNotificationToUserActivity(this.state.userId, this.props.id, `Completed `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
                 });
             } else {
                 this.setState({ popUpMessage: 'already added to Completed List' });
@@ -202,7 +207,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     </>
 
                 )
-            } else { //envData.MEDIA_P_TYPE.SIMPLE i.e top10 post style
+            } else { //.MEDIA_P_TYPE.SIMPLE i.e top10 post style
                 return (
                     <div className="mediaContainer2">
                         {/* picture of media*/}
