@@ -4,6 +4,7 @@ import firebase from 'firebase/app';
 import { firestore } from './firebase';
 import TextareaAutosize from 'react-textarea-autosize';
 import ImageUploader from "react-images-upload";
+import Filter from 'bad-words';
 
 function EditProfile(props) {
     const [userId, setUserId] = useState('');
@@ -27,8 +28,9 @@ function EditProfile(props) {
     function handleSubmit(bio) {
         if(userId) {
             if(bio) {
+                let filter = new Filter();
                 firestore.collection('users').doc(userId).set(
-                    { bio: bio },
+                    { bio: filter.clean(bio) },
                     { merge: true }
                 ).then(() => {
                     console.log("Bio Updated");
@@ -73,7 +75,7 @@ function EditProfile(props) {
             {(userId !== null ?
                 <div className="form">
                     <label className="formLabel" htmlFor="uploadPhoto">Upload Photo</label><br/>
-                    <ImageUploader
+                    <ImageUploader style={{width:'25%'}}
                         withIcon={true}
                         onChange={onUpload}
                         withPreview={true}

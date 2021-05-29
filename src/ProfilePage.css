@@ -65,6 +65,8 @@ body {
     background: var(--color-background-light);
     transition: background 1s;
     border-radius: 5%;
+    max-width: 40%;
+    word-break: break-all;
 }
 
 .list {
