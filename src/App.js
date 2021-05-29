@@ -11,6 +11,7 @@ import { firestore } from "./firebase";
 import ReviewEditPage from './ReviewEditPage';
 import ReviewPage from './ReviewPage';
 import BrowsePage from './BrowsePage'
+import EditProfile from './EditProfile';
 
 import ScrollToTop from './ScrollToTop';
 
@@ -28,6 +29,13 @@ class App extends Component {
             <Header />
             <Switch>
               <Route path="/" component={Home} exact />
+              <Route
+                path="/profile/:id/editProfile"
+                render={props => (
+                  <EditProfile
+                    user={props.match.params.id} {...props} />
+                )}
+              />
               <Route
                 path="/profile/:id"
                 render={props => (

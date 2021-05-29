@@ -6,20 +6,9 @@ import './Header.css';
 import { Link, useHistory } from 'react-router-dom';
 import { RiLoginBoxFill } from 'react-icons/ri';
 
-// function signInWithGoogle() {
-//   const provider = new firebase.auth.GoogleAuthProvider();
-//   auth.signInWithPopup(provider).then(() => {
-//     history.push('/');
-//   })
-// }
-
-// function signOut() {
-//   firebase.auth().signOut();
-//   history.push('/');
-// }
-
 const Header = () => {
   const { user } = useContext(AuthContext);
+  // const [profilePic, setProfilePic] = useState('');
   const history = useHistory();
 
   function signInWithGoogle() {
@@ -35,9 +24,25 @@ const Header = () => {
     })
   }
 
+  // not sure if we want this here would require a useEffect in case of change to profilePic
+  // function getProfilePicture(url) {
+  //   //check if it is a url or path to firebase storage
+  //   if (url.charAt(0) === '/') {
+  //     const ref = firebase.storage().ref(url);
+  //     ref.getDownloadURL()
+  //       .then((url) => {
+  //           setProfilePic(url);
+  //       })
+  //       .catch((e) =>
+  //           console.log('Error retrieving profilePic => ', e)
+  //       );
+  //   } else {
+  //     setProfilePic(url);
+  //   }
+  // }
+
   return (
     <header className="appHeader">
-
       <>
         <div className="logoContainer">
           <img className="appHeaderImg" src="/logo.png" alt="bruh" />
@@ -62,7 +67,7 @@ const Header = () => {
                 <div className="dropdown-content">
                   <Link className="profileOption" to={`/profile/${user.uid}`}>Profile</Link>
                   <a href="/#" className="profileOption">Settings</a>
-                  <a href="/#" className="profileOption" onClick={() => signOut()}>Log Out</a> {/*sends u to homepage upon sign out */}
+                  <a href="/#" className="profileOption" onClick={() => signOut()}>Log Out</a> {/*sends you to homepage upon sign out */}
                 </div>
               </div>
             </div>
