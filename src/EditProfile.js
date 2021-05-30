@@ -11,7 +11,9 @@ function EditProfile(props) {
     const [photo, setPhoto] = useState('');
     const [fileType, setFileType] = useState('');
     const [bio, setBio] = useState('');
+    const [userName, setUserName] = useState('');
     const MAX_BIO = 3000; //can change later
+    const MAX_USER = 20;
 
     const onUpload = photo => {
         try {
@@ -25,8 +27,17 @@ function EditProfile(props) {
         }
     };
 
-    function handleSubmit(bio) {
+    function handleSubmit() {
         if(userId) {
+            if(userName) {
+                let filter = new Filter();
+                firestore.collection('users').doc(userId).set(
+                    { userName: filter.clean(userName) },
+                    { merge: true }
+                ).then(() => {
+                    console.log("Bio Updated");
+                });
+            }
             if(bio) {
                 let filter = new Filter();
                 firestore.collection('users').doc(userId).set(
@@ -74,6 +85,13 @@ function EditProfile(props) {
         <div className="pageContainer">
             {(userId !== null ?
                 <div className="form">
+                    <label className="formLabel" htmlFor="userName">Update Username</label><br/>
+                    <TextareaAutosize
+                        className="editUserName"
+                        id="userName"
+                        onChange={(e) => setUserName(e.target.value)} > 
+                    </TextareaAutosize><br/>
+
                     <label className="formLabel" htmlFor="uploadPhoto">Upload Photo</label><br/>
                     <ImageUploader style={{width:'25%'}}
                         withIcon={true}
@@ -92,10 +110,10 @@ function EditProfile(props) {
                         onChange={(e) => setBio(e.target.value)} > 
                     </TextareaAutosize>
 
-                    {(bio.length <= MAX_BIO ) ?
+                    {(bio.length <= MAX_BIO && userName.length <= MAX_USER) ?
                         //there might be a workaround if you  can edit message you want to send to make it bigger than MAX_BIO
-                        (<div className="saveButton" onClick={() => handleSubmit(bio)}>Save</div>) 
-                        : <div className="warningMessage">Summary must have no more than {MAX_BIO} letters</div> 
+                        (<div className="saveButton" onClick={() => handleSubmit()}>Save</div>) 
+                        : <div className="warningMessage">Bio must have no more than {MAX_BIO} characters and Username must have no more than {MAX_USER}</div> 
                     }
 
                 </div>
