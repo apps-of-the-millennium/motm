@@ -5,8 +5,10 @@ import firebase from 'firebase/app';
 import envData from './envData';
 import MediaPost from './MediaPost';
 import { RiUserFollowFill, RiUserUnfollowFill } from 'react-icons/ri';
+import { FaRegEdit } from 'react-icons/fa';
 import FollowList from './FollowList';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 // const changeUserName = async (userId, name) => {
 //     //check later for bad input
@@ -33,7 +35,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             favouriteList: [],
             laterList: [],
             completedList: [],
-            usersProfile: true,
+            usersProfile: false,
             followers: [],
             following: [],
             followingCurr: false,
@@ -147,8 +149,8 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     componentDidMount() {
         //may want to refactor everything into smaller separate functions
         firebase.auth().onAuthStateChanged((user) => {
-            if(this.props.user !== user.uid) {
-                this.setState({ usersProfile: false });
+            if(this.props.user === user.uid) {
+                this.setState({ usersProfile: true });
             }
             this.setState({ userId: user.uid, isLoaded: true });
         })
@@ -227,6 +229,15 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             return (
                 <>
                 <div className="profile">
+                    <div className="profileHeaders">
+                        <Link className="nav">Filler</Link>
+                        <Link className="nav">Filler</Link>
+                        <Link className="nav">Filler</Link>
+                        {(this.state.usersProfile) ?
+                            <Link className="nav" to={`/profile/${this.state.userId}/editProfile`}><button className="followBtn"><FaRegEdit style={{fontSize: '2em'}} /></button></Link>
+                            : <></> 
+                        }
+                    </div>
                     <FollowList open={this.state.openFollowers} followList={this.state.followers} onClose={this.handleClose} />
                     <FollowList open={this.state.openFollowing} followList={this.state.following} onClose={this.handleClose} />
                     <img className="profilePic" src={this.state.profilePic} alt="profilePic" />
@@ -235,7 +246,8 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                         {
                             // if it is your own profile do nothing otherwise show the follow or unfollow button
                             (this.state.usersProfile) ?
-                                <> </> : (this.state.followingCurr) ?
+                                <></> : 
+                            (this.state.followingCurr) ?
                                 <button className="followBtn" onClick={ () => this.updateFollowingState(false) }><RiUserUnfollowFill style={{fontSize: '2em'}} /></button> : <button className="followBtn" onClick={ () => this.updateFollowingState(true) } ><RiUserFollowFill style={{fontSize: '2em'}} /></button> 
                         }
                         <div className="followText">
