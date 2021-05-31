@@ -1,5 +1,6 @@
 .feed-container {
     background: var(--color-background-light);
+    transition: background 1s;
     width: 50rem;
     height: auto;
     /* min-height: 70rem; */
@@ -29,14 +30,13 @@
   border: none;
   background-color: var(--color-background);
   transition: background-color 1s;
+
   font-size: large;
   resize: vertical;
   overflow:auto;
   outline: none;
 
   color: var(--color-text);
-  transition: color 1s;
-
   border-radius: 8px;
 
   
@@ -72,3 +72,21 @@
 .feed-input-button.submit:hover {
     background-color: #47acf0;
 }
+
+
+.feed-paginate-button {
+    background-color: var(--color-background);
+    transition: background-color 1s;
+    color: var(--color-text);
+    
+    font-size: medium;
+    font-weight: 600;
+    text-align: center;
+    
+    padding: 6px 20px;
+    border-radius: 4px;
+
+    user-select: none;
+    cursor: pointer;
+}
+

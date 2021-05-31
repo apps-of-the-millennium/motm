@@ -32,6 +32,7 @@ function ActivityFeedPost(props) {
 
     }, [props.postInfo])
 
+    let notification_post_pic = props.postInfo.extraInfo.pic || '' // //TODO: DEFAULT_PIC_URL
     return (
 
         (props.postInfo.type === 'message') ? //message
@@ -62,7 +63,7 @@ function ActivityFeedPost(props) {
                 <div className="feed-post-timestamp">{timestampFromNow}</div>
 
                 <div className="feed-post-header activity">
-                    <div style={{ backgroundImage: `url(${props.postInfo.extraInfo.pic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none' }} />
+                <Link style={{backgroundImage: `url(${notification_post_pic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none'}} to={`/mediapost/${props.postInfo.activity_id}`}> </Link>
                     <div className='feed-post-header-text'>
                         {props.postInfo.content}
                         <Link style={{textDecoration:'none', color:'#3498DB', fontSize:'16px'}} to={`/mediapost/${props.postInfo.activity_id}`}> {props.postInfo.extraInfo.title} </Link>

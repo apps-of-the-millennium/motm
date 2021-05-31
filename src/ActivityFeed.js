@@ -8,12 +8,37 @@ import Filter from 'bad-words';
 
 
 function ActivityFeed(props) {
+    const LIMIT = 6;
+    const [lastDoc, setLastDoc] = useState({});
+    const [canLoadMore, setCanLoadMore] = useState(true);
+
     const [feedPosts, setFeedPosts] = useState([]);
     const [newActivityText, setNewActivityText] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
     // const [currentUID, setCurrentUID] = useState();
     const [currentUserInfo, setCurrentUserInfo] = useState({});
+
+    function displayActivity(doc_id, _id, _content, _timestamp, _type, _extraInfo) {
+        // If timestamp is null, assume we've gotten a brand new message.
+        // https://stackoverflow.com/a/47781432/4816918
+        let newTimestamp = _timestamp ? _timestamp.toMillis() : Date.now();
+        // let displayTime = timestamp ? timestamp.toDate().toDateString() : Date.now();
+        const newActivity = {
+            id: doc_id, //id of the actual activity document, useful for deleting activity posts
+            activity_id: _id, //id of the user who made the post OR the id of the media post
+            type: _type,
+            content: _content,
+            timestamp: newTimestamp,
+            extraInfo: _extraInfo //usually empty for message types since a db call is used to get user info
+        };
+
+        //add newActivity post then sort by timestamp descending (i.e most recent post first -> oldest post)
+        setFeedPosts((currentFeedPosts) => [...currentFeedPosts, newActivity].sort(function (x, y) {
+            return y.timestamp - x.timestamp;
+        }));
+    }
+
 
     useEffect(() => {
         // currentUID is suppose to represent the current logged in user, probably remove this if user info becomes global!
@@ -26,42 +51,14 @@ function ActivityFeed(props) {
     }, [props.currentUID])
 
     useEffect(() => {
-        function displayActivity(doc_id, _id, _content, _timestamp, _type, _extraInfo) {
-            // If timestamp is null, assume we've gotten a brand new message.
-            // https://stackoverflow.com/a/47781432/4816918
-            let newTimestamp = _timestamp ? _timestamp.toMillis() : Date.now();
-            // let displayTime = timestamp ? timestamp.toDate().toDateString() : Date.now();
-            const newActivity = {
-                id: doc_id, //id of the actual activity document, useful for deleting activity posts
-                activity_id: _id, //id of the user who made the post OR the id of the media post
-                type: _type,
-                content: _content,
-                timestamp: newTimestamp,
-                extraInfo: _extraInfo //usually empty for message types since a db call is used to get user info
-            };
-            // if (feedPosts.length === 0) { //first message
-            //     setFeedPosts([newActivity]);
-            // } else { //find the correct position to place activity in 
-            //     let activityNodeIndex = 0;
-            //     let activityNode = feedPosts[0];
-            //     while (activityNode && activityNodeIndex < feedPosts.length) {
-            //         if (activityNode.timestamp > newActivity.timestamp) {
-            //             break;
-            //         }
-            //         activityNodeIndex++;
-            //         activityNode = feedPosts[activityNodeIndex];
-            //     }
-            // setFeedPosts(currentPosts => currentPosts.splice(activityNodeIndex, 0, newActivity))
 
-            setFeedPosts((currentFeedPosts) => [...currentFeedPosts, newActivity]);
-        }
-
-        let query = firebase.firestore()
+        let query = firestore
             .collection('users').doc(props.userId)
             .collection('activity')
             .orderBy('timestamp', 'desc')
-            .limit(6);
+            .limit(LIMIT);
 
+        let count = 0;
         // Start listening to the query. //onSnapshot returns a fnc that you must call to remove the listener
         const convoListenerUnsub = query.onSnapshot((snapshot) => { //onSnapshot takes a cb fnc and calls it whenever any documents are changed to match the query
             snapshot.docChanges().forEach((change) => {
@@ -70,6 +67,11 @@ function ActivityFeed(props) {
                 } else if (change.type === 'added') {
                     console.log("added an activity");
                     let activity_doc = change.doc.data();
+                    count++;
+                    // console.log(count);
+                    if (count === LIMIT) { //save the final retrieved document (used for pagination) this if statement should only run ONCE
+                        setLastDoc(change.doc);
+                    }
                     displayActivity(change.doc.id, activity_doc.id, activity_doc.content, activity_doc.timestamp, activity_doc.type, activity_doc.extraInfo); //think doc.id used if we want to delete message
                 }
             });
@@ -92,6 +94,7 @@ function ActivityFeed(props) {
     }
 
     function handleOnCancel() {
+
         setIsFocused(false);
     }
 
@@ -111,6 +114,37 @@ function ActivityFeed(props) {
             });
             setNewActivityText('');
             setIsFocused(false);
+        }
+    }
+
+    function handlePostPagination() {
+        if (canLoadMore) {
+            console.log("userId, last_activity_document:", props.userId, lastDoc);
+            firestore
+                .collection('users').doc(props.userId)
+                .collection('activity')
+                .orderBy('timestamp', 'desc')
+                .startAfter(lastDoc)
+                .limit(LIMIT)
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.docs.length < LIMIT) { //if we query for posts and end up with less than LIMIT_VALUE posts, it means we have run out, so disable button functionality
+                        setCanLoadMore(false);
+                    }
+
+                    //edgecase: will be undefined if querysnapshot.docs.length is 0, but wont break since we disable the button in qs.docs.length < LIMIT
+                    let last_doc = querySnapshot.docs[querySnapshot.docs.length - 1];
+                    // console.log("last", last_doc);
+                    setLastDoc(last_doc);
+
+                    querySnapshot.forEach((doc) => {
+                        // console.log(doc.id, ' => ', doc.data());
+                        let activity_doc = doc.data();
+                        displayActivity(doc.id, activity_doc.id, activity_doc.content, activity_doc.timestamp, activity_doc.type, activity_doc.extraInfo);
+                    });
+                });
+        } else {
+            console.log("NO MORE ACTIVITY");
         }
     }
 
@@ -139,16 +173,14 @@ function ActivityFeed(props) {
                 </div>
             }
 
-            {console.log(feedPosts)}
+            {/* {console.log(feedPosts)} */}
             <div className='feed-container-content'>
-                {feedPosts.sort(function (x, y) {
-                    return y.timestamp - x.timestamp;
-                }).map((post) => {
-                    return (
-                        <ActivityFeedPost key={post.id} postInfo={post} />
-                    )
+                {feedPosts.map((post) => {
+                    return <ActivityFeedPost key={post.id} postInfo={post} />
                 })}
             </div>
+
+            <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div>
         </div >
     )
 }
