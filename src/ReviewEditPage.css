@@ -17,8 +17,6 @@
     height: 100rem;
     /* overflow: auto; */
     display: block;
-
-    
 }
 
 .reviewText {
@@ -96,6 +94,48 @@
 
 }
 
+.editUserName {
+    width: 50%;
+    min-height: 2rem;
+    padding: 12px 20px;
+    border: none;
+    background-color: var(--color-background-light);
+    transition: background-color 1s;
+    font-size: large;
+    resize: vertical;
+    overflow:auto;
+    outline: none;
+
+    color: var(--color-text);
+    transition: color 1s;
+
+    border-radius: .5rem;
+
+    margin-bottom: 2rem;
+    margin-top: .5rem;
+}
+
+.editBio {
+
+    width: 50%;
+    min-height: 10rem;
+    padding: 12px 20px;
+    border: none;
+    background-color: var(--color-background-light);
+    transition: background-color 1s;
+    font-size: large;
+    resize: vertical;
+    overflow:auto;
+    outline: none;
+
+    color: var(--color-text);
+    transition: color 1s;
+
+    border-radius: .5rem;
+
+    margin-bottom: 2rem;
+    margin-top: .5rem;
+}
 
 .saveButton {
     width: 50%;
