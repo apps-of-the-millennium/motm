@@ -213,6 +213,7 @@
 
     /*standalone css (wrap this class with a div containing the below css to use this layout without needing a #) */
     background: var(--color-background-light);
+    transition: background 1s;
     border-radius: 4px;
     /* padding: 1rem; */
 
