@@ -5,12 +5,31 @@ import './ActivityFeedPost.css';
 import { AiFillLike } from 'react-icons/ai'; //AiFillDelete, AiFillFlag
 import { FaComments } from 'react-icons/fa';
 import { firestore } from './firebase';
+import firebase from 'firebase/app';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 function ActivityFeedPost(props) {
     const [userInfo, setUserInfo] = useState({});
+    const [userPic, setUserPic] = useState('');
     const timestampFromNow = moment(props.postInfo.timestamp).fromNow();
+
+    //will refactor as a global picture retrieval as it is needed in several pages
+    function getProfilePicture(url) {
+        //check if it is a url or path to firebase storage
+        if (url.charAt(0) === '/') {
+            const ref = firebase.storage().ref(url);
+            ref.getDownloadURL()
+                .then((url) => {
+                    setUserPic(url);
+                })
+                .catch((e) =>
+                    console.log('Error retrieving profilePic => ', e)
+                );
+        } else {
+            setUserPic({profilePic: url});
+        }
+    }
 
     useEffect(() => {
         if (props.postInfo.type === 'message') {
@@ -18,6 +37,8 @@ function ActivityFeedPost(props) {
                 if (doc.exists) {
                     // console.log("Document data:", doc.data());
                     setUserInfo(doc.data())
+                    getProfilePicture(doc.data().profilePic)
+                    
                 } else {
                     // doc.data() will be undefined in this case
                     console.log("No such user document!");
@@ -45,7 +66,7 @@ function ActivityFeedPost(props) {
                 <div className="feed-post-timestamp">{timestampFromNow}</div>
 
                 <div className="feed-post-header message">
-                    <img src={userInfo.profilePic} alt='img' className='feed-post-img message' />
+                    <img src={userPic} alt='img' className='feed-post-img message' />
                     <div>{userInfo.userName}</div>
                 </div>
                 <div className="feed-post-content">
