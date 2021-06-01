@@ -10,7 +10,7 @@ import Filter from 'bad-words';
 function ActivityFeed(props) {
     const LIMIT = 6;
     const [lastDoc, setLastDoc] = useState({});
-    const [canLoadMore, setCanLoadMore] = useState(true);
+    const [canLoadMore, setCanLoadMore] = useState(false);
 
     const [feedPosts, setFeedPosts] = useState([]);
     const [newActivityText, setNewActivityText] = useState('');
@@ -26,7 +26,7 @@ function ActivityFeed(props) {
         // let displayTime = timestamp ? timestamp.toDate().toDateString() : Date.now();
         const newActivity = {
             id: doc_id, //id of the actual activity document, useful for deleting activity posts
-            activity_id: _id, //id of the user who made the post OR the id of the media post
+            activity_id: _id, //id of the USER who made the post OR the ID OF THE MEDIA POST useful for linking to the profile or media post page
             type: _type,
             content: _content,
             timestamp: newTimestamp,
@@ -71,6 +71,7 @@ function ActivityFeed(props) {
                     // console.log(count);
                     if (count === LIMIT) { //save the final retrieved document (used for pagination) this if statement should only run ONCE
                         setLastDoc(change.doc);
+                        setCanLoadMore(true);
                     }
                     displayActivity(change.doc.id, activity_doc.id, activity_doc.content, activity_doc.timestamp, activity_doc.type, activity_doc.extraInfo); //think doc.id used if we want to delete message
                 }
@@ -118,6 +119,7 @@ function ActivityFeed(props) {
     }
 
     function handlePostPagination() {
+        //known crash in Development: if you add the 6th post and then click load more, you will be shown an uncommited timestamp error
         if (canLoadMore) {
             console.log("userId, last_activity_document:", props.userId, lastDoc);
             firestore
@@ -179,8 +181,11 @@ function ActivityFeed(props) {
                     return <ActivityFeedPost key={post.id} postInfo={post} />
                 })}
             </div>
-
-            <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div>
+            {canLoadMore && 
+                <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div> }
+            {/* {canLoadMore ? 
+                <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div>  :
+                <div className="feed-paginate-button">No More Activity</div> } */}
         </div >
     )
 }

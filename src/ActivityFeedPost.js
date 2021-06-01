@@ -66,8 +66,8 @@ function ActivityFeedPost(props) {
                 <div className="feed-post-timestamp">{timestampFromNow}</div>
 
                 <div className="feed-post-header message">
-                    <img src={userPic} alt='img' className='feed-post-img message' />
-                    <div>{userInfo.userName}</div>
+                    <Link to={`/profile/${props.postInfo.activity_id}`}> <img src={userPic} alt='img' className='feed-post-img message' /> </Link>
+                    <Link style={{textDecoration:'none', color:'inherit'}} to={`/profile/${props.postInfo.activity_id}`}> {userInfo.userName} </Link>
                 </div>
                 <div className="feed-post-content">
                     {props.postInfo.content}

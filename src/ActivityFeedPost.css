@@ -67,7 +67,7 @@
 }
 .feed-post-header.message{
     align-items: center;
-    grid-template-columns: 30px auto;
+    grid-template-columns: 30px max-content;
 }
 .feed-post-header.activity{
     min-height: 4rem;
