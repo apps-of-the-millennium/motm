@@ -202,7 +202,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                         {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
                                         <div className="tagContainer">
                                             {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-                                                return <div className="tag" style={{background:`${this.tagColor}`}}>{keyName}</div>
+                                                return <div className="tag" style={{ background: `${this.tagColor}` }}>{keyName}</div>
                                             }) : "No tag"}
                                         </div>
                                     </div>
@@ -221,13 +221,15 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             {/* <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img> */}
 
                             <div>
-                                {/* title */}
-                                <div className="mediaPostTitle2">{this.state.mediaInfo['title']}</div>
+                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                                    {/* title */}
+                                    <div className="mediaPostTitle2">{this.state.mediaInfo['title']}</div>
+                                </Link>
                                 {/* limiting displayed tags to max 4 */}
                                 {<div className="tagContainer2">
                                     {(this.state.mediaInfo['tags']) ?
                                         Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
-                                            return <div className="tag2" style={{background:`${this.tagColor}`}}>{keyName}</div>
+                                            return <div className="tag2" style={{ background: `${this.tagColor}` }}>{keyName}</div>
                                         }) : "No tag"}
 
                                 </div>}
