@@ -232,9 +232,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                 <>
                 <div className="profile">
                     <div className="profileHeaders">
-                        <a className="nav">Filler</a>
-                        <a className="nav">Filler</a>
-                        <a className="nav">Filler</a>
+                        <a href="/" className="nav">Filler</a>
+                        <a href="/" className="nav">Filler</a>
+                        <a href="/" className="nav">Filler</a>
                         {(this.state.usersProfile) ?
                             <Link className="nav" to={`/profile/${this.state.userId}/editProfile`}><button className="followBtn"><FaRegEdit style={{fontSize: '2em'}} /></button></Link>
                             : <></> 
