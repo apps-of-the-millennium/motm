@@ -22,7 +22,7 @@ class App extends Component {
   }
   render() {
     return (
-      <>
+      <div style={{backgroundColor:'var(--color-background)', transition:'background 1s'}}>
         <AuthProvider>
           <BrowserRouter>
             <ScrollToTop />
@@ -69,11 +69,11 @@ class App extends Component {
                 render={() =>
                   <BrowsePage/> } />
               <Route path="/" render={() => <ErrorPage /> } />
-            </Switch>
+            </Switch> 
             <Footer />
           </BrowserRouter>
         </AuthProvider>
-      </>
+      </div>
     );
   }
 }

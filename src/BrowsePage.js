@@ -98,7 +98,7 @@ class BrowsePage extends React.Component {
                         (searchVal === '' && searchTags.length === 0) ? (
                             <div className="home-content">
                                 <div className="content-section browse">
-                                    <div className="section-posts">
+                                    <div className="section-posts regular">
                                         {
                                             this.state.browsePosts.map((post) => { //TODO: change to popularposts
                                                 let postInfo = post.postInfo;
@@ -112,7 +112,7 @@ class BrowsePage extends React.Component {
                                     {(this.state.searchPosts.length === 0) ? <h3 className="section-label">There are no results to be shown...</h3> :
                                         <>
                                             <h3 className="section-label">SEARCH RESULTS</h3>
-                                            <div className="section-posts" >
+                                            <div className="section-posts regular" >
                                                 {
                                                     this.state.searchPosts.map((post) => {
                                                         let postInfo = post.postInfo;
