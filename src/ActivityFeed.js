@@ -121,32 +121,38 @@ function ActivityFeed(props) {
     function handlePostPagination() {
         //known crash in Development: if you add the 6th post and then click load more, you will be shown an uncommited timestamp error
         if (canLoadMore) {
-            console.log("userId, last_activity_document:", props.userId, lastDoc);
-            firestore
-                .collection('users').doc(props.userId)
-                .collection('activity')
-                .orderBy('timestamp', 'desc')
-                .startAfter(lastDoc)
-                .limit(LIMIT)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.docs.length < LIMIT) { //if we query for posts and end up with less than LIMIT_VALUE posts, it means we have run out, so disable button functionality
-                        setCanLoadMore(false);
-                    }
+            if (lastDoc && lastDoc.data().timestamp !== null) {
+                console.log("userId, last_activity_document:", props.userId, lastDoc);
+                firestore
+                    .collection('users').doc(props.userId)
+                    .collection('activity')
+                    .orderBy('timestamp', 'desc')
+                    .startAfter(lastDoc)
+                    .limit(LIMIT)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.docs.length < LIMIT) { //if we query for posts and end up with less than LIMIT_VALUE posts, it means we have run out, so disable button functionality
+                            setCanLoadMore(false);
+                        }
 
-                    //edgecase: will be undefined if querysnapshot.docs.length is 0, but wont break since we disable the button in qs.docs.length < LIMIT
-                    let last_doc = querySnapshot.docs[querySnapshot.docs.length - 1];
-                    // console.log("last", last_doc);
-                    setLastDoc(last_doc);
+                        //edgecase: will be undefined if querysnapshot.docs.length is 0, but wont break since we disable the button in qs.docs.length < LIMIT
+                        let last_doc = querySnapshot.docs[querySnapshot.docs.length - 1];
+                        // console.log("last", last_doc);
+                        setLastDoc(last_doc);
 
-                    querySnapshot.forEach((doc) => {
-                        // console.log(doc.id, ' => ', doc.data());
-                        let activity_doc = doc.data();
-                        displayActivity(doc.id, activity_doc.id, activity_doc.content, activity_doc.timestamp, activity_doc.type, activity_doc.extraInfo);
+                        querySnapshot.forEach((doc) => {
+                            // console.log(doc.id, ' => ', doc.data());
+                            let activity_doc = doc.data();
+                            displayActivity(doc.id, activity_doc.id, activity_doc.content, activity_doc.timestamp, activity_doc.type, activity_doc.extraInfo);
+                        });
                     });
-                });
-        } else {
-            console.log("NO MORE ACTIVITY");
+            } 
+            else {
+                console.warn('Lastdoc timestamp is null/uncommited, pagination unavailable');
+            }
+        } 
+        else {
+            console.warn("NO MORE ACTIVITY");
         }
     }
 
@@ -176,16 +182,17 @@ function ActivityFeed(props) {
             }
 
             {/* {console.log(feedPosts)} */}
-            <div className='feed-container-content'>
-                {feedPosts.map((post) => {
-                    return <ActivityFeedPost key={post.id} postInfo={post} />
-                })}
-            </div>
-            {canLoadMore && 
-                <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div> }
-            {/* {canLoadMore ? 
-                <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div>  :
-                <div className="feed-paginate-button">No More Activity</div> } */}
+            {(feedPosts.length > 0) &&
+                <div className='feed-container-content'>
+                    {feedPosts.map((post) => {
+                        return <ActivityFeedPost key={post.id} postInfo={post} />
+                    })}
+                </div>}
+
+            <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div>
+            {/* {canLoadMore ?
+                <div className="feed-paginate-button" onClick={handlePostPagination}>Load More</div> :
+                <div className="feed-paginate-button">No More Activity</div>} */}
         </div >
     )
 }
