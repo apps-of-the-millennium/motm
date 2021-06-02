@@ -16,6 +16,8 @@ import { AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark, ImTrophy } from 'react-icons/im';
 import { HiPencilAlt } from 'react-icons/hi';
 
+import addNotificationToUserActivity from './firestoreHelperFunctions';
+
 const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
 class MediaPostPage extends React.Component {
@@ -72,6 +74,8 @@ class MediaPostPage extends React.Component {
                     { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
+
+                addNotificationToUserActivity(this.state.userId, this.props.id, `Favourited `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
                 
             } 
         }
@@ -84,6 +88,8 @@ class MediaPostPage extends React.Component {
                     { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }    
                 );
+
+                addNotificationToUserActivity(this.state.userId, this.props.id, `Plans to watch `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
             }
         }
     }
@@ -95,6 +101,8 @@ class MediaPostPage extends React.Component {
                     { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
+
+                addNotificationToUserActivity(this.state.userId, this.props.id, `Completed `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
             }
         }
     }

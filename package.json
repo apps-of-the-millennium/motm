@@ -12,6 +12,7 @@
     "bad-words": "^3.0.4",
     "firebase": "^8.2.1",
     "firebase-auth": "^0.1.2",
+    "moment": "^2.29.1",
     "randomcolor": "^0.6.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

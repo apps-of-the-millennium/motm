@@ -1,10 +1,8 @@
 .homeBg {
-  background: var(--color-background);        /*#081022;*/
-  transition: background 1s;
-  height: auto; /*will cause extra scroll bar if not big enough */
+  /* background: var(--color-background);    
+  transition: background 1s; */
   overflow: auto;
-  /* position: relative; */
-  min-height: 100vh;
+  min-height: 120vh;
 }
 
 .pageContentContainer {
@@ -39,19 +37,11 @@
 }
 
 .searchInput {
-  /* -webkit-transition: all 1s ease-out;
-  -moz-transition: all 2s ease-out;
-  -ms-transition: all 2s ease-out;
-  -o-transition: all .2s ease-out;
-  transition: all .2s ease-out; */
   min-height: 38px;
   width: inherit;
   background: var(--color-background-light);
   transition: background 1s; 
-  /* background-image: url('./images/search.svg');
-  background-position: -90% 5px;
-  background-repeat: no-repeat;
-  background-size: 70% 70%; */
+
   padding-left: 40px;
   padding-right: 1rem;
 
@@ -128,15 +118,38 @@ input[type="search"]::-webkit-search-cancel-button {
 .section-posts {
   height: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 10rem);
+  
+  
+}
+.section-posts.regular {
+  grid-template-columns: repeat(auto-fill, 10rem); /*auto-fill vs 6*/
   gap: 20px 45px;
   justify-content: space-between; 
-  
-
 }
 
-.top{
-  /* display: table; */
+.section-posts.top {
+  grid-auto-rows: auto;
+  row-gap: 24px;
+}
+
+
+.top-post-container {
+  display: grid;
+  grid-template-columns: 50px auto;
+  background: var(--color-background-light);
+  transition: background 1s;
+  border-radius: 4px;
+  /* padding: 1rem; */
+
+  
+}
+.order-value {
+  align-self: center;
+  justify-self: center;
+
+  font-size: 26px;
+  font-weight: 600;
+  color: rgb(51, 180, 240);
 }
 
 

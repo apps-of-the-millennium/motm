@@ -128,7 +128,7 @@
     align-items: flex-start;
 
     flex-wrap: wrap;
-    height: 1.2rem;
+    height: auto;
     overflow: hidden;
 
     margin-top: 20px;
@@ -137,7 +137,7 @@
 .tagContainer .tag {
     font-size: small;
     font-weight: 700; 
-    color: #cfd2f5;
+    color: #242424;
     width: max-content;
     background: #014d8b;
     text-align: center;
@@ -200,168 +200,114 @@
     text-align: center;
     border-radius: 4px;
     padding: 10px 60px 10px 20px;
+    z-index: 120;
     /* Can add animation later */
 }
 
+
+/*Long rectangular post css (example: Top 10 posts on Homepage) */
+
 .mediaContainer2 {
-    background: #0b2f58;
-    border-radius: 12px;
-    padding: 0.5rem;
-
-    width: 68rem;
-    height: 3rem;
-    /* max-height: 5rem; */
-
-    margin-bottom: 1rem;
-
     display: grid;
-    grid-template-columns: 4% 46% 10% 10% 10% 10% 10%;
-    grid-template-rows: auto;
-    grid-template-areas: 
-    "pic title . . rating type author"
-    "pic tags . . rating type releaseDate"
+    grid-template-columns: auto 50px;
+
+    /*standalone css (wrap this class with a div containing the below css to use this layout without needing a #) */
+    background: var(--color-background-light);
+    transition: background 1s;
+    border-radius: 4px;
+    /* padding: 1rem; */
+
+    width: auto;
+    height: auto;
+}
+.mediaContainer2-content{
+    display: grid;
+    grid-template-columns: auto 120px 120px 150px; 
+    align-items: center;
+    column-gap: 8px;
+    padding: 16px;
 }
 
-.mediaContainer2 .mediaPostImg2 {
-    /* width: 80%; */
-    /* height: 100%; */
-    grid-area: pic;
-    
-    /* height: 3rem;
-    width: 2.5rem; */
+/* .mediaContainer2 .mediaPostImg2 {
     width:70%;
     height: 90%;
     object-fit: contain;
-    /* max-height:100%;
-    max-width:100%; */
-    /* border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray; */
-    
-    /* background: black; */
-}
+} */
 
+/* === */
 .mediaContainer2 .mediaPostTitle2 {
-    grid-area:title;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     text-align: left;
-    font-size: 1rem;
-    color: var(--color-text);
-    transition: color 1s;
-}
-
-
-.mediaContainer2 .ratings2 {
-    grid-area: rating;
-    /* color: rgb(161, 28, 28); */
-    justify-self: center;
-}
-
-.ratings2 .star2 {
-    /* grid-area: ratingIcon; */
-    color: yellow;
-    margin-top: 30%;
-    float: left;
-}
-
-.ratings2 .ratingValue2 {
-    color: #75bdf8;
-    float: left;
-    margin-top: 15%;
-    
-
-}
-
-.mediaContainer2 .releaseDate2 {
-    grid-area: releaseDate;
-    align-self: left;
-    color:var(--color-text);
-    transition: color 1s;
-    font-size: medium;
-}
-
-.mediaContainer2 .mediaPostCategory2 {
-    grid-area: type;
-    margin-left: 10px;
-    font-size: medium;
-    font-weight: 500;
-    color:var(--color-text);
-    transition: color 1s;
-    align-self: center;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    
-}
-
-.mediaContainer2 .author2 {
-    grid-area: author;
-    color:rgb(241, 170, 76);
+    font-size: 15px;
     font-weight: 600;
-    font-size: smaller;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
+    color: var(--color-text-grey);
+    transition: color 1s;
 }
-
 .mediaContainer2 .tagContainer2 {
     display: flex;
-    grid-area: tags;
     align-items: flex-start;
     overflow: hidden;
+    margin-top: 6px;
 }
 
-.tagContainer2 .tag2 {
+.tag2 {
     font-size: smaller;
     font-weight: 700; 
-    color: rgb(36, 36, 36);
+    color: #242424;
     width: max-content;
     background: #69bbf1;
     text-align: center;
     border-radius: 10px;
-    padding-left: 2%;
-    padding-right: 2%;
-    margin-right: 1%;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-right: 8px;
 }
+/* === */
+.mediaContainer2 .mediaPostCategory2 {
+    font-size: 12px;
+    font-weight: 500;
+    color:var(--color-text-grey);
+    transition: color 1s;
 
-ol {
-    counter-reset: my-awesome-counter;
-    list-style: none;
-    padding-left: 4rem;
-  }
-  ol li {
-    counter-increment: my-awesome-counter;
-    position: relative;
-  }
-  ol li::before {
-    content: "#" counter(my-awesome-counter);
-    color: #a3cfec;
-    font-size: 1.5rem;
-    font-weight: bold;
-
-    position: absolute;
-    --size: 32px;
-    left: calc(-1 * var(--size) - 1.5rem);
-    line-height: var(--size);
-    width: var(--size);
-    height: var(--size);
-
-
-
-    top: 0;
-    text-align: center;
-    margin-top: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
 }
-  
-@media (min-width: 900px) {
+.mediaContainer2 .author2 {
+    color:rgb(241, 170, 76);
+    font-weight: 600;
+    font-size: 14px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
 }
+/* === */
+.mediaContainer2 .releaseDate2 {
+    color:var(--color-text-grey);
+    transition: color 1s;
+    font-size: 14px;
+    font-weight: 600;
+}
+/* === */
+
+
+.star2 {
+    margin-top: 1px;
+    color: rgb(231, 231, 0);
+}
+
+.ratingValue2 {
+    color: #41a2f1;
+    font-weight: 600;
+}
+
+/*=================================*/
 
 input::-moz-focus-inner,
 button::-moz-focus-inner {

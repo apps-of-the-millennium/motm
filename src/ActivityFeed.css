@@ -1,0 +1,92 @@
+.feed-container {
+    background: var(--color-background-light);
+    transition: background 1s;
+    width: 50rem;
+    height: auto;
+    /* min-height: 70rem; */
+    padding: 2rem;
+
+
+    display: grid;
+    grid-auto-rows: max-content;
+    row-gap: 24px;
+    /* grid-template-columns: auto auto; */
+    
+}
+
+.feed-container-content {
+    display: grid;
+    grid-auto-rows: max-content;
+    grid-template-columns: 1fr 1fr; /* fraction unit i.e this case it is equivalent to 50% 50% */
+    row-gap: 24px;
+    column-gap: 12px;
+}
+
+
+.feed-input-textbox{
+  width: auto;
+  min-height: 19px;
+  padding: 12px 20px;
+  border: none;
+  background-color: var(--color-background);
+  transition: background-color 1s;
+
+  font-size: large;
+  resize: vertical;
+  overflow:auto;
+  outline: none;
+
+  color: var(--color-text);
+  border-radius: 8px;
+
+  
+
+}
+
+
+.feed-input-button {
+    width: max-content;
+
+    background-color: #3498DB;
+    color: white;
+    
+    font-size: medium;
+    font-weight: 600;
+    text-align: center;
+    line-height: initial;
+    border: none;
+    cursor: pointer;
+    
+    padding: 6px 10px;
+    border-radius: 5px;
+
+    user-select:none;
+}
+
+.feed-input-button.cancel {
+    background-color: #6d6d6d;
+}
+.feed-input-button.cancel:hover {
+    background-color: #929292;
+}
+.feed-input-button.submit:hover {
+    background-color: #47acf0;
+}
+
+
+.feed-paginate-button {
+    background-color: var(--color-background);
+    transition: background-color 1s;
+    color: var(--color-text);
+    
+    font-size: medium;
+    font-weight: 600;
+    text-align: center;
+    
+    padding: 6px 20px;
+    border-radius: 4px;
+
+    user-select: none;
+    cursor: pointer;
+}
+

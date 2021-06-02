@@ -43,7 +43,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    
+
     if (typeof (Storage) !== "undefined") {
       let session_savedCategory = sessionStorage.getItem('savedCategory');
       if (session_savedCategory) {
@@ -63,9 +63,9 @@ class Home extends React.Component {
           <div className="filtersContainer">
             <div className="filters">
               <div className="filter-option">
-                <div style={{ fontWeight: '500', color: `var(--color-text)`, transition:'color 1s', marginBottom: '10px' }}>Search</div>
+                <div style={{ fontWeight: '500', color: `var(--color-text)`, transition: 'color 1s', marginBottom: '10px' }}>Search</div>
                 <div className="filter-value-container">
-                  <FaSearch style={{ color: 'var(--color-text)', transition:'color 1s', position: 'absolute', top: "11px", left: "12px" }} />
+                  <FaSearch style={{ color: 'var(--color-text)', transition: 'color 1s', position: 'absolute', top: "11px", left: "12px" }} />
                   <input className='searchInput'
                     onChange={this.handleSearchNameChange}
                     value={this.state.searchName}
@@ -106,7 +106,7 @@ class Home extends React.Component {
                     TRENDING
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
-                  <div className="section-posts">
+                  <div className="section-posts regular">
                     {
                       this.state.trendingPosts.map((post) => {
                         let postInfo = post.postInfo;
@@ -121,7 +121,7 @@ class Home extends React.Component {
                     POPULAR
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
-                  <div className="section-posts">
+                  <div className="section-posts regular">
                     {
                       this.state.trendingPosts.map((post) => { //TODO: change to popularposts
                         let postInfo = post.postInfo;
@@ -136,14 +136,19 @@ class Home extends React.Component {
                     TOP 10
                     <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
-                  {/* <ol className="section-posts">
+                  <div className="section-posts top">
                     {
-                      this.state.trendingPosts.map((post) => {
+                      this.state.trendingPosts.map((post, index) => {
                         let postInfo = post.postInfo;
-                        return (<li key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </li>)
+                        return (
+                          <div className="top-post-container" key={post.docId}>
+                            <div className="order-value">{index+1}</div>
+                            <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
+                          </div>
+                        )
                       })
                     }
-                  </ol> */}
+                  </div>
                 </div>
 
               </div>) : (
@@ -151,7 +156,7 @@ class Home extends React.Component {
                   {(this.state.searchPosts.length === 0) ? <h3 className="section-label">There are no results to be shown...</h3> :
                     <>
                       <h3 className="section-label">SEARCH RESULTS</h3>
-                      <div className="section-posts" >
+                      <div className="section-posts regular" >
                         {
                           this.state.searchPosts.map((post) => {
                             let postInfo = post.postInfo;

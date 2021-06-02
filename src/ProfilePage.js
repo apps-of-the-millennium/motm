@@ -10,6 +10,8 @@ import FollowList from './FollowList';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import ActivityFeed from './ActivityFeed';
+
 // const changeUserName = async (userId, name) => {
 //     //check later for bad input
 //     firestore.collection('users').doc(userId).set({
@@ -230,9 +232,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                 <>
                 <div className="profile">
                     <div className="profileHeaders">
-                        <Link className="nav">Filler</Link>
-                        <Link className="nav">Filler</Link>
-                        <Link className="nav">Filler</Link>
+                        <a href="/" className="nav">Filler</a>
+                        <a href="/" className="nav">Filler</a>
+                        <a href="/" className="nav">Filler</a>
                         {(this.state.usersProfile) ?
                             <Link className="nav" to={`/profile/${this.state.userId}/editProfile`}><button className="followBtn"><FaRegEdit style={{fontSize: '2em'}} /></button></Link>
                             : <></> 
@@ -299,6 +301,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                     </div>
 
                 </div>
+
+
+                <ActivityFeed userId={this.props.user} currentUID={this.state.userId}/>
             </>
             )
         } else {
