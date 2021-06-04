@@ -86,7 +86,7 @@ function EditProfile(props) {
             {(userId !== null ?
                 <div className="form">
                     <label className="formLabel" htmlFor="userName">Update Username</label><br/>
-                    <TextareaAutosize
+                    <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editUserName"
                         id="userName"
                         onChange={(e) => setUserName(e.target.value)} > 
@@ -101,11 +101,11 @@ function EditProfile(props) {
                         buttonText={"Choose Image"}
                         imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                         maxFileSize={5242880} //can change
-                        fileContainerStyle={{background:'var(--color-background-light'}}
+                        fileContainerStyle={{background:'var(--color-background-light', transition:'background 1s'}}
                     />
 
                     <label className="formLabel" htmlFor="bio">Update Bio</label><br/>
-                    <TextareaAutosize
+                    <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editBio"
                         id="bio"
                         onChange={(e) => setBio(e.target.value)} > 

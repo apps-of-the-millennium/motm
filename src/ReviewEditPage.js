@@ -127,14 +127,14 @@ class ReviewEditPage extends React.Component {
                 {(this.state.signed_in) ?
                     <div className="form" >
                         <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
-                        <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
+                        <input style={{transition: 'background 1s'}} className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
                         {/* can determine max based on media post props data */}
 
 
 
 
                         <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
-                        <TextareaAutosize
+                        <TextareaAutosize style={{transition: 'background 1s'}}
                             className="reviewSummary"
                             id="reviewSummary"
                             // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
@@ -143,7 +143,7 @@ class ReviewEditPage extends React.Component {
 
 
                         <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
-                        <TextareaAutosize
+                        <TextareaAutosize style={{transition: 'background 1s'}}
                             className="reviewText"
                             maxLength={this.REVIEW_MAX}
                             minLength={this.REVIEW_MIN}
@@ -154,11 +154,11 @@ class ReviewEditPage extends React.Component {
 
                         {/* range will change based on if we want to do /5 with stars or just number */}
                         <label className="formLabel" htmlFor="score">Score</label><br></br>
-                        <input className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
+                        <input style={{transition: 'background 1s'}} className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
 
 
                         <label className="formLabel" htmlFor="spoilers">Contains spoilers?</label><br></br>
-                        <select className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
+                        <select style={{transition: 'background 1s'}} className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select><br></br>

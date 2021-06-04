@@ -1,8 +1,7 @@
 .pageContainer {
-    background-color:#ebcba1;
     width: auto;
     height: auto;
-    min-height: 50rem;
+    /* min-height: 50rem; */
 
     color: var(--color-text);
     overflow: auto; /* seems to be sln to prevent child margin-top from moving parent as well */
@@ -14,7 +13,7 @@
     /* margin-top: 5rem;
     margin-left: 5rem; */
     padding: 5rem;
-    height: 100rem;
+    height: auto;
     /* overflow: auto; */
     display: block;
 }
@@ -95,6 +94,8 @@
 
 }
 
+
+
 .editUserName {
     width: auto;
     min-height: 19px;
@@ -123,7 +124,6 @@
     padding: 12px 20px;
     border: none;
     background-color: var(--color-background-light);
-    transition: background-color 1s;
     font-size: large;
     resize: vertical;
     overflow:auto;
