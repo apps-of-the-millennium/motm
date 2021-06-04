@@ -17,8 +17,9 @@ code {
 
 /*has global variables and more: ALSO ACTS AS DEFAULT SCHEME COLORS/VALUES WHEN A SPECIFIC THEME IS NOT DEFINED*/
 :root {
-  --color-background: #ececec;
+  --color-background: rgb(232,236,239);
   --color-background-dark: #c9c7c7;
+  --color-background-grey: #f3f2f2;
   --color-text: #000000;
   --color-text-hover: #6e6e6e;
   --color-text-grey: #3f3f3f;
@@ -31,6 +32,7 @@ code {
 .site-theme-dark {
   --color-background: #081022;
   --color-background-dark: #000818;
+  --color-background-grey: #1b202b;
   --color-text: #aeb1cf;
   --color-text-hover: #ced1e9;
   --color-text-grey: #b1afaf;
