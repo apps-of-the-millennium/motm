@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import ActivityFeed from './ActivityFeed';
+import UserLists from './UserLists';
 
 // const changeUserName = async (userId, name) => {
 //     //check later for bad input
@@ -35,14 +36,12 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             userInfo: [],
             isLoaded: false,
             profilePic: '',
-            favouriteList: [],
-            laterList: [],
-            completedList: [],
             usersProfile: false,
+            userId: '',
+
             followers: [],
             following: [],
             followingCurr: false,
-            userId: '',
             openFollowers: false,
             openFollowing: false,
 
@@ -183,7 +182,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             this.setState({ userId: user.uid, isLoaded: true });
         })
 
-        var lists = firestore.collection('users').doc(this.props.user).collection('lists');
+        
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             //unsure if doc.exists needs to be checked all the time
             if (doc.exists) {
@@ -214,25 +213,6 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             })
             this.setState({ following: followingArr });
         })
-
-        //refactor these functions, same functions diff variable
-        lists.doc('laterList').get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ laterList: doc.data()['laterList'] });
-            }
-        })
-
-        lists.doc('completedList').get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ completedList: doc.data()['completedList'] });
-            }
-        })
-
-        lists.doc('favouriteList').get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ favouriteList: doc.data()['favouriteList'] });
-            }
-        })
     }
 
     componentDidUpdate(prevProps) {
@@ -258,26 +238,18 @@ class ProfilePage extends React.Component { //({ user, match }) => {
 
         if (isLoaded) {
             return (
-
                 <div className="profile">
                     <div className="profile-header">
                         {/* TODO?: ability to set cover photo or change cover color*/}
-
-
                     </div>
 
                     <div className="profile-nav-container">
                         <div className="profile-nav">
                             <div style={{ color: this.myColor('overview') }} onClick={() => this.onClickProfileView('overview')} className="nav-pp">Overview</div>
-
                             <div style={{ color: this.myColor('activity') }} onClick={() => this.onClickProfileView('activity')} className="nav-pp">Activity</div>
-
                             <div style={{ color: this.myColor('lists') }} onClick={() => this.onClickProfileView('lists')} className="nav-pp">Lists</div>
-
                             <div style={{ color: this.myColor('reviews') }} onClick={() => this.onClickProfileView('reviews')} className="nav-pp">Reviews</div>
-
                             <div style={{ color: this.myColor('stats') }} onClick={() => this.onClickProfileView('stats')} className="nav-pp">Stats</div>
-
                         </div>
                     </div>
 
@@ -286,9 +258,19 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                             <div className="user-sidebar-top">
                                 <img className="profilePic" src={this.state.profilePic} alt="profilePic" />
                             </div>
+
                             <div className="user-sidebar-bottom">
                                 <div className="userName-banner">
                                     <div className="userName">{this.state.userInfo['userName']}</div>
+                                    <div className="user-badges">
+                                        {/* TODO: one day we will pull these "badges from user document */}
+                                        <div className="tag2">PRO</div>
+                                        <div className="tag2">Donator</div>
+                                        <div className="tag2">Mod</div>
+                                        <div className="tag2">Dev</div>
+                                        <div className="tag2">Founder</div>
+                                        <div className="tag2">VIP</div>
+                                    </div>
                                 </div>
 
                                 <div className="user-info">
@@ -299,8 +281,6 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                             <div className="profile-button" onClick={() => this.updateFollowingState(false)}>Unfollow</div> :
                                             <div className="profile-button" onClick={() => this.updateFollowingState(true)} >Follow</div>
                                     }
-
-
 
                                     <div className="follows">
                                         <div className="followText">
@@ -313,9 +293,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                         </div>
 
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
 
@@ -329,54 +307,8 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                         <ActivityFeed userId={this.props.user} currentUID={this.state.userId} />,
                                     'lists':
                                         //TODO: css needs testing with more than one row of entries
-                                        //TODO: will be too big when list size increases, make a new component design for media post
-                                        <div>
-                                            <div style={{ marginBottom: '48px' }}>
-                                                {/* Favourites List */}
-                                                <div className="section-label">Favourites</div>
-                                                <div className="section-posts list">
-                                                    {
-                                                        this.state.favouriteList.map((post) => {
-                                                            if (post) {
-                                                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"favouriteList"} updateList={this.updateList} /> </div>)
-                                                            }
-                                                            return (<></>)
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <div style={{ marginBottom: '48px' }}>
-                                                {/* Watch Later List */}
-                                                <div className="section-label"> Watch Later</div>
-                                                <div className="section-posts list">
-                                                    {
-                                                        this.state.laterList.map((post) => {
-                                                            if (post) {
-                                                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"laterList"} updateList={this.updateList} />  </div>)
-                                                            }
-                                                            return (<></>)
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <div style={{ marginBottom: '48px' }}>
-                                                {/* Completed List */}
-                                                <div className="section-label">Completed</div>
-                                                <div className="section-posts list">
-                                                    {
-                                                        this.state.completedList.map((post) => {
-                                                            if (post) {
-                                                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"completedList"} updateList={this.updateList} /> </div>)
-                                                            }
-                                                            return (<></>)
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-
-                                        </div>,
+                                        //TODO: will be too big when list size increases, make a new component design for media post                                        
+                                        <UserLists userId={this.props.user} usersProfile={this.state.usersProfile} />,
                                     'reviews':
                                         this.defaultNavComponent,
                                     'stats':
@@ -386,47 +318,10 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                         </div>
                     </div>
 
-
                     <FollowList open={this.state.openFollowers} followList={this.state.followers} onClose={this.handleClose} />
                     <FollowList open={this.state.openFollowing} followList={this.state.following} onClose={this.handleClose} />
-
-
-
-
-
-                    {/* Later List */}
-                    {/* <div className="title">Later</div>
-                    <div className="list">
-                        {
-                            this.state.laterList.map((post) => {
-                                if(post) {
-                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"laterList"} updateList={this.updateList} />  </div>)
-                                }
-                                return (<></>)
-                            })
-                        }
-                    </div> */}
-                    {/* Completed List */}
-                    {/* <div className="title">Completed</div>
-                    <div className="list">
-                        {
-                            this.state.completedList.map((post) => {
-                                if(post) {
-                                    return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={this.state.usersProfile} listType={"completedList"} updateList={this.updateList} /> </div>)
-                                }
-                                return (<></>)
-                            })
-                        }
-                    </div> */}
-
                 </div>
-
-
-
-
             )
-
-
         } else {
             return (
                 <h1>LOADING...</h1>

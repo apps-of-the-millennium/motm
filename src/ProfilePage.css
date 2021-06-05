@@ -103,13 +103,20 @@
 .userName-banner {
     background: var(--color-background-grey);
     transition: background 1s;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
 .userName {
     font-size: 24px;
     font-weight: 600;
+}
+.user-badges {
+    margin-top: 6px;
+    display: flex;
+    height: min-content;
+    flex-wrap: wrap;
+    row-gap: 6px;
 }
 
 .user-info{
