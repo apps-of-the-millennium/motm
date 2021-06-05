@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 //might want to add a scroll max-view after
 const useStyles = () => ({
-    root: {
+    followList: {
       backgroundColor: 'var(--background-light)'
     },
 });
@@ -59,7 +59,7 @@ class FollowList extends React.Component {
 
         return (
             <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
-                <List className={classes.root}>
+                <List style={{background:'var(--color-background-light'}}>
                     {this.props.followList.map((followId) => (
                         <FollowListItem followId={followId} />
                     ))}

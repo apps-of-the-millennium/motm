@@ -1,5 +1,5 @@
 .feed-post {
-    background: var(--color-background);
+    background: var(--color-background-light);
     transition: background 1s;
     width: auto;
     height: auto;

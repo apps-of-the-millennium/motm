@@ -1,10 +1,10 @@
 .feed-container {
-    background: var(--color-background-light);
+    /* background: var(--color-background-light); */
     transition: background 1s;
     /* width: 60rem; */
     height: auto;
     /* min-height: 70rem; */
-    padding: 2rem;
+    /* padding: 2rem; */
 
 
     display: grid;
@@ -28,7 +28,7 @@
   min-height: 19px;
   padding: 12px 20px;
   border: none;
-  background-color: var(--color-background);
+  background-color: var(--color-background-light);
   transition: background-color 1s;
 
   font-size: large;
