@@ -9,8 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 //might want to add a scroll max-view after
 const useStyles = () => ({
     root: {
-      backgroundColor: '#0e1931',
-      color: 'white',
+      backgroundColor: 'var(--background-light)'
     },
 });
 

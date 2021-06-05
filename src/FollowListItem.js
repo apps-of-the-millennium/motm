@@ -14,7 +14,7 @@ const useStyles = () => ({
         'text-decoration': 'none',
     },
     listText: {
-        'color': '#9da0b9',
+        'color': 'var(--color-text)',
         'padding-left': '1em',
     },
 });

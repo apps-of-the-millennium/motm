@@ -1,44 +1,181 @@
-body {
-    background: gray;
-}
-
 .profile {
     background: var(--color-background);
-    
-    /* background: black; */
-    color: var(--color-text);
-    transition: 1s;
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    overflow: hidden;
+    /* color: var(--color-text); */
+    transition: 1s; /*TODO use this shortcut on other pages */
+    overflow: auto;
     min-height: 100vh;
 }
 
-.profileHeaders {
-    display: flex;
-    justify-content: space-around;
-    min-width: 40%;
-    margin-top: 2em;
+/* ===================================== */ 
+
+.profile-header{
+    /* background-color: var(--color-background-light); */
+    background: linear-gradient(0deg, rgb(65, 1, 134) 15%, rgba(7,0,107,1)   100%);
+    width: auto;
+    height: 300px;
 }
 
+/* ===================================== */ 
+
+.profile-nav-container {
+    padding-left: calc(15% + 300px); /*profile-content margin + grid section width for profile-user-sidebar */
+    padding-right: 15%;
+    background: var(--color-background-light);
+    transition: background 1s;
+    height: 40px;
+    /* min-width: ; */
+}
+.profile-nav {
+    height: inherit;
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+
+    justify-content: space-around;
+    align-items: center;
+}
+.nav-pp {
+    color:var(--color-text);
+    transition: color 1s;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}.nav-pp:hover {
+    color:#6c9dd8;
+    transition:none;
+}
+
+/* ===================================== */ 
+
+.profile-page-content{
+    width: 70%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px auto;
+}
+
+/* =================== */ 
+.profile-user-sidebar {
+    display: grid;
+    grid-template-rows: max-content auto;
+    row-gap: 20px;
+
+    height: fit-content;
+
+    position: relative;
+    bottom: 180px;
+
+    
+    transition: background 1s;
+    
+    border-radius: 4px;
+}
+.user-sidebar-top {
+    width: 100%;
+    /* height: 10vw; */
+    align-self: center;
+    /* padding: 6px; */
+    display: flex;
+    justify-content: center;
+}
 .profilePic {
     border-radius: 50%;
-    margin-top: 4em;
-    border-style: dashed;
-    width: 10vw;
-    height: 10vw;
+    border-style: solid;
+    border-width: 12px;
+    border-color: var(--color-background-light);
+    transition: border-color 1s;
+    /* width: 10vw;
+    height: 10vw; */
+    width: 12vw;
+    height: 12vw;
+    
+
 }
 
+.user-sidebar-bottom {
+    color: var(--color-text);
+    background: var(--color-background-light);
+    transition: background 1s;
+    border-radius: 4px;
+}
+.userName-banner {
+    background: var(--color-background-grey);
+    transition: background 1s;
+    padding: 8px 16px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
 .userName {
-    margin: 1.5em;
+    font-size: 24px;
+    font-weight: 600;
 }
 
-.follows {
-    min-width: 20vw;
-    display: flex;
-    flex-direction: column;
+.user-info{
+    display: grid;
+    grid-auto-rows: max-content;
+    row-gap: 12px;
+    padding: 16px;
 }
+.bio {
+    word-break: break-word;
+    color: var(--color-text-grey);
+    transition: color 1s;
+}
+.profile-button {
+    width: auto;
+    background-color: #3498DB;
+    color: white;
+    padding: 4px 0px 4px 0px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}.profile-button:hover {
+    background-color: #196597;
+}
+.follows {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+}
+.followText {
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    
+    font-weight: 500;
+}
+
+/* =================== */ 
+
+.profile-user-content {
+    padding: 36px;
+    padding-right: 100px;
+    width: auto;
+    
+}
+
+/* ==Overview== */
+
+/* ==Activity== */
+/* see activityFeed.css */
+
+
+/* ==Lists== */
+
+/* ==Reviews== */
+
+/* ===================================== */ 
+
+
+
+
+
 
 .followBtn {
     align-self: center;
@@ -53,23 +190,12 @@ body {
 
 }
 
-.followText {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
 
-.bio {
-    padding: 2em;
-    margin: 2em;
-    background: var(--color-background-light);
-    transition: background 1s;
-    border-radius: 5%;
-    max-width: 40%;
-    word-break: break-all;
-}
 
-.list {
+
+
+
+/* .list {
     padding: 2em;
     display: flex;
     width: 50vw;
@@ -79,7 +205,7 @@ body {
     transition: background 1s;
     border-radius: 4px;
     margin-bottom: 2em;
-}
+} */
 
 .favourite {
     width: 6em;
@@ -96,3 +222,4 @@ body {
 .title {
     margin-bottom: 2em;
 }
+

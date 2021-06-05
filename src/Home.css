@@ -1,14 +1,15 @@
 .homeBg {
   /* background: var(--color-background);    
   transition: background 1s; */
-  overflow: auto;
   min-height: 120vh;
+  /* height: auto; */
+  /* overflow: auto; */
 }
 
 .pageContentContainer {
   margin: 0 auto;
   width: 63%;
-  height: auto;
+
 }
 
 .filtersContainer {
@@ -99,8 +100,6 @@ input[type="search"]::-webkit-search-cancel-button {
 .content-section{
   margin-top: 4rem;
 }
-
-
 .section-label{
   display: flex;
   justify-content: space-between;
@@ -118,18 +117,20 @@ input[type="search"]::-webkit-search-cancel-button {
 .section-posts {
   height: auto;
   display: grid;
-  
-  
 }
 .section-posts.regular {
   grid-template-columns: repeat(auto-fill, 10rem); /*auto-fill vs 6*/
   gap: 20px 45px;
   justify-content: space-between; 
 }
-
 .section-posts.top {
   grid-auto-rows: auto;
   row-gap: 24px;
+}
+.section-posts.list {
+  grid-template-columns: repeat(auto-fill, 10rem); /*auto-fill vs 6*/
+  gap: 10px 20px;
+  /* justify-content: space-between;  */
 }
 
 
