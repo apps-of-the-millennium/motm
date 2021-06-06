@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 
 
 function ReviewPost(props) {
-    const [userInfo, setUserInfo] = useState(undefined);
+    // const [userInfo, setUserInfo] = useState(undefined);
     const [userPic, setUserPic] = useState('');
     const [likes, setLikes] = useState(0);
 
@@ -47,7 +47,7 @@ function ReviewPost(props) {
         const getUserInfo = () => {
             firestore.collection('users').doc(props.allReviewInfo.uid).get().then((doc) => {
                 if (doc.exists) {
-                    setUserInfo(doc.data());
+                    // setUserInfo(doc.data());
                     getProfilePicture(doc.data().profilePic);
                 }
             });

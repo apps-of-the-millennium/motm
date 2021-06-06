@@ -55,13 +55,13 @@ class FollowList extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        // const { classes } = this.props;
 
         return (
             <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" open={this.props.open}>
                 <List style={{background:'var(--color-background-light'}}>
                     {this.props.followList.map((followId) => (
-                        <FollowListItem followId={followId} />
+                        <FollowListItem key={followId} followId={followId} />
                     ))}
                 </List>
             </Dialog>

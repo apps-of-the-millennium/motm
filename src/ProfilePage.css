@@ -1,6 +1,5 @@
 .profile {
     background: var(--color-background);
-    /* color: var(--color-text); */
     transition: 1s; /*TODO use this shortcut on other pages */
     overflow: auto;
     min-height: 100vh;
@@ -9,7 +8,6 @@
 /* ===================================== */ 
 
 .profile-header{
-    /* background-color: var(--color-background-light); */
     background: linear-gradient(0deg, rgb(65, 1, 134) 15%, rgba(7,0,107,1)   100%);
     width: auto;
     height: 300px;
@@ -23,7 +21,6 @@
     background: var(--color-background-light);
     transition: background 1s;
     height: 40px;
-    /* min-width: ; */
 }
 .profile-nav {
     height: inherit;
@@ -162,7 +159,7 @@
 
 .profile-user-content {
     padding: 36px;
-    padding-right: 100px;
+    padding-right: 80px;
     width: auto;
     
 }
@@ -178,53 +175,6 @@
 /* ==Reviews== */
 
 /* ===================================== */ 
-
-
-
-
-
-
-.followBtn {
-    align-self: center;
-    max-width: 3em;
-    background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-
-}
-
-
-
-
-
-
-/* .list {
-    padding: 2em;
-    display: flex;
-    width: 50vw;
-    flex-wrap: wrap;
-    gap: 2em;
-    background: var(--color-background-light);
-    transition: background 1s;
-    border-radius: 4px;
-    margin-bottom: 2em;
-} */
-
-.favourite {
-    width: 6em;
-    height: 8em;
-    display: block;
-    overflow: hidden;
-}
-
-.watchButton {
-    width: 5vw;
-    height: 5vw;
-}
 
 .title {
     margin-bottom: 2em;

@@ -2,9 +2,7 @@ import React from 'react';
 import './ProfilePage.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-import envData from './envData';
-import MediaPost from './MediaPost';
-import { RiUserFollowFill, RiUserUnfollowFill } from 'react-icons/ri';
+
 import { FaRegEdit } from 'react-icons/fa';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import FollowList from './FollowList';
@@ -30,8 +28,6 @@ FollowList.propTypes = {
 class ProfilePage extends React.Component { //({ user, match }) => {
     constructor(props) {
         super(props);
-        this.handleClose = this.handleClose.bind(this);
-        this.updateList = this.updateList.bind(this);
         this.state = {
             userInfo: [],
             isLoaded: false,
@@ -46,12 +42,20 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             openFollowing: false,
 
             currentView: 'overview' //profile nav bar component selection
+
+            // privacySettings: [
+            //     { name: 'overview', isPrivate: false},
+            //     { name: 'activity', isPrivate: false},
+            //     { name: 'lists', isPrivate: false},
+            //     { name: 'reviews', isPrivate: false},
+            //     { name: 'stats', isPrivate: false},
+            // ]
         };
 
         this.defaultNavComponent = <div style={{ color: 'var(--color-text)', background: 'var(--color-background-light)', padding: '1rem', borderRadius: '4px' }} >Nothing to show here yet (╯°□°)╯︵ ┻━┻</div>;
     }
 
-    handleOpenFollow(followType) {
+    handleOpenFollow = (followType) => {
         if (followType === 'followers') {
             this.setState({ openFollowers: true });
         } else {
@@ -59,22 +63,18 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         }
     }
 
-    closePopup() {
+    handleClose = () => {
         this.setState({ openFollowers: false, openFollowing: false });
     }
 
-    handleClose() {
-        this.setState({ openFollowers: false, openFollowing: false });
-    }
-
-    updateFollowingState(following) {
+    updateFollowingState = (following) => {
         this.setState({ followingCurr: following });
         if (typeof (Storage) !== "undefined" && !this.state.usersProfile) {
             localStorage.setItem(this.props.user + '.followed', following.toString());
         }
     }
 
-    updateFollowing() {
+    updateFollowing = () => {
         let currUser = this.state.userId;
         //in case of signed out user
         if (currUser) {
@@ -122,7 +122,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         }
     }
 
-    updateList(listType) {
+    updateList = (listType) => {
         var lists = firestore.collection('users').doc(this.props.user).collection('lists');
         lists.doc(listType).get().then((doc) => {
             if (doc.exists) {
@@ -151,7 +151,12 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     //triggers the condition for myColor() i.e changes background color of current item
     toggle = (itemAtPosition) => {
         if (this.state.currentView !== itemAtPosition) {
-            this.setState({ currentView: itemAtPosition })
+            this.setState({ currentView: itemAtPosition });
+            // this.setState(prevState => {
+            //     let currentView = { ...prevState.currentView };
+            //     currentView.name = itemAtPosition;                              
+            //     return { currentView };                                
+            // });
         }
     }
 
@@ -165,7 +170,6 @@ class ProfilePage extends React.Component { //({ user, match }) => {
 
     onClickProfileView = (selectedView) => {
         this.toggle(selectedView);
-        // this.setState({ currentView: selectedView });
     }
     //==================================================================================================================
 
@@ -182,7 +186,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             this.setState({ userId: user.uid, isLoaded: true });
         })
 
-        
+
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             //unsure if doc.exists needs to be checked all the time
             if (doc.exists) {

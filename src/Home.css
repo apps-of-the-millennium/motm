@@ -128,7 +128,7 @@ input[type="search"]::-webkit-search-cancel-button {
   row-gap: 24px;
 }
 .section-posts.list {
-  grid-template-columns: repeat(auto-fill, 10rem); /*auto-fill vs 6*/
+  grid-template-columns: repeat(auto-fill, 8.5rem); /*auto-fill vs 6*/
   gap: 10px 20px;
   /* justify-content: space-between;  */
 }

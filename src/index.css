@@ -26,6 +26,8 @@ code {
   --color-text-grey-hover: #777676;
   --color-background-light: #ffffff;
   --color-background-light-hover: #c2c0c0;
+  --color-background-overlay: #00000085;
+  --color-light-blue: #3498DB;
 }
 
 /*defines a class and lets you override global variables with any colors or numbers etc u want */
@@ -39,4 +41,6 @@ code {
   --color-text-grey-hover: #bebebe;
   --color-background-light: #13203b;
   --color-background-light-hover: #233968;
+  --color-background-overlay: #000000bd;
+  --color-light-blue: #3498DB;
 }

@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { firestore } from './firebase';
-import firebase from 'firebase/app';
-
 
 import MediaPost from './MediaPost';
 import envData from './envData';
@@ -42,10 +40,13 @@ function UserLists(props) {
                 switch (listType) {
                     case 'favouriteList':
                         setFavourites(doc.data()[listType]);
+                        break;
                     case 'laterList':
                         setLater(doc.data()[listType]);
+                        break;
                     case 'completedList':
                         setCompleted(doc.data()[listType]);
+                        break;
                     default:
                         console.log.error('Failed to update: list type not found');
                 }
@@ -62,7 +63,7 @@ function UserLists(props) {
                     {
                         favourites.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={props.usersProfile} listType={"favouriteList"} updateList={updateList} /> </div>)
+                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"favouriteList"} updateList={updateList} /> </div>)
                             }
                             return (<></>)
                         })
@@ -76,7 +77,7 @@ function UserLists(props) {
                     {
                         later.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={props.usersProfile} listType={"laterList"} updateList={updateList} />  </div>)
+                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"laterList"} updateList={updateList} />  </div>)
                             }
                             return (<></>)
                         })
@@ -90,7 +91,7 @@ function UserLists(props) {
                     {
                         completed.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} id={post} usersProfile={props.usersProfile} listType={"completedList"} updateList={updateList} /> </div>)
+                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"completedList"} updateList={updateList} /> </div>)
                             }
                             return (<></>)
                         })
