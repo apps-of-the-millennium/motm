@@ -159,7 +159,7 @@ function ActivityFeed(props) {
     return (
         <div className='feed-container'>
             <div style={{
-                fontSize: 'medium',
+                fontSize: '20px',
                 fontWeight: '600',
                 color: 'var(--color-text)',
                 transition: 'color 1s'

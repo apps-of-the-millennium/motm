@@ -1,6 +1,7 @@
 const mediaPostTypeEnum = {
   FUNCTIONAL: 1,
-  SIMPLE: 2
+  SIMPLE: 2,
+  LIST: 3
 }
 
 //currently not used but may need later for refactoring

@@ -6,9 +6,11 @@ import envData from './envData';
 import { Link } from 'react-router-dom';
 import randomColor from 'randomcolor';
 
-import { AiFillStar, AiFillHeart, AiFillClockCircle, AiFillCloseCircle } from 'react-icons/ai';
+import { AiFillStar, AiFillHeart, AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
+import { IoIosCheckmarkCircle} from 'react-icons/io';
+import { RiPencilFill } from 'react-icons/ri';
+import { FaTrashAlt } from 'react-icons/fa';
 
 import addNotificationToUserActivity from './firestoreHelperFunctions';
 
@@ -34,6 +36,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             timer: '',
             //not sure if this is the most secure way / best way in case sign out / auth state change
             userId: '',
+
+            displayButtons: false
         };
 
         this.tagColor = randomColor({
@@ -68,6 +72,11 @@ class MediaPost extends React.Component { //({ user, match }) => {
         });
         var updateList = this.props.updateList;
         updateList(listType);
+    }
+
+    displayButtons = () => {
+        //you dont need to be logged in to see the buttons but the clicks wont add to ur list
+        this.setState({ displayButtons: !this.state.displayButtons });
     }
 
     //refactor below functions, same functions with diff list names
@@ -184,34 +193,89 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             </div>
 
 
-                            {(this.props.usersProfile) ?
-                                <div className="mediaPostDelete">
-                                    <button className="invisible" onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><AiFillCloseCircle className="icon" color="#ff5464" /></button>
-                                </div> :
-                                <>
-                                    <div className="mediaPostInfoBox">
-                                        {/* basic info depends on category temp will be actors*/}
-                                        <div className="infobox-header">
-                                            <div className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
-                                            <div className="ratings"><AiFillStar className="star" /> {(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
-                                        </div>
-                                        <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+                            <div className="mediaPostInfoBox">
+                                {/* basic info depends on category temp will be actors*/}
+                                <div className="infobox-header">
+                                    <div className="releaseDate">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
+                                    <div className="ratings"><AiFillStar className="star" /> {(this.state.mediaInfo['avgRating']) ? this.state.mediaInfo['avgRating'] : "N/A"}</div>
 
-                                        <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
-                                        {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
-                                        <div className="tagContainer">
-                                            {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
-                                                return <div className="tag" style={{ background: `${this.tagColor}` }}>{keyName}</div>
-                                            }) : "No tag"}
-                                        </div>
-                                    </div>
-                                </>
-                            }
+                                </div>
+                                <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
+
+                                <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
+                                <div className="tagContainer">
+                                    {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
+                                        return <div className="tag" style={{ background: `${this.tagColor}` }}>{keyName}</div>
+                                    }) : "No tag"}
+                                </div>
+                            </div>
+
+
 
                         </div>
                     </>
 
+                )
+            } else if (this.state.postType === envData.MEDIA_POST_TYPES.LIST) { //user Lists post type
+                return (
+                    <>
+                        {(this.state.popUp) && <div className="popUp">
+                            {this.state.mediaInfo['title']} was {this.state.popUpMessage}
+                            <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
+                        </div>}
+                        <div className="mediaContainer3">
+
+                            <div className="mediaPost3">
+                                {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
+                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                                    {/* picture of media*/}
+                                    <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
+                                </Link>
+
+                                {/* <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                                    
+                                </Link> */}
+                                <div className="mediaPost-banner">
+                                    <div className="mediaPostTitle3">{this.state.mediaInfo['title']}</div>
+                                </div>
+
+                                <div className="mediaPost-overlay-button" onClick={this.displayButtons}><RiPencilFill className="icon" style={{background:'#3498DB'}} /></div>
+                                {this.state.displayButtons &&
+                                    //if user profile, we will display remove button else all 3
+                                        (this.props.usersProfile ?
+                                            {
+                                                'favouriteList':
+                                                    <div className="mediaPostButtons3">
+                                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+
+                                                    </div>,
+                                                'laterList':
+                                                    <div className="mediaPostButtons3">
+                                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
+                                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+                                                    </div>,
+                                                'completedList':
+                                                    <div className="mediaPostButtons3">
+                                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
+                                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+                                                    </div>
+                                            }[this.props.listType] || <div>LIST TYPE PROPS DNE ERROR!</div>
+                                            :
+                                            <div className="mediaPostButtons3">
+                                                <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
+                                                <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                            </div>)
+                                }
+                            </div>
+                        </div>
+                    </>
                 )
             } else { //.MEDIA_P_TYPE.SIMPLE i.e top10 post style
                 return (
@@ -219,7 +283,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         <div className="mediaContainer2-content">
                             {/* picture of media*/}
                             {/* <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img> */}
-
                             <div>
                                 <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                     {/* title */}
@@ -248,13 +311,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 {<div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>}
                                 {<div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>}
                             </div>
-
-
-
-
-
-
-
                         </div>
                         <Link style={{ backgroundImage: `url(${this.state.mediaPostPic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} to={`/mediapost/${this.props.id}`}> </Link>
                     </div>

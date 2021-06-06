@@ -87,16 +87,22 @@ class ReviewEditPage extends React.Component {
                 this.reviewAuthorName = firebase.auth().currentUser.displayName;
                 //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
                 //we will retrieve info from DB (else statment) if that is the case
-                if (Object.keys(this.props.location.state.mediaInfo).length) {
-                    console.log(this.props.location.state.mediaInfo)
-                    this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
-                    this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                if (Object.keys(this.props.location.state.mediaInfo).length > 0) {
+                    console.log("media post info found in props:", this.props.location.state.mediaInfo);
+
+                    if (this.props.location.state.mediaInfo['category']) {
+                        this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
+                        this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                        this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
+                    } else {
+                        console.error("category field of media post is missing, check firestore");
+                    }
                 }
                 else {
                     console.log('media info prop is empty...retrieving from firestore');
                     this.getMediaPost();
                 }
-                this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
+
             } else {
                 this.setState({ signed_in: false });
                 // No user is signed in.
@@ -127,14 +133,14 @@ class ReviewEditPage extends React.Component {
                 {(this.state.signed_in) ?
                     <div className="form" >
                         <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
-                        <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
+                        <input style={{ transition: 'background 1s' }} className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
                         {/* can determine max based on media post props data */}
 
 
 
 
                         <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
-                        <TextareaAutosize
+                        <TextareaAutosize style={{ transition: 'background 1s' }}
                             className="reviewSummary"
                             id="reviewSummary"
                             // maxLength={this.SUMMARY_MAX} design team: the warning message is kinda of useless if i just limit the text box to SUMMARY_MAX characters anyways, also limiting makes it seems like its broken
@@ -143,7 +149,7 @@ class ReviewEditPage extends React.Component {
 
 
                         <label className="formLabel" htmlFor="reviewText">Your review</label><br></br>
-                        <TextareaAutosize
+                        <TextareaAutosize style={{ transition: 'background 1s' }}
                             className="reviewText"
                             maxLength={this.REVIEW_MAX}
                             minLength={this.REVIEW_MIN}
@@ -154,11 +160,11 @@ class ReviewEditPage extends React.Component {
 
                         {/* range will change based on if we want to do /5 with stars or just number */}
                         <label className="formLabel" htmlFor="score">Score</label><br></br>
-                        <input className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
+                        <input style={{ transition: 'background 1s' }} className="formInput" id="score" type="number" onChange={this.handleScoreChange} value={this.state.score} min="0" max="5" step="0.1"></input><br></br>
 
 
                         <label className="formLabel" htmlFor="spoilers">Contains spoilers?</label><br></br>
-                        <select className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
+                        <select style={{ transition: 'background 1s' }} className="formInput" id="spoilers" value={this.state.containsSpoiler} onChange={(e) => { this.setState({ containsSpoiler: e.target.value }, () => console.log(this.state.containsSpoiler)); }}>
                             <option value="true">Yes</option>
                             <option value="false">No</option>
                         </select><br></br>
@@ -318,20 +324,24 @@ class ReviewEditPage extends React.Component {
 
     //searches reviews of the currennt mediapost using users UID, if a review is found, prevent the user from writing another
     findUserReviews = () => {
-        const query = firestore.collection('posts').doc(this.category)
-            .collection(this.categoryPosts).doc(this.props.id)
-            .collection('reviews')
-            .where('uid', '==', this.reviewAuthor);
+        if (this.category && this.categoryPosts) {
+            const query = firestore.collection('posts').doc(this.category)
+                .collection(this.categoryPosts).doc(this.props.id)
+                .collection('reviews')
+                .where('uid', '==', this.reviewAuthor);
 
-        query.get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                this.setState({ duplicateReview: true });
-                console.log('found existing user review', doc.id);
-            });
-        })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
+            query.get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    this.setState({ duplicateReview: true });
+                    console.log('found existing user review', doc.id);
+                });
+            })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+        } else {
+            console.error("Failed to find user reviews...category field of media post DNE");
+        }
     }
 
     //used for edgecase
@@ -339,8 +349,16 @@ class ReviewEditPage extends React.Component {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data() }, () => {
-                    this.category = this.state.mediaInfo['category'].toLowerCase();
-                    this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                    if (this.state.mediaInfo['category']) {
+                        this.category = this.state.mediaInfo['category'].toLowerCase();
+                        this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+                    } else {
+                        console.error("Media Post found in DB but no category field");
+                        //SHOW ERROR PAGE
+                    }
+
+                }, () => {
+                    this.findUserReviews();
                 });
 
 

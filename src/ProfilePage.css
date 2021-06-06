@@ -1,98 +1,182 @@
-body {
-    background: gray;
-}
-
 .profile {
     background: var(--color-background);
-    
-    /* background: black; */
-    color: var(--color-text);
-    transition: 1s;
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    overflow: hidden;
+    transition: 1s; /*TODO use this shortcut on other pages */
+    overflow: auto;
     min-height: 100vh;
 }
 
-.profileHeaders {
-    display: flex;
-    justify-content: space-around;
-    min-width: 40%;
-    margin-top: 2em;
+/* ===================================== */ 
+
+.profile-header{
+    background: linear-gradient(0deg, rgb(65, 1, 134) 15%, rgba(7,0,107,1)   100%);
+    width: auto;
+    height: 300px;
 }
 
-.profilePic {
-    border-radius: 50%;
-    margin-top: 4em;
-    border-style: dashed;
-    width: 10vw;
-    height: 10vw;
-}
+/* ===================================== */ 
 
-.userName {
-    margin: 1.5em;
-}
-
-.follows {
-    min-width: 20vw;
-    display: flex;
-    flex-direction: column;
-}
-
-.followBtn {
-    align-self: center;
-    max-width: 3em;
-    background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-
-}
-
-.followText {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-.bio {
-    padding: 2em;
-    margin: 2em;
+.profile-nav-container {
+    padding-left: calc(15% + 300px); /*profile-content margin + grid section width for profile-user-sidebar */
+    padding-right: 15%;
     background: var(--color-background-light);
     transition: background 1s;
-    border-radius: 5%;
-    max-width: 40%;
-    word-break: break-all;
+    height: 40px;
+}
+.profile-nav {
+    height: inherit;
+    display: grid;
+    grid-template-columns: repeat(5, max-content);
+
+    justify-content: space-around;
+    align-items: center;
+}
+.nav-pp {
+    color:var(--color-text);
+    transition: color 1s;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}.nav-pp:hover {
+    color:#6c9dd8;
+    transition:none;
 }
 
-.list {
-    padding: 2em;
+/* ===================================== */ 
+
+.profile-page-content{
+    width: 70%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 300px auto;
+}
+
+/* =================== */ 
+.profile-user-sidebar {
+    display: grid;
+    grid-template-rows: max-content auto;
+    row-gap: 20px;
+
+    height: fit-content;
+
+    position: relative;
+    bottom: 180px;
+
+    
+    transition: background 1s;
+    
+    border-radius: 4px;
+}
+.user-sidebar-top {
+    width: 100%;
+    /* height: 10vw; */
+    align-self: center;
+    /* padding: 6px; */
     display: flex;
-    width: 50vw;
-    flex-wrap: wrap;
-    gap: 2em;
+    justify-content: center;
+}
+.profilePic {
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 12px;
+    border-color: var(--color-background-light);
+    transition: border-color 1s;
+    /* width: 10vw;
+    height: 10vw; */
+    width: 12vw;
+    height: 12vw;
+    
+
+}
+
+.user-sidebar-bottom {
+    color: var(--color-text);
     background: var(--color-background-light);
     transition: background 1s;
     border-radius: 4px;
-    margin-bottom: 2em;
+}
+.userName-banner {
+    background: var(--color-background-grey);
+    transition: background 1s;
+    padding: 10px 16px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.userName {
+    font-size: 24px;
+    font-weight: 600;
+}
+.user-badges {
+    margin-top: 6px;
+    display: flex;
+    height: min-content;
+    flex-wrap: wrap;
+    row-gap: 6px;
 }
 
-.favourite {
-    width: 6em;
-    height: 8em;
-    display: block;
-    overflow: hidden;
+.user-info{
+    display: grid;
+    grid-auto-rows: max-content;
+    row-gap: 12px;
+    padding: 16px;
+}
+.bio {
+    word-break: break-word;
+    color: var(--color-text-grey);
+    transition: color 1s;
+}
+.profile-button {
+    width: auto;
+    background-color: #3498DB;
+    color: white;
+    padding: 4px 0px 4px 0px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}.profile-button:hover {
+    background-color: #196597;
+}
+.follows {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+}
+.followText {
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    
+    font-weight: 500;
 }
 
-.watchButton {
-    width: 5vw;
-    height: 5vw;
+/* =================== */ 
+
+.profile-user-content {
+    padding: 36px;
+    padding-right: 80px;
+    width: auto;
+    
 }
+
+/* ==Overview== */
+
+/* ==Activity== */
+/* see activityFeed.css */
+
+
+/* ==Lists== */
+
+/* ==Reviews== */
+
+/* ===================================== */ 
 
 .title {
     margin-bottom: 2em;
 }
+
