@@ -311,12 +311,12 @@ class MediaPostPage extends React.Component {
                             {/* buttons */}
                             <div className="mediaPageButtons">
                                 <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
-                                <div className="trophyButton"><ImTrophy className="icon" /></div>
+                                <div className="trophyButton"><ImTrophy className="trophy-icon" /></div>
                                 {(this.state.openOptions) ?
                                     <div className="dropdown-content2">
-                                        <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="icon" />  </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="icon" />  </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="icon" />  </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="listOptions-icon" />  </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="listOptions-icon" />  </button>
+                                        <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="listOptions-icon" />  </button>
                                     </div>
                                     : ''}
                             </div>
@@ -367,7 +367,7 @@ class MediaPostPage extends React.Component {
 
                             {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
                             <Link className="revLink" to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >
-                                <button className="reviewButton">Write Review<HiPencilAlt className="icon" /></button>
+                                <button className="reviewButton">Write Review<HiPencilAlt className="reviewButton-icon" /></button>
                             </Link>
                         </div>
 
