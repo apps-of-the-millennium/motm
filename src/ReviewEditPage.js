@@ -65,8 +65,8 @@ class ReviewEditPage extends React.Component {
 
         if(this.context.userId) {
             this.setState({ signed_in: true });
-            this.reviewAuthor = firebase.auth().currentUser.uid;
-            this.reviewAuthorName = firebase.auth().currentUser.displayName;
+            this.reviewAuthor = this.context.userId;
+            this.reviewAuthorName = this.context.userName;
             //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
             //we will retrieve info from DB (else statment) if that is the case
             if (Object.keys(this.props.location.state.mediaInfo).length > 0) {
