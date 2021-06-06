@@ -68,11 +68,15 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     deleteFromList(id, listType) {
+        let updateList = this.props.updateList;
+
         firestore.collection('users').doc(this.context.userId).collection('lists').doc(listType).update({
             [listType]: firebase.firestore.FieldValue.arrayRemove(id)
+        }).then(() => {
+            updateList(listType); //we need delete to finish first before updating list!
+        }).catch((err) => {
+            console.error("Failed to delete from list:", err);
         });
-        var updateList = this.props.updateList;
-        updateList(listType);
     }
 
     displayButtons = () => {
