@@ -3,7 +3,7 @@ import './ReviewEditPage.css';
 import TextareaAutosize from 'react-textarea-autosize';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-
+import { AuthContext } from "./context";
 import Filter from 'bad-words';
 
 
@@ -26,6 +26,9 @@ user now has ability to modify values and press save again, but this time, we us
 */
 
 class ReviewEditPage extends React.Component {
+    static contextType = AuthContext;
+    static previousContext;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -47,7 +50,6 @@ class ReviewEditPage extends React.Component {
         this.reviewAuthor = null;
         this.reviewAuthorName = null;
 
-
         this.SUMMARY_MIN = 20;
         this.SUMMARY_LETTER_MIN = 10;
         this.SUMMARY_MAX = 120;
@@ -56,10 +58,31 @@ class ReviewEditPage extends React.Component {
         this.REVIEW_LETTER_MIN = 200;
         this.REVIEW_MAX = 4800;
 
-
     }
 
     componentDidMount() {
+        this.previousContext = this.context;
+
+        if(this.context.userId) {
+            this.setState({ signed_in: true });
+            this.reviewAuthor = this.context.userId; 
+            this.reviewAuthorName = this.context.userName;
+            //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
+            //we will retrieve info from DB (else statment) if that is the case
+            if (Object.keys(this.props.location.state.mediaInfo).length) {
+                console.log(this.props.location.state.mediaInfo)
+                this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
+                this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+            }
+            else {
+                console.log('media info prop is empty...retrieving from firestore');
+                this.getMediaPost();
+            }
+            this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
+        } else {
+            this.setState({ signed_in: false });
+            // No user is signed in.
+        }
 
         if (typeof (Storage) !== "undefined") {
             let session_containsSpoilers = sessionStorage.getItem(this.props.id + '.containsSpoiler') || 'false';
@@ -78,33 +101,28 @@ class ReviewEditPage extends React.Component {
                 numberCompleted: session_numberCompleted,
             })
         }
-
-        //temporary fix to bypass user id == null error
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                this.setState({ signed_in: true });
-                this.reviewAuthor = firebase.auth().currentUser.uid;
-                this.reviewAuthorName = firebase.auth().currentUser.displayName;
-                //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
-                //we will retrieve info from DB (else statment) if that is the case
-                if (Object.keys(this.props.location.state.mediaInfo).length) {
-                    console.log(this.props.location.state.mediaInfo)
-                    this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
-                    this.categoryPosts = this.category.slice(0, -1) + 'Posts';
-                }
-                else {
-                    console.log('media info prop is empty...retrieving from firestore');
-                    this.getMediaPost();
-                }
-                this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
-            } else {
-                this.setState({ signed_in: false });
-                // No user is signed in.
-            }
-        });
     }
 
     componentDidUpdate() {
+        //not sure if this is needed or if it works in mount because it's always tracking
+        //and won't reset the auth status or something
+        if(this.previousContext.userId !== this.context.userId) {
+            this.setState({ signed_in: true });
+            this.reviewAuthor = this.context.userId;
+            this.reviewAuthorName = this.context.userName;
+            //edge case where props arent passed properly because user clicks "be the first" on MPP before reviews are loaded in
+            //we will retrieve info from DB (else statment) if that is the case
+            if (Object.keys(this.props.location.state.mediaInfo).length) {
+                console.log(this.props.location.state.mediaInfo)
+                this.category = this.props.location.state.mediaInfo['category'].toLowerCase();
+                this.categoryPosts = this.category.slice(0, -1) + 'Posts';
+            } else {
+                console.log('media info prop is empty...retrieving from firestore');
+                this.getMediaPost();
+            }
+            this.findUserReviews(); //uncomment to prevent users from writing duplicate reviews
+        }
+        
         //save info to session storage
         if (typeof (Storage) !== "undefined") {
             sessionStorage.setItem(this.props.id + '.containsSpoiler', (this.state.containsSpoiler).toString());
@@ -113,7 +131,7 @@ class ReviewEditPage extends React.Component {
             sessionStorage.setItem(this.props.id + '.score', (this.state.score).toString());
             sessionStorage.setItem(this.props.id + '.numberCompleted', (this.state.numberCompleted).toString());
         }
-
+        this.previousContext = this.context;
     }
 
     //Design Note: decided to change <form> to <div> and put onSubmit into onClick for the Save button instead, makes it clearer i guess.
@@ -129,9 +147,6 @@ class ReviewEditPage extends React.Component {
                         <label className="formLabel" htmlFor="completion">How many TO_DETERMINE have you completed for {this.state.mediaInfo['title']} as of writing this review?</label><br></br>
                         <input className="formInput" id="completion" type="number" onChange={(e) => this.setState({ numberCompleted: e.target.value })} value={this.state.numberCompleted} min="0" max="100"></input><br></br>
                         {/* can determine max based on media post props data */}
-
-
-
 
                         <label className="formLabel" htmlFor="reviewSummary">Review summary</label><br></br>
                         <TextareaAutosize
@@ -342,8 +357,6 @@ class ReviewEditPage extends React.Component {
                     this.category = this.state.mediaInfo['category'].toLowerCase();
                     this.categoryPosts = this.category.slice(0, -1) + 'Posts';
                 });
-
-
             }
         });
     }

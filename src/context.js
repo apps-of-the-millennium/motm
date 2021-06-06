@@ -5,32 +5,61 @@ import firebase from 'firebase/app';
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
+  //I think this is only useful when user checks their own profile
+  //just another variable we always pass shouldn't be an issue since we already do the read anyways
+  const [bio, setBio] = useState(null);
 
   useEffect(() => {
+    const getProfilePicture = (url) => {
+      console.log(url);
+      //check if it is a url or path to firebase storage
+      if (url.charAt(0) === '/') {
+        const ref = firebase.storage().ref(url);
+        ref.getDownloadURL()
+            .then((url) => {
+              setProfilePic(url);
+            })
+            .catch((e) =>
+                console.log('Error retrieving profilePic => ', e)
+            );
+      } else {
+        setProfilePic(url);
+      }
+    }
+
     firebase.auth().onAuthStateChanged(function(user) {
-      setUser(user);
       if (user) {
-        var userId = user.uid;
-        firestore.collection('users').doc(userId).get().then((doc) => {
+        var useruid = user.uid;
+        setUserId(useruid);
+        firestore.collection('users').doc(useruid).get().then((doc) => {
           // if user does not exist add them to the collection
           if(!doc.exists) {
-              firestore.collection('users').doc(userId).set({
-                  userName: user.displayName,
-                  bio: "",
-                  //can include temp pic later or retrieve their current
-                  profilePic: user.photoURL,
-                  //add more defaults later
+            firestore.collection('users').doc(useruid).set({
+              userName: user.displayName,
+              bio: "",
+              //can include temp pic later or retrieve their current
+              profilePic: user.photoURL,
             })
-            //probably don't need these
-            firestore.collection('users').doc(userId).collection('ratings').doc('books').set({});
+          } else {
+            setUserName(doc.data()['userName']);
+            getProfilePicture(doc.data()['profilePic']);
+            setBio(doc.data()['bio']);
           }
         });
+      } else {
+        //not sure if this is needed
+        setUserName(null);
+        setUserId(null);
+        setProfilePic(null);
+        setBio(null);
       }
     })
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userId, userName, profilePic, bio }}>{children}</AuthContext.Provider>
   );
 };
