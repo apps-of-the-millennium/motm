@@ -41,12 +41,15 @@
     
 }
 
-.navigationContainer .nav {
+.nav {
     color:#b0b2c5;
     font-weight: 700;
     font-size: small;
     text-decoration: none;
+}.nav:hover {
+    color:#6c9dd8;
 }
+
 
 
 
@@ -75,9 +78,8 @@
 
 .dropBtn .avatar {
     border-radius: 50%;
-    object-fit: contain;
-    width: 70%;
-    height: 70%;
+    width: 3rem;
+    height: 3rem;
 }
 
 .dropBtn .dropdown-content {

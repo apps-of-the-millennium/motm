@@ -17,24 +17,30 @@ code {
 
 /*has global variables and more: ALSO ACTS AS DEFAULT SCHEME COLORS/VALUES WHEN A SPECIFIC THEME IS NOT DEFINED*/
 :root {
-  --color-background: #ececec;
+  --color-background: rgb(232,236,239);
   --color-background-dark: #c9c7c7;
+  --color-background-grey: #f1f1f1;
   --color-text: #000000;
   --color-text-hover: #6e6e6e;
   --color-text-grey: #3f3f3f;
   --color-text-grey-hover: #777676;
   --color-background-light: #ffffff;
   --color-background-light-hover: #c2c0c0;
+  --color-background-overlay: #00000085;
+  --color-light-blue: #3498DB;
 }
 
 /*defines a class and lets you override global variables with any colors or numbers etc u want */
 .site-theme-dark {
   --color-background: #081022;
   --color-background-dark: #000818;
+  --color-background-grey: #1b202b;
   --color-text: #aeb1cf;
   --color-text-hover: #ced1e9;
   --color-text-grey: #b1afaf;
   --color-text-grey-hover: #bebebe;
   --color-background-light: #13203b;
   --color-background-light-hover: #233968;
+  --color-background-overlay: #000000bd;
+  --color-light-blue: #3498DB;
 }

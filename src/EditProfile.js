@@ -78,7 +78,7 @@ function EditProfile(props) {
             {(authContext.userId !== null ?
                 <div className="form">
                     <label className="formLabel" htmlFor="userName">Update Username</label><br/>
-                    <TextareaAutosize
+                    <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editUserName"
                         id="userName"
                         defaultValue={authContext.userName}
@@ -86,7 +86,7 @@ function EditProfile(props) {
                     </TextareaAutosize><br/>
 
                     <label className="formLabel" htmlFor="uploadPhoto">Upload Photo</label><br/>
-                    <ImageUploader style={{width:'25%'}}
+                    <ImageUploader style={{width:'25%', marginBottom:'1rem'}}
                         withIcon={true}
                         onChange={onUpload}
                         withPreview={true}
@@ -94,10 +94,11 @@ function EditProfile(props) {
                         buttonText={"Choose Image"}
                         imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                         maxFileSize={5242880} //can change
+                        fileContainerStyle={{background:'var(--color-background-light', transition:'background 1s'}}
                     />
 
                     <label className="formLabel" htmlFor="bio">Update Bio</label><br/>
-                    <TextareaAutosize
+                    <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editBio"
                         id="bio"
                         defaultValue={authContext.bio}
