@@ -178,6 +178,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
+        this.setState({ currentView: 'overview' }); //resets component view on user profile change
         //may want to refactor everything into smaller separate functions
         firebase.auth().onAuthStateChanged((user) => {
             if (this.props.user === user.uid) {

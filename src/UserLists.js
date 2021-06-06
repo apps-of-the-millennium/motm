@@ -28,7 +28,13 @@ function UserLists(props) {
             if (doc.exists) {
                 setFavourites(doc.data()['favouriteList']);
             }
-        })
+        });
+
+        return () => { //clean up on unmount
+            setFavourites([]);
+            setLater([]);
+            setCompleted([]);
+        };
 
     }, [props]);
 

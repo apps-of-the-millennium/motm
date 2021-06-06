@@ -21,6 +21,7 @@ const useStyles = () => ({
 
 
 class FollowListItem extends React.Component {
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -30,6 +31,8 @@ class FollowListItem extends React.Component {
         };
     }
 
+    isUnMounted = false;
+    
     handleClose = () => {
         this.props.onClose();
     };
@@ -52,6 +55,9 @@ class FollowListItem extends React.Component {
   
     getUserInfo(followId) {
         firestore.collection('users').doc(followId).get().then((doc) => {
+            if (this.isUnMounted) {
+                return;
+            }
             //unsure if doc.exists needs to be checked all the time
             if(doc.exists) {
                 this.setState({ userInfo: doc.data() });
@@ -63,6 +69,10 @@ class FollowListItem extends React.Component {
 
     componentDidMount() {
         this.getUserInfo(this.props.followId);
+    }
+
+    componentWillUnmount() {
+        this.isUnMounted = true; //used to cancel async tasks to avoid mem leaks on unmount
     }
 
     render() {
