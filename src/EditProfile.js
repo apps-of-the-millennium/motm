@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import './ReviewEditPage.css';
 import firebase from 'firebase/app';
 import { firestore } from './firebase';
 import TextareaAutosize from 'react-textarea-autosize';
 import ImageUploader from "react-images-upload";
 import Filter from 'bad-words';
+import { AuthContext } from "./context";
 
 function EditProfile(props) {
-    const [userId, setUserId] = useState('');
     const [photo, setPhoto] = useState('');
     const [fileType, setFileType] = useState('');
     const [bio, setBio] = useState('');
     const [userName, setUserName] = useState('');
     const MAX_BIO = 3000; //can change later
     const MAX_USER = 20;
+
+    const authContext = useContext(AuthContext);
 
     const onUpload = photo => {
         try {
@@ -28,19 +30,19 @@ function EditProfile(props) {
     };
 
     function handleSubmit() {
-        if(userId) {
+        if(authContext.userId) {
             if(userName) {
                 let filter = new Filter();
-                firestore.collection('users').doc(userId).set(
+                firestore.collection('users').doc(authContext.userId).set(
                     { userName: filter.clean(userName) },
                     { merge: true }
                 ).then(() => {
-                    console.log("Bio Updated");
+                    console.log("UserName Updated");
                 });
             }
             if(bio) {
                 let filter = new Filter();
-                firestore.collection('users').doc(userId).set(
+                firestore.collection('users').doc(authContext.userId).set(
                     { bio: filter.clean(bio) },
                     { merge: true }
                 ).then(() => {
@@ -50,7 +52,7 @@ function EditProfile(props) {
             if(photo) {
                 var storageRef = firebase.storage().ref();
                 //this auto replaces the image no need to check if it exists
-                const uploadTask = storageRef.child('profilePics/'+userId+'.'+fileType).put(photo);
+                const uploadTask = storageRef.child('profilePics/'+authContext.userId+'.'+fileType).put(photo);
                 //can change this later if we want proper logging don't have anything in place if it fails
                 uploadTask.on('state_changed', 
                     (snapShot) => {
@@ -60,35 +62,26 @@ function EditProfile(props) {
                     }
                 );
                 //could cause failed profile pic if it did not get uploaded properly
-                firestore.collection('users').doc(userId).set(
-                    { profilePic: '/profilePics/'+userId+'.'+fileType },
+                firestore.collection('users').doc(authContext.userId).set(
+                    { profilePic: '/profilePics/'+authContext.userId+'.'+fileType },
                     { merge: true }
                 ).then(() => {
                     console.log("Profile Picture Updated");
                 });
             }
-            props.history.push('/profile/'+userId);
+            props.history.push('/profile/'+authContext.userId);
         }
     }
 
-    useEffect(() => {
-        //I think we can make this a global thing, refactor later
-        //https://dev.to/bmcmahen/using-firebase-with-react-hooks-21ap
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                setUserId(user.uid);
-            }
-        });
-    })
-
     return (
         <div className="pageContainer">
-            {(userId !== null ?
+            {(authContext.userId !== null ?
                 <div className="form">
                     <label className="formLabel" htmlFor="userName">Update Username</label><br/>
                     <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editUserName"
                         id="userName"
+                        defaultValue={authContext.userName}
                         onChange={(e) => setUserName(e.target.value)} > 
                     </TextareaAutosize><br/>
 
@@ -108,6 +101,7 @@ function EditProfile(props) {
                     <TextareaAutosize style={{transition: 'background 1s'}}
                         className="editBio"
                         id="bio"
+                        defaultValue={authContext.bio}
                         onChange={(e) => setBio(e.target.value)} > 
                     </TextareaAutosize>
 

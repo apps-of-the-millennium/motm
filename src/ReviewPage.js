@@ -2,7 +2,7 @@ import React from 'react';
 import './ReviewPage.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-
+import { AuthContext } from "./context";
 
 import { Link } from 'react-router-dom';
 
@@ -20,6 +20,9 @@ import { IoMdThumbsDown, IoMdThumbsUp } from 'react-icons/io';
     NOW WE CANT SHOW TOP LIKED REVIEWS WITH FUCKING DISTRIUTION COUNTERS!
 */
 class ReviewPage extends React.Component {
+    static contextType = AuthContext;
+    static previousContext;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -46,40 +49,36 @@ class ReviewPage extends React.Component {
         this.dislikeCounterDocRef = firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.location.state.allReviewInfo.reviewInfo.mid).collection('reviews').doc(this.props.id).collection('counters').doc('dislikesCounter')
     }
 
-    componentDidMount() {
-        //temporary to find user and avoid error using firebase.auth().currentUser.uid
-        firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
-                this.current_user = user.uid;
-                await this.getBothUserReviewCollections();
-                //this.updateLikeAndDislikeState();
+    async componentDidMount() {
+        this.previousContext = this.context;
 
+        if(this.context.userId) {
+            this.current_user = this.context.userId; //user.uid;
+            await this.getBothUserReviewCollections();
+            //this.updateLikeAndDislikeState();
 
-                //=======SessionStorage stuff...noticeably faster than above method but I realized that we HAVE to call getBothUserReviewCollections regardless, so I am removing it for now===
-                if (typeof (Storage) !== "undefined") {
-                    let sessionLiked = sessionStorage.getItem(this.props.id + '.liked') || -1;
-                    let sessionDisliked = sessionStorage.getItem(this.props.id + '.disliked') || -1;
+            //=======SessionStorage stuff...noticeably faster than above method but I realized that we HAVE to call getBothUserReviewCollections regardless, so I am removing it for now===
+            if (typeof (Storage) !== "undefined") {
+                let sessionLiked = sessionStorage.getItem(this.props.id + '.liked') || -1;
+                let sessionDisliked = sessionStorage.getItem(this.props.id + '.disliked') || -1;
 
-                    if (sessionLiked !== -1 && sessionDisliked !== -1) {
-                        console.log('using Session Storage');
-                        const convertLikedToBool = (sessionLiked === 'true');
-                        const convertDislikedToBool = (sessionDisliked === 'true');
-                        this.setState({ liked: convertLikedToBool, disliked: convertDislikedToBool }, () => { console.log('liked/disliked:', this.state.liked, this.state.disliked) });
-                    } else {
-                        console.log('using Firestore');
-                        // await this.getBothUserReviewCollections();
-                        this.updateLikeAndDislikeState();
-                        
-                    }
+                if (sessionLiked !== -1 && sessionDisliked !== -1) {
+                    console.log('using Session Storage');
+                    const convertLikedToBool = (sessionLiked === 'true');
+                    const convertDislikedToBool = (sessionDisliked === 'true');
+                    this.setState({ liked: convertLikedToBool, disliked: convertDislikedToBool }, () => { console.log('liked/disliked:', this.state.liked, this.state.disliked) });
                 } else {
                     console.log('using Firestore');
                     // await this.getBothUserReviewCollections();
                     this.updateLikeAndDislikeState();
+                    
                 }
-
+            } else {
+                console.log('using Firestore');
+                // await this.getBothUserReviewCollections();
+                this.updateLikeAndDislikeState();
             }
-        });
-
+        }
     }
 
     //Possibily a huge issue with saving to local or session storage onClick, it doesnt work on the first click unless the setItem is directly invoked and NOT nested in a function

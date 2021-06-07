@@ -78,9 +78,8 @@
 
 .dropBtn .avatar {
     border-radius: 50%;
-    object-fit: contain;
-    width: 70%;
-    height: 70%;
+    width: 3rem;
+    height: 3rem;
 }
 
 .dropBtn .dropdown-content {

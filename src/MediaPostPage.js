@@ -15,12 +15,14 @@ import { AiFillHeart } from 'react-icons/ai';
 import { AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark, ImTrophy } from 'react-icons/im';
 import { HiPencilAlt } from 'react-icons/hi';
+import { AuthContext } from "./context";
 
 import addNotificationToUserActivity from './firestoreHelperFunctions';
 
 const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
 class MediaPostPage extends React.Component {
+    static contextType = AuthContext;
     constructor(props) {
         super(props);
         this.state = {
@@ -69,40 +71,39 @@ class MediaPostPage extends React.Component {
         //if we added to Favourites while on the page
         if(needsUpdate) {
             //if there is no user (might be able to take this out since I won't allow non users to change the needsUpdate)
-            if(this.state.userId) {
-                firestore.collection('users').doc(this.state.userId).collection('lists').doc('favouriteList').set(
+            if(this.context.userId) {
+                firestore.collection('users').doc(this.context.userId).collection('lists').doc('favouriteList').set(
                     { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
 
-                addNotificationToUserActivity(this.state.userId, this.props.id, `Favourited `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
-                
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Favourited `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
             } 
         }
     }
 
     async updateLater(id, needsUpdate) {
         if(needsUpdate) {
-            if(this.state.userId) {
-                firestore.collection('users').doc(this.state.userId).collection('lists').doc('laterList').set(
+            if(this.context.userId) {
+                firestore.collection('users').doc(this.context.userId).collection('lists').doc('laterList').set(
                     { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }    
                 );
 
-                addNotificationToUserActivity(this.state.userId, this.props.id, `Plans to watch `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Plans to watch `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
             }
         }
     }
 
     async updateCompleted(id, needsUpdate) {
         if(needsUpdate) {
-            if(this.state.userId) {
-                firestore.collection('users').doc(this.state.userId).collection('lists').doc('completedList').set(
+            if(this.context.userId) {
+                firestore.collection('users').doc(this.context.userId).collection('lists').doc('completedList').set(
                     { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
 
-                addNotificationToUserActivity(this.state.userId, this.props.id, `Completed `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Completed `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
             }
         }
     }
@@ -124,23 +125,23 @@ class MediaPostPage extends React.Component {
     }
 
     async updateRating(newRating, mediaId) {
-        if(this.state.userId) {
+        if(this.context.userId) {
             if (!newRating) {
                 //if newRating doesn't exist user deleted their rating and delete from that books rating
-                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').update({
+                firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').update({
                     [mediaId]: firebase.firestore.FieldValue.delete()
                 })
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.state.userId).delete().then(() => {
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.context.userId).delete().then(() => {
                     this.updateAvg(mediaId);
                 }).catch((error) => {
                     console.log(error);
                 })
             } else {
-                firestore.collection('users').doc(this.state.userId).collection('ratings').doc('books').set(
+                firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').set(
                     { [mediaId]: newRating },
                     { merge: true }, 
                 )
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.state.userId).set(
+                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.context.userId).set(
                     { rating: newRating },
                 ).then(() => {
                     this.updateAvg(mediaId);
@@ -152,8 +153,8 @@ class MediaPostPage extends React.Component {
     }
 
     async getRating(mediaId) {
-        if(this.state.userId) {
-            var userDoc = firestore.collection('users').doc(this.state.userId);
+        if(this.context.userId) {
+            var userDoc = firestore.collection('users').doc(this.context.userId);
             userDoc.collection('ratings').doc('books').get().then((doc) => {
                 if (doc.exists) {
                     this.setState({ currRating: doc.data()[mediaId] });
@@ -206,7 +207,7 @@ class MediaPostPage extends React.Component {
     }
 
     onClick = () => {
-        if(this.state.userId) {
+        if(this.context.userId) {
             this.setState({ openOptions: !this.state.openOptions });            
         }
     }
@@ -249,13 +250,6 @@ class MediaPostPage extends React.Component {
     }
 
     componentDidMount() {
-        firebase.auth().onAuthStateChanged((user) => {
-            if(user) {
-                this.setState({ userId: user.uid });
-            }
-            this.setState({ isLoaded: true });
-        })
-
         if (typeof (Storage) !== "undefined") {
             let local_completedStr = localStorage.getItem(this.props.id + '.completedList') || 'false';
             let local_completed = (local_completedStr === 'true'); //string to bool conversion
@@ -299,7 +293,6 @@ class MediaPostPage extends React.Component {
                     {/* Cover Image */}
                     <div className="coverContainer"></div>
 
-
                     {/* Info */}
                     <div className="infoContainer">
                         <div className="infoGrid">
@@ -333,7 +326,7 @@ class MediaPostPage extends React.Component {
                             <div className="rateContainer">
                                 <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                 <button className="rateButton">
-                                    {(this.state.userId) ? 
+                                    {(this.context.userId) ? 
                                         <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
                                         onChange={(event, newRating) => this.setState({currRating: newRating})} /> :
                                         <Rating name="rating" style={{ fontSize: "2em" }} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />} disabled />
@@ -381,11 +374,6 @@ class MediaPostPage extends React.Component {
                                             {this.state.reviews.map((post) => {
                                                 return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
                                             })}
-
-                                            {/* <ReviewPost />
-                                            <ReviewPost />
-                                            <ReviewPost />
-                                            <ReviewPost /> */}
                                         </div>
                                     )}
                             </div>
