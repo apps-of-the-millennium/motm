@@ -16,10 +16,6 @@ import EditProfile from './EditProfile';
 import ScrollToTop from './ScrollToTop';
 
 class App extends Component {
-
-  state = {
-    users: firestore.collection('users')
-  }
   render() {
     return (
       <div style={{backgroundColor:'var(--color-background)', transition:'background 1s'}}>
