@@ -7,7 +7,6 @@ import MediaPostPage from './MediaPostPage';
 import Header from './Header';
 import Footer from './Footer';
 import ErrorPage from './ErrorPage';
-import { firestore } from "./firebase";
 import ReviewEditPage from './ReviewEditPage';
 import ReviewPage from './ReviewPage';
 import BrowsePage from './BrowsePage'
@@ -16,10 +15,6 @@ import EditProfile from './EditProfile';
 import ScrollToTop from './ScrollToTop';
 
 class App extends Component {
-
-  state = {
-    users: firestore.collection('users')
-  }
   render() {
     return (
       <div style={{backgroundColor:'var(--color-background)', transition:'background 1s'}}>

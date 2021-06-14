@@ -45,8 +45,9 @@ class ReviewPage extends React.Component {
         this.reviewsLiked = [];
         this.reviewsDisliked = [];
 
-        this.likeCounterDocRef = firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.location.state.allReviewInfo.reviewInfo.mid).collection('reviews').doc(this.props.id).collection('counters').doc('likesCounter')
-        this.dislikeCounterDocRef = firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.location.state.allReviewInfo.reviewInfo.mid).collection('reviews').doc(this.props.id).collection('counters').doc('dislikesCounter')
+        this.mid = this.props.location.state.allReviewInfo.reviewInfo.mid;
+        this.likeCounterDocRef = firestore.collection('posts').doc('books').collection('bookPosts').doc(this.mid).collection('reviews').doc(this.props.id).collection('counters').doc('likesCounter')
+        this.dislikeCounterDocRef = firestore.collection('posts').doc('books').collection('bookPosts').doc(this.mid).collection('reviews').doc(this.props.id).collection('counters').doc('dislikesCounter')
     }
 
     async componentDidMount() {
