@@ -7,7 +7,6 @@ import MediaPostPage from './MediaPostPage';
 import Header from './Header';
 import Footer from './Footer';
 import ErrorPage from './ErrorPage';
-import { firestore } from "./firebase";
 import ReviewEditPage from './ReviewEditPage';
 import ReviewPage from './ReviewPage';
 import BrowsePage from './BrowsePage'
