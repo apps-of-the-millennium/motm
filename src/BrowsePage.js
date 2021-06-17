@@ -6,7 +6,7 @@ import { firestore } from "./firebase";
 import CustomSelect from './CustomSelect';
 import CategorySelector from './CategorySelector';
 
-import envData from './envData';
+import { DUMMY_POSTS, MEDIA_POST_TYPES } from './envData';
 
 import { FaIcons, FaSearch } from 'react-icons/fa'; //make the filters into separate component?
 
@@ -14,7 +14,7 @@ class BrowsePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            browsePosts: envData.DUMMY_POSTS,
+            browsePosts: DUMMY_POSTS,
             searchPosts: [],
 
             searchName: '',
@@ -102,7 +102,7 @@ class BrowsePage extends React.Component {
                                         {
                                             this.state.browsePosts.map((post) => { //TODO: change to popularposts
                                                 let postInfo = post.postInfo;
-                                                return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                                                return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
                                             })
                                         }
                                     </div>
@@ -117,7 +117,7 @@ class BrowsePage extends React.Component {
                                                     this.state.searchPosts.map((post) => {
                                                         let postInfo = post.postInfo;
                                                         return (
-                                                            <div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
+                                                            <div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
                                                         )
                                                     })
 
@@ -203,7 +203,7 @@ class BrowsePage extends React.Component {
 
     retrieveBrowsePosts = () => {
         //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
-        this.setState({ browsePosts: envData.DUMMY_POSTS }, () => {
+        this.setState({ browsePosts: DUMMY_POSTS }, () => {
             firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).limit(18).get().then((querySnapshot) => {
 
                 querySnapshot.docs.forEach(doc => {

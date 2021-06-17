@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { firestore } from './firebase';
 
 import MediaPost from './MediaPost';
-import envData from './envData';
+import { MEDIA_POST_TYPES } from './envData';
 
 function UserLists(props) {
     const [favourites, setFavourites] = useState([]);
@@ -69,7 +69,7 @@ function UserLists(props) {
                     {
                         favourites.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"favouriteList"} updateList={updateList} /> </div>)
+                                return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"favouriteList"} updateList={updateList} /> </div>)
                             }
                             return (<></>)
                         })
@@ -83,7 +83,7 @@ function UserLists(props) {
                     {
                         later.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"laterList"} updateList={updateList} />  </div>)
+                                return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"laterList"} updateList={updateList} />  </div>)
                             }
                             return (<></>)
                         })
@@ -97,7 +97,7 @@ function UserLists(props) {
                     {
                         completed.map((post) => {
                             if (post) {
-                                return (<div key={post}> <MediaPost postType={envData.MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"completedList"} updateList={updateList} /> </div>)
+                                return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"completedList"} updateList={updateList} /> </div>)
                             }
                             return (<></>)
                         })
