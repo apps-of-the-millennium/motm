@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './ActivityFeed.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
 import ActivityFeedPost from './ActivityFeedPost';
 import TextareaAutosize from 'react-textarea-autosize';
 import Filter from 'bad-words';
-
+import { AuthContext } from "./context";
 
 function ActivityFeed(props) {
-    const LIMIT = 6;
+    const LIMIT = 5;
+    const { userId } = useContext(AuthContext);
     const [lastDoc, setLastDoc] = useState({});
     const [canLoadMore, setCanLoadMore] = useState(false);
 
@@ -16,7 +17,6 @@ function ActivityFeed(props) {
     const [newActivityText, setNewActivityText] = useState('');
     const [isFocused, setIsFocused] = useState(false);
 
-    // const [currentUID, setCurrentUID] = useState();
     const [currentUserInfo, setCurrentUserInfo] = useState({});
 
     function displayActivity(doc_id, _id, _content, _timestamp, _type, _extraInfo) {
@@ -41,14 +41,16 @@ function ActivityFeed(props) {
 
 
     useEffect(() => {
-        // currentUID is suppose to represent the current logged in user, probably remove this if user info becomes global!
-        firestore.collection('users').doc(props.currentUID).get().then((doc) => {
-            if (doc.exists) {
+        if(userId) {
+            firestore.collection('users').doc(userId).get().then((doc) => {
+              if(doc.exists) {
                 setCurrentUserInfo({ id: doc.id, data: doc.data() });
-                // this.getProfilePicture(doc.data()['profilePic']);  
-            }
-        })
-    }, [props.currentUID])
+              }
+            })
+        } else {
+            setCurrentUserInfo({});
+        }
+    }, [userId]);
 
     useEffect(() => {
 

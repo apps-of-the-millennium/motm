@@ -6,17 +6,18 @@ import { firestore } from "./firebase";
 import CustomSelect from './CustomSelect';
 import CategorySelector from './CategorySelector';
 
-import envData from './envData';
+import { MEDIA_POST_TYPES, getAllSubstrings } from './envData';
 
 import { FaIcons, FaSearch } from 'react-icons/fa'; //make the filters into separate component?
+const LIMIT = 6;
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      trendingPosts: envData.DUMMY_POSTS,
-      popularPosts: envData.DUMMY_POSTS,
-      topPosts: envData.DUMMY_POSTS,
+      trendingPosts: [],//envData.DUMMY_POSTS,
+      popularPosts: [],//envData.DUMMY_POSTS,
+      topPosts: [],//envData.DUMMY_POSTS,
       searchPosts: [],
 
       searchName: '',
@@ -24,9 +25,12 @@ class Home extends React.Component {
 
       category: '',
 
-      isCategorySelectVisible: false
+      isCategorySelectVisible: false,
+      canLoadMore: false, //this is probably bad practice but we should always be able to loadmore at the start assuming we have more than 6
+      lastTrending: [],
+      lastPopular: [],
+      lastTop: [],
     }
-
     this.options = [ //probably move , 
       //to use without a group heading remove label: and options: just keep the options objects
       {
@@ -38,8 +42,42 @@ class Home extends React.Component {
         ]
       }
     ]
-
     this.categoryPostString = '';
+  }
+
+  handlePostPagination(lastDoc, postType) {
+    //known crash in Development: if you add the 6th post and then click load more, you will be shown an uncommited timestamp error
+    if (this.state.canLoadMore) {
+      console.log('can load more');
+        if (lastDoc) { //&& lastDoc.data().timestamp !== null) {
+            firestore
+                .collection('posts').doc(this.state.category).collection(this.categoryPostString)
+                .orderBy('timestamp', 'desc') //not sure how it's ordering
+                .startAfter(lastDoc)
+                .limit(LIMIT)
+                .get()
+                .then((querySnapshot) => {
+                  console.log(querySnapshot.docs);
+                    if (querySnapshot.docs.length < LIMIT) { //if we query for posts and end up with less than LIMIT_VALUE posts, it means we have run out, so disable button functionality
+                      this.setState({ canLoadMore: false });
+                    }
+                    //edgecase: will be undefined if querysnapshot.docs.length is 0, but wont break since we disable the button in qs.docs.length < LIMIT
+                    let last_doc = querySnapshot.docs[querySnapshot.docs.length - 1];
+                    this.setState({ lastTrending : last_doc }) //TODO: change to specific kind need to specify as argument which section we are updating
+                    querySnapshot.forEach((doc) => {
+                      const mediaPost = {
+                        docId: doc.id,
+                        postInfo: doc.data()
+                      }
+                      this.setState({ [postType] : [...this.state[postType], mediaPost] })
+                    });
+                });
+        } else {
+            console.warn('Lastdoc timestamp is null/uncommited, pagination unavailable');
+        }
+    } else {
+        console.warn("NO MORE POSTS");
+    }
   }
 
   componentDidMount() {
@@ -104,13 +142,13 @@ class Home extends React.Component {
                 <div className="content-section trending">
                   <div className="section-label">
                     TRENDING
-                    <div style={{ fontSize: '12px' }}>view more</div>
+                    <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div>
                   </div>
                   <div className="section-posts regular">
                     {
                       this.state.trendingPosts.map((post) => {
                         let postInfo = post.postInfo;
-                        return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
                       })
                     }
                   </div>
@@ -119,13 +157,13 @@ class Home extends React.Component {
                 <div className="content-section popular">
                   <div className="section-label">
                     POPULAR
-                    <div style={{ fontSize: '12px' }}>view more</div>
+                    <div className="view-more" style={{ fontSize: '12px' }}>View more</div>
                   </div>
                   <div className="section-posts regular">
                     {
                       this.state.trendingPosts.map((post) => { //TODO: change to popularposts
                         let postInfo = post.postInfo;
-                        return (<div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
                       })
                     }
                   </div>
@@ -134,7 +172,7 @@ class Home extends React.Component {
                 <div className="content-section top">
                   <div className="section-label">
                     TOP 10
-                    <div style={{ fontSize: '12px' }}>view more</div>
+                    <div style={{ fontSize: '12px' }}>View more</div>
                   </div>
                   <div className="section-posts top">
                     {
@@ -143,7 +181,7 @@ class Home extends React.Component {
                         return (
                           <div className="top-post-container" key={post.docId}>
                             <div className="order-value">{index+1}</div>
-                            <MediaPost postType={envData.MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
+                            <MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
                           </div>
                         )
                       })
@@ -161,10 +199,9 @@ class Home extends React.Component {
                           this.state.searchPosts.map((post) => {
                             let postInfo = post.postInfo;
                             return (
-                              <div key={post.docId}> <MediaPost postType={envData.MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
+                              <div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
                             )
                           })
-
                         }
                       </div>
                     </>
@@ -254,14 +291,21 @@ class Home extends React.Component {
     //todo make separate functions for each post section (i.e trneding popular, top)
 
     //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
-    this.setState({ trendingPosts: envData.DUMMY_POSTS }, () => {
-      firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).get().then((querySnapshot) => {
+    this.setState({ trendingPosts: [] }, () => {
+      firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).limit(LIMIT).orderBy('timestamp', 'desc') //not sure how it's ordering
+      .get().then((querySnapshot) => {
         // const tempDocument = querySnapshot.docs.map(doc => {
+        let count = 0;
         querySnapshot.docs.forEach(doc => {
           console.log(doc.id);
           const newPost = {
             docId: doc.id,
             postInfo: doc.data()
+          }
+          count++;
+          if (count === LIMIT) { //save the final retrieved document (used for pagination) this if statement should only run ONCE
+            this.setState({ lastTrending : doc, lastPopular: doc, lastTop: doc, canLoadMore: true }); // should be the last newPost
+            //TODO: when we have them all separated setstate differently
           }
           this.setState({ trendingPosts: [...this.state.trendingPosts, newPost] }); //...arrayName basically used to append a new item to the original array (aka spread syntax)
         });
@@ -280,7 +324,7 @@ class Home extends React.Component {
     console.log("hello?");
     firestore.collection("posts").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        let allSubStrings = envData.getAllSubstrings(doc.data().title, 2);
+        let allSubStrings = getAllSubstrings(doc.data().title, 2);
         firestore.collection('posts').doc('books').collection(this.categoryPostString).doc(doc.id).set({
           ...doc.data(), ...{ titleSubStrings: allSubStrings }
         });
@@ -296,7 +340,7 @@ class Home extends React.Component {
   editCollection = () => {
     firestore.collection('posts').doc('books').collection(this.categoryPostString).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        let allSubStrings = envData.getAllSubstrings(doc.data().title.toLowerCase(), 2);
+        let allSubStrings = getAllSubstrings(doc.data().title.toLowerCase(), 2);
         firestore.collection('posts').doc('books').collection(this.categoryPostString).doc(doc.id).set({
           ...doc.data(), ...{ titleSubStrings: allSubStrings }
         });

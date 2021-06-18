@@ -11,13 +11,8 @@ import { Link } from 'react-router-dom';
 
 import ActivityFeed from './ActivityFeed';
 import UserLists from './UserLists';
-
-// const changeUserName = async (userId, name) => {
-//     //check later for bad input
-//     firestore.collection('users').doc(userId).set({
-//         userName: name
-//     })
-// }
+// import envData from './envData'; //can take this out later mostly for adding data
+import { AuthContext } from "./context";
 
 //might not need this not sure if it's good practice though
 FollowList.propTypes = {
@@ -26,6 +21,9 @@ FollowList.propTypes = {
 };
 
 class ProfilePage extends React.Component { //({ user, match }) => {
+    static contextType = AuthContext;
+    static previousContext;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -75,7 +73,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     updateFollowing = () => {
-        let currUser = this.state.userId;
+        let currUser = this.context.userId;
         //in case of signed out user
         if (currUser) {
             if (typeof (Storage) !== "undefined") {
@@ -88,7 +86,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                             //update the current users following list
                             let dbRef = firestore.collection('users').doc(currUser).collection('following');
                             dbRef.doc(currProfile).set(
-                                { timeStamp: firebase.firestore.FieldValue.serverTimestamp() },
+                                { timestamp: firebase.firestore.FieldValue.serverTimestamp() },
                                 { merge: true },
                             ).then(() => {
                                 console.log("Following Document written with id: ", currUser);
@@ -96,7 +94,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                             //update the current profiles followers list
                             dbRef = firestore.collection('users').doc(currProfile).collection('followers');
                             dbRef.doc(currUser).set(
-                                { timeStamp: firebase.firestore.FieldValue.serverTimestamp() },
+                                { timestamp: firebase.firestore.FieldValue.serverTimestamp() },
                                 { merge: true },
                             ).then(() => {
                                 console.log("Following Document written with id: ", currUser);
@@ -178,39 +176,36 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
+        this.previousContext = this.context;
+        if(this.context.userId === this.props.user) {
+            this.setState({ usersProfile: true });
+        }
         this.setState({ currentView: 'overview' }); //resets component view on user profile change
-        //may want to refactor everything into smaller separate functions
-        firebase.auth().onAuthStateChanged((user) => {
-            if (this.props.user === user.uid) {
-                this.setState({ usersProfile: true });
-            }
-            this.setState({ userId: user.uid, isLoaded: true });
-        })
 
 
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             //unsure if doc.exists needs to be checked all the time
             if (doc.exists) {
-                this.setState({ userInfo: doc.data() });
+                this.setState({ userInfo: doc.data(), isLoaded: true });
                 this.getProfilePicture(doc.data()['profilePic']);
             }
         })
 
         //may want to add a limit for this for scroll version
-        var followers = firestore.collection('users').doc(this.props.user).collection('followers').orderBy('timeStamp');
+        var followers = firestore.collection('users').doc(this.props.user).collection('followers').orderBy('timestamp');
         let followersArr = [];
         followers.get().then((followers) => {
             followers.forEach((follower) => {
                 followersArr.push(follower.id);
             })
             //if current logged in user is following the user set so icon changes
-            if (followersArr.includes(this.state.userId)) {
+            if (followersArr.includes(this.context.userId)) {
                 this.setState({ followingCurr: true });
             }
             this.setState({ followers: followersArr });
         })
 
-        var following = firestore.collection('users').doc(this.props.user).collection('following').orderBy('timeStamp');
+        var following = firestore.collection('users').doc(this.props.user).collection('following').orderBy('timestamp');
         let followingArr = [];
         following.get().then((following) => {
             following.forEach((follow) => {
@@ -228,12 +223,13 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             this.updateFollowing();
             //in case auth did not change but you changed from your page to elsewhere, change usersProfile
             //contemplating changing the url for personal profile so that it can make editing your profile easier
-            if (this.props.user === this.state.userId) {
+            if (this.props.user === this.context.userId) {
                 this.setState({ usersProfile: true });
             } else {
                 this.setState({ usersProfile: false });
             }
         }
+        this.previousContext = this.context;
     }
 
 
@@ -281,7 +277,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                 <div className="user-info">
                                     <div className="bio">{this.state.userInfo['bio']}</div>
                                     {this.state.usersProfile ?
-                                        <Link className="nav" to={`/profile/${this.state.userId}/editProfile`}><div className="profile-button">Edit Profile<FaRegEdit style={{ marginLeft: "12px" }} /></div></Link> :
+                                        <Link className="nav" to={`/profile/${this.context.userId}/editProfile`}><div className="profile-button">Edit Profile<FaRegEdit style={{ marginLeft: "12px" }} /></div></Link> :
                                         (this.state.followingCurr) ?
                                             <div className="profile-button" onClick={() => this.updateFollowingState(false)}>Unfollow</div> :
                                             <div className="profile-button" onClick={() => this.updateFollowingState(true)} >Follow</div>
@@ -309,7 +305,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                     'overview':
                                         this.defaultNavComponent,
                                     'activity':
-                                        <ActivityFeed userId={this.props.user} currentUID={this.state.userId} />,
+                                        <ActivityFeed userId={this.props.user} />,
                                     'lists':
                                         //TODO: css needs testing with more than one row of entries
                                         //TODO: will be too big when list size increases, make a new component design for media post                                        

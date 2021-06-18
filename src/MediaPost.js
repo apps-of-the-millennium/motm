@@ -2,7 +2,7 @@ import React from 'react';
 import './MediaPost.css';
 import { firestore } from './firebase';
 import firebase from 'firebase/app';
-import envData from './envData';
+import { MEDIA_POST_TYPES } from './envData';
 import { Link } from 'react-router-dom';
 import randomColor from 'randomcolor';
 
@@ -161,7 +161,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     render() {
-        if (this.state.postType === envData.MEDIA_POST_TYPES.FUNCTIONAL) {
+        if (this.state.postType === MEDIA_POST_TYPES.FUNCTIONAL) {
             return (
                 <>
                     {(this.state.popUp) && <div className="popUp">
@@ -209,7 +209,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     </div>
                 </>
                 )
-            } else if (this.state.postType === envData.MEDIA_POST_TYPES.LIST) { //user Lists post type
+            } else if (this.state.postType === MEDIA_POST_TYPES.LIST) { //user Lists post type
                 return (
                     <>
                         {(this.state.popUp) && <div className="popUp">
