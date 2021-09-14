@@ -124,7 +124,7 @@ function EditProfile(props) {
                         onChange={(e) => setBio(e.target.value)} >
                     </TextareaAutosize>
 
-                    {isPrivate=="true" ? <div className="warningMessage">Your user profile will be set to PRIVATE. Only the following will be visible: Username | Roles | Bio | Followers/Following</div> : <div></div>}
+                    {isPrivate==="true" ? <div className="warningMessage">Your user profile will be set to PRIVATE. Only the following will be visible: Username | Roles | Bio | Followers/Following</div> : <div></div>}
                     
                     {(bio.length <= MAX_BIO && userName.length <= MAX_USER) ?
                         //there might be a workaround if you  can edit message you want to send to make it bigger than MAX_BIO
