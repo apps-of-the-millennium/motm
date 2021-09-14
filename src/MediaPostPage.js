@@ -8,7 +8,7 @@ import randomColor from 'randomcolor';
 import ReviewPost from './ReviewPost';
 import Rating from '@material-ui/lab/Rating';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import {IoIosCheckmarkCircle} from 'react-icons/io';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 
 import { AiFillHeart } from 'react-icons/ai';
 // import { AiFillStar } from 'react-icons/ai';
@@ -18,6 +18,7 @@ import { HiPencilAlt } from 'react-icons/hi';
 import { AuthContext } from "./context";
 
 import addNotificationToUserActivity from './firestoreHelperFunctions';
+import ShowMoreText from 'react-show-more-text';
 
 // const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
@@ -49,7 +50,7 @@ class MediaPostPage extends React.Component {
 
     async setPopup(listType) {
         clearTimeout(this.state.timer);
-        switch(listType) {
+        switch (listType) {
             case 'f':
                 this.setState({ popUp: true, listType: 'Favourites List', addedFavourite: true });
                 break;
@@ -64,46 +65,46 @@ class MediaPostPage extends React.Component {
                 this.setState({ popUp: true, listType: 'List' });
                 break;
         }
-        this.setState({timer: setTimeout(() => this.setState({ popUp: false }), 5000)});
+        this.setState({ timer: setTimeout(() => this.setState({ popUp: false }), 5000) });
     }
 
     async updateFavourite(id, needsUpdate) {
         //if we added to Favourites while on the page
-        if(needsUpdate) {
+        if (needsUpdate) {
             //if there is no user (might be able to take this out since I won't allow non users to change the needsUpdate)
-            if(this.context.userId) {
+            if (this.context.userId) {
                 firestore.collection('users').doc(this.context.userId).collection('lists').doc('favouriteList').set(
                     { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
 
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Favourited `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
-            } 
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Favourited `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
+            }
         }
     }
 
     async updateLater(id, needsUpdate) {
-        if(needsUpdate) {
-            if(this.context.userId) {
+        if (needsUpdate) {
+            if (this.context.userId) {
                 firestore.collection('users').doc(this.context.userId).collection('lists').doc('laterList').set(
                     { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }    
+                    { merge: true }
                 );
 
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Plans to watch `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Plans to watch `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
             }
         }
     }
 
     async updateCompleted(id, needsUpdate) {
-        if(needsUpdate) {
-            if(this.context.userId) {
+        if (needsUpdate) {
+            if (this.context.userId) {
                 firestore.collection('users').doc(this.context.userId).collection('lists').doc('completedList').set(
                     { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
                     { merge: true }
                 );
 
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Completed `, {title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic});
+                addNotificationToUserActivity(this.context.userId, this.props.id, `Completed `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
             }
         }
     }
@@ -125,7 +126,7 @@ class MediaPostPage extends React.Component {
     }
 
     async updateRating(newRating, mediaId) {
-        if(this.context.userId) {
+        if (this.context.userId) {
             if (!newRating) {
                 //if newRating doesn't exist user deleted their rating and delete from that books rating
                 firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').update({
@@ -139,7 +140,7 @@ class MediaPostPage extends React.Component {
             } else {
                 firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').set(
                     { [mediaId]: newRating },
-                    { merge: true }, 
+                    { merge: true },
                 )
                 firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.context.userId).set(
                     { rating: newRating },
@@ -153,7 +154,7 @@ class MediaPostPage extends React.Component {
     }
 
     async getRating(mediaId) {
-        if(this.context.userId) {
+        if (this.context.userId) {
             var userDoc = firestore.collection('users').doc(this.context.userId);
             userDoc.collection('ratings').doc('books').get().then((doc) => {
                 if (doc.exists) {
@@ -190,9 +191,9 @@ class MediaPostPage extends React.Component {
                 this.setState({ reviews: [...this.state.reviews, newReviewPost] })
             });
         })
-        .catch((error) => {
-            console.log("Error getting documents: ", error);
-        });
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
     }
 
     onMouseEnterHandler = () => {
@@ -207,36 +208,36 @@ class MediaPostPage extends React.Component {
     }
 
     onClick = () => {
-        if(this.context.userId) {
-            this.setState({ openOptions: !this.state.openOptions });            
+        if (this.context.userId) {
+            this.setState({ openOptions: !this.state.openOptions });
         }
     }
 
     generateColoredTags = () => {
-        if (this.state.mediaInfo['tags'])  {
+        if (this.state.mediaInfo['tags']) {
             Object.keys(this.state.mediaInfo['tags']).forEach((keyName, i) => {
                 let color = randomColor({
                     luminosity: 'light',
                     // hue: 'blue'
                 });
-                this.tags.push({ tag_name: keyName, tag_color: color});
+                this.tags.push({ tag_name: keyName, tag_color: color });
             });
         }
     }
 
     //update any information for the user when they leave the page (to prevent spam)
     componentWillUnmount() {
-        if(this.props.id) {
+        if (this.props.id) {
             this.updateRating(this.state.currRating, this.props.id);
             this.updateCompleted(this.props.id, this.state.addedComplete);
             this.updateFavourite(this.props.id, this.state.addedFavourite);
             this.updateLater(this.props.id, this.state.addedLater);
             for (var key in localStorage) {
-                if (key.substring(0,(this.props.id).length) === this.props.id) {
-                  localStorage.removeItem(key);
+                if (key.substring(0, (this.props.id).length) === this.props.id) {
+                    localStorage.removeItem(key);
                 }
             }
-        }        
+        }
     }
 
     componentDidUpdate() {
@@ -256,10 +257,10 @@ class MediaPostPage extends React.Component {
 
             let local_favouriteStr = localStorage.getItem(this.props.id + '.favouriteList') || 'false';
             let local_favourite = (local_favouriteStr === 'true');
-            
+
             let local_laterStr = localStorage.getItem(this.props.id + '.laterList') || 'false';
             let local_later = (local_laterStr === 'true');
-            
+
             let local_rating = localStorage.getItem(this.props.id + '.rating') || 0;
 
             this.setState({
@@ -296,26 +297,43 @@ class MediaPostPage extends React.Component {
                     {/* Info */}
                     <div className="infoContainer">
                         <div className="infoGrid">
-                            {/* picture of media*/}
-                            <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
-                            {/* <div className="mediaPageImg"></div> */}
-                            {/* title */}
-                            <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
-                            {/* buttons */}
-                            <div className="mediaPageButtons">
-                                <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
-                                <div className="trophyButton"><ImTrophy className="trophy-icon" /></div>
-                                {(this.state.openOptions) ?
-                                    <div className="dropdown-content2">
-                                        <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="listOptions-icon" />  </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="listOptions-icon" />  </button>
-                                        <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="listOptions-icon" />  </button>
-                                    </div>
-                                    : ''}
+                            <div className="infoGrid-left">
+                                {/* picture of media*/}
+                                <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
+                                {/* buttons */}
+                                <div className="mediaPageButtons">
+                                    <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
+                                    <div className="trophyButton"><ImTrophy className="trophy-icon" /></div>
+                                    {(this.state.openOptions) ?
+                                        <div className="dropdown-content2">
+                                            <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="listOptions-icon" />  </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="listOptions-icon" />  </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="listOptions-icon" />  </button>
+                                        </div>
+                                        : ''}
+                                </div>
                             </div>
-                            {/* description */}
-                            {/* <div className="mediaPageDescription">{text}</div> */}
-                            <div className="mediaPageDescription">{this.state.mediaInfo['summary']}</div>
+                            <div className="infoGrid-right">
+                                {/* title */}
+                                <div className="mediaPageTitle">{this.state.mediaInfo['title']}</div>
+
+                                {/* description */}
+                                {/* <div className="mediaPageDescription">{this.state.mediaInfo['summary']}</div> */}
+                                <ShowMoreText
+                                    lines={3}
+                                    more='Show more'
+                                    less='Show less'
+                                    className='mediaPageDescription'
+                                    anchorClass='showmore-anchor'
+                                    onClick={this.executeOnClick}
+                                    expanded={false}
+                                    width={0}
+                                >
+                                    {this.state.mediaInfo['summary']}
+                                </ShowMoreText>
+
+                                <div className="mediaPage-nav"> Navbar placeholder</div>
+                            </div>
                         </div>
                     </div>
 
@@ -327,9 +345,9 @@ class MediaPostPage extends React.Component {
                             <div className="rateContainer">
                                 <div style={{ paddingLeft: '1rem' }} className="extraInfoTitle">Your Rating</div>
                                 <button className="rateButton">
-                                    {(this.context.userId) ? 
+                                    {(this.context.userId) ?
                                         <Rating name="rating" style={{ fontSize: "2em" }} value={this.state.currRating || 0} precision={0.1} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />}
-                                        onChange={(event, newRating) => this.setState({currRating: newRating})} /> :
+                                            onChange={(event, newRating) => this.setState({ currRating: newRating })} /> :
                                         <Rating name="rating" style={{ fontSize: "2em" }} emptyIcon={<StarBorderIcon style={{ color: '686868' }} fontSize="inherit" />} disabled />
                                     }
                                 </button>
@@ -345,6 +363,9 @@ class MediaPostPage extends React.Component {
                                 <div className="extraInfoTitle">Release date</div>
                                 <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
 
+                                <div className="extraInfoTitle">Author</div>
+                                <div className="extraInfoValue">{(this.state.mediaInfo['author']) ? this.state.mediaInfo['author'] : "N/A"}</div>
+
                                 <div className="extraInfoTitle">Publisher</div>
                                 <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
 
@@ -354,7 +375,7 @@ class MediaPostPage extends React.Component {
                             <div className="extraInfoContainer tags">
                                 <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
                                 {(this.tags.length !== 0) ? (this.tags).map((tag) => {
-                                    return <div className="tag" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
+                                    return <div className="tag-mpp" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
                                 }) : <div className="extraInfoValue">No tags available :(</div>}
 
                             </div>

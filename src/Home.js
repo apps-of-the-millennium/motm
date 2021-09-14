@@ -142,7 +142,7 @@ class Home extends React.Component {
                 <div className="content-section trending">
                   <div className="section-label">
                     TRENDING
-                    <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div>
+                    <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>view more</div>
                   </div>
                   <div className="section-posts regular">
                     {
@@ -157,7 +157,7 @@ class Home extends React.Component {
                 <div className="content-section popular">
                   <div className="section-label">
                     POPULAR
-                    <div className="view-more" style={{ fontSize: '12px' }}>View more</div>
+                    <div className="view-more" style={{ fontSize: '12px' }}>view more</div>
                   </div>
                   <div className="section-posts regular">
                     {
@@ -172,7 +172,7 @@ class Home extends React.Component {
                 <div className="content-section top">
                   <div className="section-label">
                     TOP 10
-                    <div style={{ fontSize: '12px' }}>View more</div>
+                    <div style={{ fontSize: '12px' }}>view more</div>
                   </div>
                   <div className="section-posts top">
                     {
