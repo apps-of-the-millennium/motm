@@ -12,6 +12,7 @@ function EditProfile(props) {
     const [fileType, setFileType] = useState('');
     const [bio, setBio] = useState('');
     const [userName, setUserName] = useState('');
+    const [isPrivate, setisPrivate] = useState(false);
     const MAX_BIO = 3000; //can change later
     const MAX_USER = 20;
 
@@ -30,8 +31,8 @@ function EditProfile(props) {
     };
 
     function handleSubmit() {
-        if(authContext.userId) {
-            if(userName) {
+        if (authContext.userId) {
+            if (userName) {
                 let filter = new Filter();
                 firestore.collection('users').doc(authContext.userId).set(
                     { userName: filter.clean(userName) },
@@ -40,7 +41,7 @@ function EditProfile(props) {
                     console.log("UserName Updated");
                 });
             }
-            if(bio) {
+            if (bio) {
                 let filter = new Filter();
                 firestore.collection('users').doc(authContext.userId).set(
                     { bio: filter.clean(bio) },
@@ -49,12 +50,22 @@ function EditProfile(props) {
                     console.log("Bio Updated");
                 });
             }
-            if(photo) {
+
+            //Setting profile privacy, defaults to false/user selected value if somehow authContext doesn't have it
+            firestore.collection('users').doc(authContext.userId).set(
+                { isPrivate: isPrivate },
+                { merge: true }
+            ).then(() => {
+                console.log("privacy Updated");
+            });
+
+
+            if (photo) {
                 var storageRef = firebase.storage().ref();
                 //this auto replaces the image no need to check if it exists
-                const uploadTask = storageRef.child('profilePics/'+authContext.userId+'.'+fileType).put(photo);
+                const uploadTask = storageRef.child('profilePics/' + authContext.userId + '.' + fileType).put(photo);
                 //can change this later if we want proper logging don't have anything in place if it fails
-                uploadTask.on('state_changed', 
+                uploadTask.on('state_changed',
                     (snapShot) => {
                         console.log(snapShot)
                     }, (err) => {
@@ -63,13 +74,13 @@ function EditProfile(props) {
                 );
                 //could cause failed profile pic if it did not get uploaded properly
                 firestore.collection('users').doc(authContext.userId).set(
-                    { profilePic: '/profilePics/'+authContext.userId+'.'+fileType },
+                    { profilePic: '/profilePics/' + authContext.userId + '.' + fileType },
                     { merge: true }
                 ).then(() => {
                     console.log("Profile Picture Updated");
                 });
             }
-            props.history.push('/profile/'+authContext.userId);
+            props.history.push('/profile/' + authContext.userId);
         }
     }
 
@@ -77,16 +88,24 @@ function EditProfile(props) {
         <div className="pageContainer">
             {(authContext.userId !== null ?
                 <div className="form">
-                    <label className="formLabel" htmlFor="userName">Update Username</label><br/>
-                    <TextareaAutosize style={{transition: 'background 1s'}}
+                    <label className="formLabel" htmlFor="private">Make profile private?</label><br></br>
+                    <select style={{ transition: 'background 1s' }} className="formInput" id="private" defaultValue={authContext.isPrivate ? authContext.isPrivate : isPrivate} onChange={(e) => { setisPrivate(e.target.value); }}>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select><br></br>
+
+                    
+
+                    <label className="formLabel" htmlFor="userName">Update Username</label><br />
+                    <TextareaAutosize style={{ transition: 'background 1s' }}
                         className="editUserName"
                         id="userName"
                         defaultValue={authContext.userName}
-                        onChange={(e) => setUserName(e.target.value)} > 
-                    </TextareaAutosize><br/>
+                        onChange={(e) => setUserName(e.target.value)} >
+                    </TextareaAutosize><br />
 
-                    <label className="formLabel" htmlFor="uploadPhoto">Upload Photo</label><br/>
-                    <ImageUploader style={{width:'25%', marginBottom:'1rem'}}
+                    <label className="formLabel" htmlFor="uploadPhoto">Upload Photo</label><br />
+                    <ImageUploader style={{ width: '25%', marginBottom: '1rem' }}
                         withIcon={true}
                         onChange={onUpload}
                         withPreview={true}
@@ -94,28 +113,30 @@ function EditProfile(props) {
                         buttonText={"Choose Image"}
                         imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                         maxFileSize={5242880} //can change
-                        fileContainerStyle={{background:'var(--color-background-light', transition:'background 1s'}}
+                        fileContainerStyle={{ background: 'var(--color-background-light', transition: 'background 1s' }}
                     />
 
-                    <label className="formLabel" htmlFor="bio">Update Bio</label><br/>
-                    <TextareaAutosize style={{transition: 'background 1s'}}
+                    <label className="formLabel" htmlFor="bio">Update Bio</label><br />
+                    <TextareaAutosize style={{ transition: 'background 1s' }}
                         className="editBio"
                         id="bio"
                         defaultValue={authContext.bio}
-                        onChange={(e) => setBio(e.target.value)} > 
+                        onChange={(e) => setBio(e.target.value)} >
                     </TextareaAutosize>
 
+                    {isPrivate==="true" ? <div className="warningMessage">Your user profile will be set to PRIVATE. Only the following will be visible: Username | Roles | Bio | Followers/Following</div> : <div></div>}
+                    
                     {(bio.length <= MAX_BIO && userName.length <= MAX_USER) ?
                         //there might be a workaround if you  can edit message you want to send to make it bigger than MAX_BIO
-                        (<div className="saveButton" onClick={() => handleSubmit()}>Save</div>) 
-                        : <div className="warningMessage">Bio must have no more than {MAX_BIO} characters and Username must have no more than {MAX_USER}</div> 
+                        (<div className="saveButton" onClick={() => handleSubmit()}>Save</div>)
+                        : <div className="warningMessage">Bio must have no more than {MAX_BIO} characters and Username must have no more than {MAX_USER}</div>
                     }
 
                 </div>
-            : <div style={{ background: "#070e1b", color: "white" }}>Dude...sign in first</div>
+                : <div style={{ background: "#070e1b", color: "white" }}>Dude...sign in first</div>
             )}
         </div>
-  );
+    );
 }
 
 export default EditProfile;

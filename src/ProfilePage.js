@@ -24,7 +24,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     static contextType = AuthContext;
     static previousContext;
 
-    constructor(props) {
+    constructor(props, context) {
         super(props);
         this.state = {
             userInfo: [],
@@ -39,8 +39,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             openFollowers: false,
             openFollowing: false,
 
-            currentView: 'overview' //profile nav bar component selection
+            currentView: 'overview', //profile nav bar component selection
 
+            authInfo: context
             // privacySettings: [
             //     { name: 'overview', isPrivate: false},
             //     { name: 'activity', isPrivate: false},
@@ -51,6 +52,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         };
 
         this.defaultNavComponent = <div style={{ color: 'var(--color-text)', background: 'var(--color-background-light)', padding: '1rem', borderRadius: '4px' }} >Nothing to show here yet (╯°□°)╯︵ ┻━┻</div>;
+        this.privateNavComponent = <div style={{ color: 'var(--color-text)', background: 'var(--color-background-light)', padding: '1rem', borderRadius: '4px' }} >This user's profile is private ¯\_(ツ)_/¯</div>;
     }
 
     handleOpenFollow = (followType) => {
@@ -176,8 +178,9 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
+        console.log(this.state.authInfo);
         this.previousContext = this.context;
-        if(this.context.userId === this.props.user) {
+        if (this.state.authInfo.userId === this.props.user) {
             this.setState({ usersProfile: true });
         }
         this.setState({ currentView: 'overview' }); //resets component view on user profile change
@@ -223,12 +226,23 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             this.updateFollowing();
             //in case auth did not change but you changed from your page to elsewhere, change usersProfile
             //contemplating changing the url for personal profile so that it can make editing your profile easier
-            if (this.props.user === this.context.userId) {
+            if (this.props.user === this.state.authInfo.userId) {
                 this.setState({ usersProfile: true });
             } else {
                 this.setState({ usersProfile: false });
             }
         }
+
+        if (this.state.authInfo !== this.context) {
+            this.setState({ authInfo: this.context });
+            console.log("authinfo updated");
+            if (this.props.user === this.state.authInfo.userId) {
+                this.setState({ usersProfile: true });
+            } else {
+                this.setState({ usersProfile: false });
+            }
+        }
+
         this.previousContext = this.context;
     }
 
@@ -303,17 +317,17 @@ class ProfilePage extends React.Component { //({ user, match }) => {
                                 //inline switch statement || represents default : https://stackoverflow.com/questions/46592833/how-to-use-switch-statement-inside-a-react-component
                                 {
                                     'overview':
-                                        this.defaultNavComponent,
+                                        (!this.state.usersProfile && this.state.userInfo['isPrivate']) ? this.privateNavComponent : this.defaultNavComponent,
                                     'activity':
-                                        <ActivityFeed userId={this.props.user} />,
+                                        (!this.state.usersProfile && this.state.userInfo['isPrivate']) ? this.privateNavComponent : <ActivityFeed userId={this.props.user} />,
                                     'lists':
                                         //TODO: css needs testing with more than one row of entries
                                         //TODO: will be too big when list size increases, make a new component design for media post                                        
-                                        <UserLists userId={this.props.user} usersProfile={this.state.usersProfile} />,
+                                        (!this.state.usersProfile && this.state.userInfo['isPrivate']) ? this.privateNavComponent : <UserLists userId={this.props.user} usersProfile={this.state.usersProfile} />,
                                     'reviews':
-                                        this.defaultNavComponent,
+                                        (!this.state.usersProfile && this.state.userInfo['isPrivate']) ? this.privateNavComponent : this.defaultNavComponent,
                                     'stats':
-                                        this.defaultNavComponent,
+                                        (!this.state.usersProfile && this.state.userInfo['isPrivate']) ? this.privateNavComponent : this.defaultNavComponent,
                                 }[this.state.currentView] || this.defaultNavComponent
                             }
                         </div>

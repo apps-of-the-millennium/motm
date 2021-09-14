@@ -120,7 +120,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 .section-posts.regular {
   grid-template-columns: repeat(auto-fill, 10rem); /*auto-fill vs 6*/
-  gap: 20px 45px;
+  gap: 60px 45px;
   justify-content: space-between; 
 }
 .section-posts.top {

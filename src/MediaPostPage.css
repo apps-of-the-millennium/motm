@@ -8,7 +8,7 @@
 .container { /*has both info and contentContainer */
     margin: 0 auto;
     width: 100%;
-    height: 100rem; /*to change */
+    height: auto;
     background-color:var(--color-background);
     transition: background-color 1s;
 }
@@ -16,36 +16,33 @@
 .infoContainer {
     background-color: var(--color-background-light);
     transition: background-color 1s;
-    height: 16rem;
+    height: auto;
+    /* height: min-content; */
+    overflow: none;
 }
 
 .infoGrid {
     /* background-color: green; */
     width: 65%;
-    height: 100%;
+    flex: 1;
     /* margin-left: 15%; */
     margin: 0 auto;
 
     display: grid;
-    grid-template-columns: 15% 3% auto;
-    grid-template-rows: 20% 65% 15%;
-    grid-template-areas: 
-    "image . title"
-    "image . description"
-    "buttons . description";
+    grid-template-columns: 15% auto;
+    column-gap: 32px;
 }
 
-.infoGrid .mediaPageImg {
-    grid-area: image;
-    /* background-color: greenyellow; */
-    bottom: 35%;
-    position: relative;
-    width: 100%;
-    height: 17rem;
+/* .infoGrid-left {
+    display: grid;
+    grid-template-rows: auto 15%;
+} */
+.infoGrid-right {
+    display: grid;
+    grid-template-rows: 48px auto 48px;
 }
-.infoGrid .mediaPageTitle {
-    grid-area: title;
-    /* height: 50%; */
+
+.infoGrid-right .mediaPageTitle {
     font-size: larger;
     font-weight: 600;
     color: var(--color-text);
@@ -53,22 +50,37 @@
     
 }
 
-.infoGrid .mediaPageDescription {
-    grid-area: description;
+.infoGrid-right .mediaPage-nav {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-text);
+    align-self: center;
+    
+}
+
+.infoGrid-right .mediaPageDescription {
     font-size: medium;
     color: var(--color-text-grey);
 }
-.infoGrid .mediaPageDescription:hover {
+.infoGrid-right .mediaPageDescription:hover {
     color: var(--color-text-grey-hover);
     transition: none;
 }
 
+.infoGrid-left .mediaPageImg {
+    /* background-color: greenyellow; */
+    bottom: 25%;
+    position: relative;
+    width: 100%;
+    height: 17rem;
+}
  /* The container <div> - needed to position the dropdown content */
-.infoGrid .mediaPageButtons {
-    grid-area: buttons;
+.infoGrid-left .mediaPageButtons {
     display: flex;
     justify-content: space-between;
     position: relative;
+    bottom: 20%;
+    height: 36px;
     
 }
 
@@ -259,7 +271,7 @@
     padding-bottom: 1rem;
 }
 
-.tag {
+.tag-mpp {
     /* perhaps change to display flex if there is additional info to place on right side space */
     font-size: small;
     font-weight: 700; 
@@ -339,4 +351,10 @@
     column-gap: .75rem;
 
     height: auto;
+}
+
+.showmore-anchor {
+    text-decoration: none;
+    color: var(--color-light-blue);
+    font-weight: 700;
 }
