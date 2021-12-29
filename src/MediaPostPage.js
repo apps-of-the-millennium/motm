@@ -43,10 +43,12 @@ class MediaPostPage extends React.Component {
             addedFavourite: false,
             addedLater: false,
             timer: '',
-            reviews: []
+            reviews: [],
+
+            tags: [] //contains objects {tag_name: asdf, tag_color: asdf}
         };
 
-        this.tags = []; //contains objects {tag_name: asdf, tag_color: asdf}
+        
         this.categoryPostString = this.state.category ? this.state.category.slice(0, -1) + 'Posts' : '';
     }
 
@@ -222,9 +224,13 @@ class MediaPostPage extends React.Component {
                     luminosity: 'light',
                     // hue: 'blue'
                 });
-                this.tags.push({ tag_name: keyName, tag_color: color });
+                //this.tags.push({ tag_name: keyName, tag_color: color });
+                this.setState({
+                    tags: [...this.state.tags, {tag_name: keyName, tag_color: color}]
+                })
             });
         }
+        
     }
 
     //update any information for the user when they leave the page (to prevent spam)
@@ -377,7 +383,7 @@ class MediaPostPage extends React.Component {
 
                             <div className="extraInfoContainer tags">
                                 <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
-                                {(this.tags.length !== 0) ? (this.tags).map((tag) => {
+                                {(this.state.tags.length !== 0) ? (this.state.tags).map((tag) => {
                                     return <div className="tag-mpp" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
                                 }) : <div className="extraInfoValue">No tags available :(</div>}
 
