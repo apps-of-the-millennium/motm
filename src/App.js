@@ -39,10 +39,10 @@ class App extends Component {
                 )}
               />
               <Route
-                path="/mediapost/:id"
+                path="/mediapost/:category/:id"
                 render={props => (
                   <MediaPostPage
-                    id={props.match.params.id} {...props} />
+                    id={props.match.params.id} category={props.match.params.category} {...props} />
                 )}
               />
               <Route

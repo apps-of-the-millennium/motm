@@ -9,6 +9,7 @@ import ReviewPost from './ReviewPost';
 import Rating from '@material-ui/lab/Rating';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
+import StarsWidget from './widgets/movie/StarsWidget'
 
 import { AiFillHeart } from 'react-icons/ai';
 // import { AiFillStar } from 'react-icons/ai';
@@ -28,7 +29,7 @@ class MediaPostPage extends React.Component {
         super(props);
         this.state = {
             isLoaded: false,
-            postType: this.props.postType,
+            category: this.props.category, //used to determine widgets, is set based on the value 1 in the url /1/2
 
             mediaInfo: {},
             mediaPostPic: '',
@@ -46,6 +47,7 @@ class MediaPostPage extends React.Component {
         };
 
         this.tags = []; //contains objects {tag_name: asdf, tag_color: asdf}
+        this.categoryPostString = this.state.category ? this.state.category.slice(0, -1) + 'Posts' : '';
     }
 
     async setPopup(listType) {
@@ -110,7 +112,7 @@ class MediaPostPage extends React.Component {
     }
 
     async updateAvg(mediaId) {
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').get().then((snapshot) => {
+        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(mediaId).collection('userRatings').get().then((snapshot) => {
             let sum = 0;
             let size = snapshot.docs.length;
             snapshot.docs.forEach((doc) => {
@@ -118,7 +120,7 @@ class MediaPostPage extends React.Component {
                 sum += userRating;
             })
             console.log(sum + '/' + size);
-            firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).set(
+            firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(mediaId).set(
                 { avgRating: Math.round((sum / size) * 10) / 10 },
                 { merge: true }
             )
@@ -129,20 +131,20 @@ class MediaPostPage extends React.Component {
         if (this.context.userId) {
             if (!newRating) {
                 //if newRating doesn't exist user deleted their rating and delete from that books rating
-                firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').update({
+                firestore.collection('users').doc(this.context.userId).collection('ratings').doc(this.state.category).update({
                     [mediaId]: firebase.firestore.FieldValue.delete()
                 })
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.context.userId).delete().then(() => {
+                firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(mediaId).collection('userRatings').doc(this.context.userId).delete().then(() => {
                     this.updateAvg(mediaId);
                 }).catch((error) => {
                     console.log(error);
                 })
             } else {
-                firestore.collection('users').doc(this.context.userId).collection('ratings').doc('books').set(
+                firestore.collection('users').doc(this.context.userId).collection('ratings').doc(this.state.category).set(
                     { [mediaId]: newRating },
                     { merge: true },
                 )
-                firestore.collection('posts').doc('books').collection('bookPosts').doc(mediaId).collection('userRatings').doc(this.context.userId).set(
+                firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(mediaId).collection('userRatings').doc(this.context.userId).set(
                     { rating: newRating },
                 ).then(() => {
                     this.updateAvg(mediaId);
@@ -156,7 +158,7 @@ class MediaPostPage extends React.Component {
     async getRating(mediaId) {
         if (this.context.userId) {
             var userDoc = firestore.collection('users').doc(this.context.userId);
-            userDoc.collection('ratings').doc('books').get().then((doc) => {
+            userDoc.collection('ratings').doc(this.state.category).get().then((doc) => {
                 if (doc.exists) {
                     this.setState({ currRating: doc.data()[mediaId] });
                 }
@@ -179,7 +181,7 @@ class MediaPostPage extends React.Component {
     }
 
     retrieveUserReviews = () => {
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).collection('reviews').orderBy("likes", "desc").limit(4).get().then((querySnapshot) => {
+        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).collection('reviews').orderBy("likes", "desc").limit(4).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
                 console.log(doc.id, " => ", doc.data());
@@ -271,7 +273,7 @@ class MediaPostPage extends React.Component {
             })
         }
 
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
+        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data(), isLoaded: true });
                 this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
@@ -281,6 +283,7 @@ class MediaPostPage extends React.Component {
         });
 
         this.retrieveUserReviews();
+        //console.log(this.state.category)
     }
 
     render() {
@@ -299,7 +302,7 @@ class MediaPostPage extends React.Component {
                         <div className="infoGrid">
                             <div className="infoGrid-left">
                                 {/* picture of media*/}
-                                <img className="mediaPageImg" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img>
+                                <img className="mediaPageImg" src={this.state.mediaPostPic} alt=""></img>
                                 {/* buttons */}
                                 <div className="mediaPageButtons">
                                     <button onClick={this.onClick} className="dropbtn2">Add to ...<i className="arrow down"></i></button>
@@ -399,6 +402,16 @@ class MediaPostPage extends React.Component {
                                         </div>
                                     )}
                             </div>
+
+                            {this.state.category === 'movies' ?
+                                (this.state.mediaInfo['stars'].length !== 0 ? 
+                                    <div className="starsContainer"> 
+                                        <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Stars</div>
+                                        <StarsWidget stars={this.state.mediaInfo['stars']} />
+                                    </div> : "")
+                            : ""}                
+                            
+
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,39 @@
+.starsGrid {
+    display: grid;
+
+    grid-auto-columns: minmax(0, 10rem);
+    grid-auto-flow: column;
+    column-gap: 1.5rem;
+    
+    /* can also use flex */
+}
+
+.starContent {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-rows: max-content auto;
+    row-gap: 2px;
+    position: relative;
+
+    transition: all .2s ease-in-out;
+    color: var(--color-text-grey);
+}
+.starContent:hover {
+    transform: scale(1.05);
+    color: var(--color-text-grey-hover);
+}
+
+.starName {
+    color: inherit;
+    font-weight: 500;
+}
+
+
+.starImage {
+    background: rgb(0,0,0);
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 15rem;
+}

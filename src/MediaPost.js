@@ -26,6 +26,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             postType: this.props.postType,
             usersProfile: this.props.usersProfile,
 
+            category: this.props.category ? this.props.category.toLowerCase() : 'books', //might be temporary, might be some issue when u switch categories using selector popout
+
             mediaInfo: {},
             mediaPostPic: '',
             currRating: 0,
@@ -45,6 +47,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             luminosity: 'light',
             // hue: 'blue'
         }); //used to generate a random tag color
+
+        this.categoryPostString = this.state.category ? this.state.category.toLowerCase().slice(0, -1) + 'Posts' : '';
     }
 
     async setPopup(listType) {
@@ -152,10 +156,12 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
+        console.log(this.state.category)
+        console.log(this.categoryPostString)
+        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data() });
-                this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
+                this.getPicture('/mediaPosts/' + this.props.id + '.jpg'); //broken for movies, think we are changing images
             }
         })
     }
@@ -172,12 +178,12 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
                         <div className="mediaPost" onMouseEnter={() => { this.setState({ hover: true }) }} onMouseLeave={() => { this.setState({ hover: false }) }}>
                             {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
                                 {/* picture of media*/}
                                 <img className="mediaPostImg" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
 
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost${this.state.category}/${this.props.id}`}>
                                 {/* title */}
                                 {(this.state.hover) ?
                                     <div className="mediaPostTitle" style={{ color: `${this.tagColor}` }}>{this.state.mediaInfo['title']}</div> :
@@ -223,8 +229,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
                         <div className="mediaPost3">
                             {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                {/* picture of media*/}
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
+                                {/* picture of media*/}/
                                 <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
 
@@ -278,7 +284,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         {/* picture of media*/}
                         {/* <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img> */}
                         <div>
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
                                 {/* title */}
                                 <div className="mediaPostTitle2">{this.state.mediaInfo['title']}</div>
                             </Link>
