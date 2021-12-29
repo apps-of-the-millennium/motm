@@ -227,7 +227,7 @@ class MediaPostPage extends React.Component {
                 //this.tags.push({ tag_name: keyName, tag_color: color });
                 this.setState({
                     tags: [...this.state.tags, {tag_name: keyName, tag_color: color}]
-                })
+                });
             });
         }
         
@@ -385,8 +385,8 @@ class MediaPostPage extends React.Component {
                                 <div className="extraInfoTitle" style={{ paddingBottom: "1rem" }}>Tags</div>
                                 {(this.state.tags.length !== 0) ? (this.state.tags).map((tag) => {
                                     return <div className="tag-mpp" style={{ background: tag.tag_color }}>{tag.tag_name}</div>
-                                }) : <div className="extraInfoValue">No tags available :(</div>}
-
+                                }) : <div className="extraInfoValue">{this.state.tags.length}</div>}
+                            
                             </div>
 
                             {/* <Link className="revLink" to={`/myreviews/write/${this.props.id}`} > */}
