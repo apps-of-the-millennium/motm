@@ -17,6 +17,7 @@
     background-color: var(--color-background-light);
     transition: background-color 1s;
     height: auto;
+    /*min-height: 15rem; need to either min height this, or adjust other things, OR put a placeholder image to avoid shrinking*/
     /* height: min-content; */
     overflow: none;
 }
@@ -69,6 +70,7 @@
 
 .infoGrid-left .mediaPageImg {
     /* background-color: greenyellow; */
+    background: rgb(0,0,0);
     bottom: 25%;
     position: relative;
     width: 100%;
@@ -328,6 +330,7 @@
 
 .overviewContentContainer { /*this is the div next to sidebar */
     width: 100%;
+    
 }
 
 .reviewsContainer {
@@ -339,6 +342,7 @@
     
     border-radius: 4px;
     padding: 1rem;
+    margin-bottom: 1rem;
 
 }
 .reviewsGrid {
@@ -352,6 +356,21 @@
 
     height: auto;
 }
+
+/*Movie widgets ============================================= may move individual widget css into its own component*/
+.starsContainer {
+    display:block;
+
+    width: auto;
+    height: auto;
+    /* background: #141e30; */
+    
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+}
+
 
 .showmore-anchor {
     text-decoration: none;
