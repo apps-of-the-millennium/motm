@@ -19,6 +19,7 @@
     "react-firebase-hooks": "^2.2.0",
     "react-icons": "^4.2.0",
     "react-images-upload": "^1.2.8",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-native": "^0.64.0",
     "react-native-web": "^0.15.3",
     "react-router-dom": "^5.2.0",

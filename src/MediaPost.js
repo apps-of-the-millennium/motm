@@ -155,7 +155,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
         firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data() });
-                this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
+                this.getPicture('/mediaPosts/' + this.props.category.slice(0, -1).toLowerCase() + 'Posts/' + this.props.id);
+                // this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
             }
         })
     }

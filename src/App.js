@@ -11,6 +11,7 @@ import ReviewEditPage from './ReviewEditPage';
 import ReviewPage from './ReviewPage';
 import BrowsePage from './BrowsePage'
 import EditProfile from './EditProfile';
+import CategoryPage from './CategoryPage'
 
 import ScrollToTop from './ScrollToTop';
 
@@ -24,6 +25,9 @@ class App extends Component {
             <Header />
             <Switch>
               <Route path="/" component={Home} exact />
+              <Route path="/category/:category" 
+                render={props => (<CategoryPage category={props.match.params.category} {...props} />)}
+              />
               <Route
                 path="/profile/:id/editProfile"
                 render={props => (

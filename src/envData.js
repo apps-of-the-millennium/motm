@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { firestore } from './firebase';
+import { firestore } from './firebase'; 
 
 const mediaPostTypeEnum = {
   FUNCTIONAL: 1,
@@ -105,7 +105,7 @@ const DUMMY_POSTS = [
           releaseDate: publishDate, //resp['created']['value'].split('T')[0], //could prob rename
           titleSubStrings: substrings,
           tags: tags,
-          timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         }).then((doc) => {
           console.log(imageId);
           fetch('https://covers.openlibrary.org/b/id/'+imageId+'-M.jpg')
@@ -156,4 +156,74 @@ export async function updateFirebase() {
       })
     })
   }
+}
+
+async function uploadMovieData(json, i, img_url) {
+    var substrings;
+    var ageRating = json["movies"][i]['age'];
+    var genres = json["movies"][i]['category'].split(", ");
+    var director_stars = json["movies"][i]['director_stars'];
+    var director = director_stars.split(": ")[1].split(" | ")[0].split(", ")
+    var stars = director_stars.split(": ").slice(2)[0].split(", ")
+    var img_url = json["movies"][i]['img_url'];
+    var running_time = json["movies"][i]['running_time'];
+    var summary = json["movies"][i]['summary'];
+    var title = json["movies"][i]['title'];
+    var releaseDate = json["movies"][i]['release_date'].slice(1, -1);
+    // console.log(director)
+    // console.log(stars)
+
+    var tags = {};
+    for(var i=0; i < genres.length; i++) {
+      tags[genres[i]] = "true";
+    }
+ 
+    console.log(tags);
+    
+    substrings = getAllSubstringss(title, 2);
+  
+    const ref = firestore.collection('posts').doc('movies').collection('moviePosts').doc();
+    const docId = ref.id;
+
+    // firestore.collection('posts').doc('movies').collection('moviePosts').add({
+    ref.set({
+      avgRating: 0,
+      category: "Movies",
+      ageRating: ageRating,
+      title: title,
+      summary: summary,
+      genres: genres,
+      director: director,
+      stars: stars,
+      runningTime: running_time,
+      releaseDate: releaseDate,
+      titleSubStrings: substrings,
+      tags: tags,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    }).then((doc) => {
+      fetch(img_url)
+      .then(res => res.blob())
+      .then(blob => {
+        console.log(img_url)
+        var storageRef = firebase.storage().ref();
+        // this auto replaces the image no need to check if it exists
+        storageRef.child('mediaPosts/moviePosts/'+docId).put(blob);
+      })
+    })
+}
+
+
+export async function updateFirebaseMovies() {
+  let json = require('./temp/run_results.json')
+  // console.log(json)
+  
+  await uploadMovieData(json, 1, json["movies"][1]["img_url"])
+  // for(var i=0; i<json["movies"].length; i++ ) {
+  //   var img_url = json["movies"][i]["img_url"];
+  //   await uploadMovieData(json, i, img_url);
+  // }
+}
+
+export async function updateDatabase() {
+
 }
