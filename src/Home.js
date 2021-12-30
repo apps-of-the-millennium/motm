@@ -46,6 +46,7 @@ class Home extends React.Component {
     this.categoryPostString = '';
   }
 
+  //Note December 23 2021: Seems like we already use a call to db to display these, but we also do the same db call in MediaPost component, so there might be a duplication of info retrieval
   handlePostPagination(lastDoc, postType) {
     //known crash in Development: if you add the 6th post and then click load more, you will be shown an uncommited timestamp error
     if (this.state.canLoadMore) {
@@ -144,14 +145,15 @@ class Home extends React.Component {
                   <div className="section-label">
                     TRENDING
                     {/* ChANGE TO LINK */}
-                    <Link className="nav" to={`/category/trending`}>View More</Link>
+                    <Link className="view-more" style={{ fontSize: '12px' }}>View More</Link>
                     {/* <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div> */}
                   </div>
                   <div className="section-posts regular">
                     {
                       this.state.trendingPosts.map((post) => {
                         let postInfo = post.postInfo;
-                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId}  /> </div>)
                       })
                     }
                   </div>
@@ -161,14 +163,15 @@ class Home extends React.Component {
                   <div className="section-label">
                     POPULAR
                     {/* ChANGE TO LINK */}
-                    <Link className="nav" to={`/category/popular`}>View More</Link>
+                    <Link className="view-more" style={{ fontSize: '12px' }} to={`/category/popular`}>View More</Link>
                     {/* <div className="view-more" style={{ fontSize: '12px' }}>View more</div> */}
                   </div>
                   <div className="section-posts regular">
                     {
-                      this.state.trendingPosts.map((post) => { //TODO: change to popularposts
+                      this.state.trendingPosts.map((post) => { //TODO: change to popularposts //Note: MediaPost component seems to be retrieving db info for the post using id anyways, i dont think we need all these props
                         let postInfo = post.postInfo;
-                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} /> </div>)
                       })
                     }
                   </div>
@@ -184,10 +187,11 @@ class Home extends React.Component {
                     {
                       this.state.trendingPosts.map((post, index) => {
                         let postInfo = post.postInfo;
+                        //<MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
                         return (
                           <div className="top-post-container" key={post.docId}>
                             <div className="order-value">{index+1}</div>
-                            <MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
+                            <MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId}  />
                           </div>
                         )
                       })
@@ -255,7 +259,7 @@ class Home extends React.Component {
 
   retrieveSearchPosts = () => {
     if (this.state.category !== '') {
-
+      
       this.setState({ searchPosts: [] }, () => {
 
         //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with this.categoryPostString
@@ -296,14 +300,19 @@ class Home extends React.Component {
   retrievePosts = () => {
     //todo make separate functions for each post section (i.e trneding popular, top)
 
+
     //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
     this.setState({ trendingPosts: [] }, () => {
-      firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).limit(LIMIT).orderBy('timestamp', 'desc') //not sure how it's ordering
+      //console.log(this.state.category)
+      //console.log(this.categoryPostString)
+      
+      // breaks for movies because not named right in firebase, also tags are not in a map, so not showing correctly, images not working too
+      firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).orderBy('timestamp', 'desc').limit(LIMIT) //not sure how it's ordering
       .get().then((querySnapshot) => {
         // const tempDocument = querySnapshot.docs.map(doc => {
         let count = 0;
         querySnapshot.docs.forEach(doc => {
-          console.log(doc.id);
+          // console.log(doc.id);
           const newPost = {
             docId: doc.id,
             postInfo: doc.data()
@@ -314,6 +323,7 @@ class Home extends React.Component {
             //TODO: when we have them all separated setstate differently
           }
           this.setState({ trendingPosts: [...this.state.trendingPosts, newPost] }); //...arrayName basically used to append a new item to the original array (aka spread syntax)
+          //console.log(this.state.trendingPosts)
         });
       });
     });

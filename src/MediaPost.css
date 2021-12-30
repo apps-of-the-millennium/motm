@@ -18,10 +18,10 @@
 .mediaPost:hover {
     transform: scale(1.05);
 }
-.mediaPost:hover .mediaPostTitle {
+/* .mediaPost:hover .mediaPostTitle {
     color: var(--color-text-hover);
     transition: none;
-}
+} */
 .mediaPost:hover .mediaPostButtons {
     display: flex;
 }
@@ -46,9 +46,9 @@
     /* overflow: hidden; */
     /* text-overflow: ellipsis; */
     text-align: left;
-    font-size: medium;
+    font-size: 15px;
     font-weight: 700;
-    /* margin-top: 5px; */
+    margin-top: 8px;
     color: var(--color-text);
     transition: color 0.5s;
 }
@@ -56,7 +56,7 @@
 .mediaPostInfoBox {
     display:none;
     width: 150%;
-    height: 40%;
+    height: minmax(40%, auto);
     /* opacity: 0;
     transition: opacity .35s; */
     position: absolute;
@@ -149,6 +149,8 @@
     padding-right: 6px;
     padding-bottom: 2px;
     margin-right: 8px;
+
+    margin-bottom: 8px;
 }
 
 .mediaPostButtons {
@@ -227,7 +229,7 @@
 }
 .mediaContainer2-content{
     display: grid;
-    grid-template-columns: auto 120px 120px 150px; 
+    grid-template-columns: auto 120px 140px 150px; 
     align-items: center;
     column-gap: 8px;
     padding: 16px;
@@ -253,6 +255,7 @@
 }
 .mediaContainer2 .tagContainer2 {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     overflow: hidden;
     margin-top: 6px;
@@ -269,6 +272,8 @@
     padding-left: 8px;
     padding-right: 8px;
     margin-right: 8px;
+
+    margin-bottom: 8px;
 }
 /* === */
 .mediaContainer2 .mediaPostCategory2 {

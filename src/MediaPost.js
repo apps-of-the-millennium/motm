@@ -8,7 +8,7 @@ import randomColor from 'randomcolor';
 
 import { AiFillStar, AiFillHeart, AiFillClockCircle } from 'react-icons/ai';
 import { ImCheckmark } from 'react-icons/im';
-import { IoIosCheckmarkCircle} from 'react-icons/io';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { RiPencilFill } from 'react-icons/ri';
 import { FaTrashAlt } from 'react-icons/fa';
 
@@ -25,6 +25,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             isLoaded: false,
             postType: this.props.postType,
             usersProfile: this.props.usersProfile,
+
+            category: this.props.category ? this.props.category.toLowerCase() : 'books', //might be temporary, might be some issue when u switch categories using selector popout
 
             mediaInfo: {},
             mediaPostPic: '',
@@ -45,6 +47,8 @@ class MediaPost extends React.Component { //({ user, match }) => {
             luminosity: 'light',
             // hue: 'blue'
         }); //used to generate a random tag color
+
+        this.categoryPostString = this.state.category ? this.state.category.toLowerCase().slice(0, -1) + 'Posts' : '';
     }
 
     async setPopup(listType) {
@@ -152,7 +156,9 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        firestore.collection('posts').doc('books').collection('bookPosts').doc(this.props.id).get().then((doc) => {
+        console.log(this.state.category)
+        console.log(this.categoryPostString)
+        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data() });
                 this.getPicture('/mediaPosts/' + this.props.category.slice(0, -1).toLowerCase() + 'Posts/' + this.props.id);
@@ -171,16 +177,19 @@ class MediaPost extends React.Component { //({ user, match }) => {
                     </div>}
                     <div className="mediaContainer">
 
-                        <div className="mediaPost">
+                        <div className="mediaPost" onMouseEnter={() => { this.setState({ hover: true }) }} onMouseLeave={() => { this.setState({ hover: false }) }}>
                             {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
                                 {/* picture of media*/}
                                 <img className="mediaPostImg" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
 
-                            <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost${this.state.category}/${this.props.id}`}>
                                 {/* title */}
-                                <div className="mediaPostTitle">{this.state.mediaInfo['title']}</div>
+                                {(this.state.hover) ?
+                                    <div className="mediaPostTitle" style={{ color: `${this.tagColor}` }}>{this.state.mediaInfo['title']}</div> :
+                                    <div className="mediaPostTitle">{this.state.mediaInfo['title']}</div> 
+                                }
                             </Link>
 
                             <div className="mediaPostButtons">
@@ -199,7 +208,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             </div>
                             <div className="mediaPostCategory">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
 
-                            <div className="author">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                            <div className="author">{(this.state.mediaInfo['author']) ? this.state.mediaInfo['author'] : "N/A"}</div>
                             {/* limiting displayed tags to max 3, if it still overflows, it will be hidden */}
                             <div className="tagContainer">
                                 {(this.state.mediaInfo['tags']) ? Object.keys(this.state.mediaInfo['tags']).slice(0, 3).map((keyName, i) => {
@@ -209,102 +218,102 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         </div>
                     </div>
                 </>
-                )
-            } else if (this.state.postType === MEDIA_POST_TYPES.LIST) { //user Lists post type
-                return (
-                    <>
-                        {(this.state.popUp) && <div className="popUp">
-                            {this.state.mediaInfo['title']} was {this.state.popUpMessage}
-                            <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
-                        </div>}
-                        <div className="mediaContainer3">
+            )
+        } else if (this.state.postType === MEDIA_POST_TYPES.LIST) { //user Lists post type
+            return (
+                <>
+                    {(this.state.popUp) && <div className="popUp">
+                        {this.state.mediaInfo['title']} was {this.state.popUpMessage}
+                        <IoIosCheckmarkCircle style={{ fontSize: '16px', position: 'absolute', right: '15px', top: '11px' }} />
+                    </div>}
+                    <div className="mediaContainer3">
 
-                            <div className="mediaPost3">
-                                {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
-                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                    {/* picture of media*/}
-                                    <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
-                                </Link>
+                        <div className="mediaPost3">
+                            {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
+                                {/* picture of media*/}/
+                                <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
+                            </Link>
 
-                                {/* <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
+                            {/* <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
                                     
                                 </Link> */}
-                                <div className="mediaPost-banner">
-                                    <div className="mediaPostTitle3">{this.state.mediaInfo['title']}</div>
-                                </div>
+                            <div className="mediaPost-banner">
+                                <div className="mediaPostTitle3">{this.state.mediaInfo['title']}</div>
+                            </div>
 
-                                <div className="mediaPost-overlay-button" onClick={this.displayButtons}><RiPencilFill className="icon" style={{background:'#3498DB'}} /></div>
-                                {this.state.displayButtons &&
-                                    //if user profile, we will display remove button else all 3
-                                        (this.props.usersProfile ?
-                                            {
-                                                'favouriteList':
-                                                    <div className="mediaPostButtons3">
-                                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
-                                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
-                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+                            <div className="mediaPost-overlay-button" onClick={this.displayButtons}><RiPencilFill className="icon" style={{ background: '#3498DB' }} /></div>
+                            {this.state.displayButtons &&
+                                //if user profile, we will display remove button else all 3
+                                (this.props.usersProfile ?
+                                    {
+                                        'favouriteList':
+                                            <div className="mediaPostButtons3">
+                                                <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
 
-                                                    </div>,
-                                                'laterList':
-                                                    <div className="mediaPostButtons3">
-                                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
-                                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
-                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
-                                                    </div>,
-                                                'completedList':
-                                                    <div className="mediaPostButtons3">
-                                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
-                                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
-                                                        <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
-                                                    </div>
-                                            }[this.props.listType] || <div>LIST TYPE PROPS DNE ERROR!</div>
-                                            :
+                                            </div>,
+                                        'laterList':
+                                            <div className="mediaPostButtons3">
+                                                <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
+                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+                                            </div>,
+                                        'completedList':
                                             <div className="mediaPostButtons3">
                                                 <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
                                                 <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
-                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
-                                            </div>)
-                                }
-                            </div>
+                                                <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
+                                            </div>
+                                    }[this.props.listType] || <div>LIST TYPE PROPS DNE ERROR!</div>
+                                    :
+                                    <div className="mediaPostButtons3">
+                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
+                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                    </div>)
+                            }
                         </div>
-                    </>
-                )
-            } else { //.MEDIA_P_TYPE.SIMPLE i.e top10 post style
-                return (
-                    <div className="mediaContainer2">
-                        <div className="mediaContainer2-content">
-                            {/* picture of media*/}
-                            {/* <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img> */}
-                            <div>
-                                <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                    {/* title */}
-                                    <div className="mediaPostTitle2">{this.state.mediaInfo['title']}</div>
-                                </Link>
-                                {/* limiting displayed tags to max 4 */}
-                                {<div className="tagContainer2">
-                                    {(this.state.mediaInfo['tags']) ?
-                                        Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
-                                            return <div className="tag2" style={{ background: `${this.tagColor}` }}>{keyName}</div>
-                                        }) : "No tag"}
-
-                                </div>}
-                            </div>
-                            
-                            <div className="ratingValue2">
-                                {(this.state.mediaInfo['avgRating']) ?
-                                    <div style={{ display: 'flex', alignItems: 'center' }}><AiFillStar className="star2" /> {this.state.mediaInfo['avgRating']}</div> : "N/A"}
-                            </div>
-
-
-                            {<div className="releaseDate2">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>}
-
-                            <div>
-                                {<div className="author2">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>}
-                                {<div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>}
-                            </div>
-                        </div>
-                        <Link style={{ backgroundImage: `url(${this.state.mediaPostPic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} to={`/mediapost/${this.props.id}`}> </Link>
                     </div>
+                </>
+            )
+        } else { //.MEDIA_P_TYPE.SIMPLE i.e top10 post style
+            return (
+                <div className="mediaContainer2">
+                    <div className="mediaContainer2-content">
+                        {/* picture of media*/}
+                        {/* <img className="mediaPostImg2" src={this.state.mediaPostPic} alt={this.state.mediaInfo['title']}></img> */}
+                        <div>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
+                                {/* title */}
+                                <div className="mediaPostTitle2">{this.state.mediaInfo['title']}</div>
+                            </Link>
+                            {/* limiting displayed tags to max 4 */}
+                            {<div className="tagContainer2">
+                                {(this.state.mediaInfo['tags']) ?
+                                    Object.keys(this.state.mediaInfo['tags']).slice(0, 4).map((keyName, i) => {
+                                        return <div className="tag2" style={{ background: `${this.tagColor}` }}>{keyName}</div>
+                                    }) : "No tag"}
+
+                            </div>}
+                        </div>
+
+                        <div className="ratingValue2">
+                            {(this.state.mediaInfo['avgRating']) ?
+                                <div style={{ display: 'flex', alignItems: 'center' }}><AiFillStar className="star2" /> {this.state.mediaInfo['avgRating']}</div> : "N/A"}
+                        </div>
+
+
+                        {<div className="releaseDate2">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>}
+
+                        <div>
+                            {<div className="author2">{(this.state.mediaInfo['author']) ? this.state.mediaInfo['author'] : "N/A"}</div>}
+                            {<div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>}
+                        </div>
+                    </div>
+                    <Link style={{ backgroundImage: `url(${this.state.mediaPostPic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} to={`/mediapost/${this.props.id}`}> </Link>
+                </div>
             )
         }
     }
