@@ -96,7 +96,11 @@ const DUMMY_POSTS = [
         }
         console.log(author);
         console.log(imageId);
-        firestore.collection('posts').doc('books').collection('bookPosts').add({
+        const ref = firestore.collection('posts').doc('books').collection('bookPosts').doc();
+        const docId = ref.id;
+
+        // firestore.collection('posts').doc('books').collection('bookPosts').add({
+        ref.set({
           avgRating: 0 ,
           category: "Books",
           author: author,
@@ -114,7 +118,7 @@ const DUMMY_POSTS = [
             console.log(blob)
             var storageRef = firebase.storage().ref();
             // this auto replaces the image no need to check if it exists
-            storageRef.child('mediaPosts/'+doc.id+'.jpg').put(blob); //don't think u need the .filetype but keeping for now I guess?
+            storageRef.child('mediaPosts/bookPosts/'+docId).put(blob); //don't think u need the .filetype but keeping for now I guess?
           })
         })
       })
@@ -143,7 +147,7 @@ export function getAllSubstrings(str, size) {
       return ''
 }
 export async function updateFirebase() {
-  var genres = ['Action', 'Drama', 'young_adult_fiction']//, 'mystery', 'Romance', 'Horror', 'Dsytopian', 'Adventure', 'Fantasy', 'Comedy', 'magic'];
+  var genres = ['drama', 'young_adult_fiction', 'mystery', 'romance', 'horror', 'dystopian', 'adventure', 'fantasy', 'comedy', 'magic'] //action;
   //uncomment the commented out ones we already have the first 3
   for(var i=0; i<genres.length; i++) {
     var url = 'https://openlibrary.org/subjects/'+genres[i]+'.json'; //?details=true
@@ -170,8 +174,6 @@ async function uploadMovieData(json, i, img_url) {
     var summary = json["movies"][i]['summary'];
     var title = json["movies"][i]['title'];
     var releaseDate = json["movies"][i]['release_date'].slice(1, -1);
-    // console.log(director)
-    // console.log(stars)
 
     var tags = {};
     for(var i=0; i < genres.length; i++) {
@@ -217,11 +219,11 @@ export async function updateFirebaseMovies() {
   let json = require('./temp/run_results.json')
   // console.log(json)
   
-  await uploadMovieData(json, 1, json["movies"][1]["img_url"])
-  // for(var i=0; i<json["movies"].length; i++ ) {
-  //   var img_url = json["movies"][i]["img_url"];
-  //   await uploadMovieData(json, i, img_url);
-  // }
+  // await uploadMovieData(json, 1, json["movies"][1]["img_url"])
+  for(var i=0; i<json["movies"].length; i++ ) {
+    var img_url = json["movies"][i]["img_url"];
+    await uploadMovieData(json, i, img_url);
+  }
 }
 
 export async function updateDatabase() {

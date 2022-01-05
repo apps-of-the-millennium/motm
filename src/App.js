@@ -25,9 +25,7 @@ class App extends Component {
             <Header />
             <Switch>
               <Route path="/" component={Home} exact />
-              <Route path="/category/:category" 
-                render={props => (<CategoryPage category={props.match.params.category} {...props} />)}
-              />
+              
               <Route
                 path="/profile/:id/editProfile"
                 render={props => (
@@ -48,6 +46,9 @@ class App extends Component {
                   <MediaPostPage
                     id={props.match.params.id} category={props.match.params.category} {...props} />
                 )}
+              />
+              <Route path="/:category/:section" 
+                render={props => (<CategoryPage category={props.match.params.category} section={props.match.params.section} {...props} />)}
               />
               <Route
                 path="/review/write/:id"
