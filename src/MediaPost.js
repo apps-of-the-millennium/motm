@@ -49,31 +49,24 @@ class MediaPost extends React.Component { //({ user, match }) => {
         }); //used to generate a random tag color
 
         this.categoryPostString = this.state.category ? this.state.category.toLowerCase().slice(0, -1) + 'Posts' : '';
+        let arr = this.props.id.split("/");
+        this.userListUrl = (this.props.id.includes("/")) ? arr[0] + '/' + arr[2] : '';
     }
 
-    async setPopup(listType) {
+    async setPopup(listType, addedList) {
         clearTimeout(this.state.timer);
-        switch (listType) {
-            case 'f':
-                this.setState({ popUp: true, popUpMessage: 'added to Favourites List', addedFavourite: true });
-                break;
-            case 'l':
-                this.setState({ popUp: true, popUpMessage: 'added to Later List', addedLater: true });
-                break;
-            case 'c':
-                this.setState({ popUp: true, popUpMessage: 'added to Completed List', addedComplete: true });
-                break;
-            //default for future for lists
-            default:
-                this.setState({ popUp: true });
-                break;
+        //if it was empty just set popUp true as the message is already addded
+        if(!listType) {
+            this.setState({ popUp: true });
+        } else {
+            this.setState({ popUp: true, popUpMessage: 'added to ' + listType, [addedList]: true });
         }
         this.setState({ timer: setTimeout(() => this.setState({ popUp: false }), 5000) });
     }
 
     deleteFromList(id, listType) {
         let updateList = this.props.updateList;
-
+        
         firestore.collection('users').doc(this.context.userId).collection('lists').doc(listType).update({
             [listType]: firebase.firestore.FieldValue.arrayRemove(id)
         }).then(() => {
@@ -88,56 +81,24 @@ class MediaPost extends React.Component { //({ user, match }) => {
         this.setState({ displayButtons: !this.state.displayButtons });
     }
 
-    //refactor below functions, same functions with diff list names
-    updateFavourite(id) {
+    updateList(id, listType, addedList) {
         if (this.context.userId) {
-            if (!this.state.addedFavourite) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('favouriteList').set(
-                    { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
+            let finalListName = (listType.charAt(0).toUpperCase() + listType.slice(1)).slice(0, -4) + ` List`;
+            //if the addedList has already been added to ex: updateFavourites this is so we don't keep doing firestore call
+            if (!this.state[addedList]) {
+                //need to add full path so we know category of mediaPost
+                let unionVal = (id.includes("/")) ? id : this.state.category+'/'+this.categoryPostString+'/'+id
+
+                firestore.collection('users').doc(this.context.userId).collection('lists').doc(listType).set(
+                    { [listType]: firebase.firestore.FieldValue.arrayUnion(unionVal) },
                     { merge: true }
                 ).then(() => {
-                    this.setPopup('f');
-                    addNotificationToUserActivity(this.context.userId, this.props.id, `Favourited `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
-                });
-
-            } else {
-                this.setState({ popUpMessage: 'already added to Favourites' });
-                this.setPopup('');
-            }
-        }
-    }
-
-    updateLater(id) {
-        if (this.context.userId) {
-            if (!this.state.addedLater) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('laterList').set(
-                    { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }
-                ).then(() => {
-                    this.setPopup('l');
-                    addNotificationToUserActivity(this.context.userId, this.props.id, `Plans to watch `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
-                });
-
-            } else {
-                this.setState({ popUpMessage: 'already added to Later List' });
-                this.setPopup('');
-            }
-        }
-    }
-
-    updateCompleted(id) {
-        if (this.context.userId) {
-            if (!this.state.addedComplete) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('completedList').set(
-                    { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }
-                ).then(() => {
-                    this.setPopup('c');
-                    addNotificationToUserActivity(this.context.userId, this.props.id, `Completed `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
+                    this.setPopup(finalListName, addedList);
+                    addNotificationToUserActivity(this.context.userId, unionVal.split("/")[2], `Added to ` + finalListName, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
                 });
             } else {
-                this.setState({ popUpMessage: 'already added to Completed List' });
-                this.setPopup('');
+                this.setState({ popUpMessage: 'already added to ' + finalListName });
+                this.setPopup('', '');
             }
         }
     }
@@ -156,15 +117,28 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        // console.log(this.state.category)
-        // console.log(this.categoryPostString)
-        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
-            if (doc.exists) {
-                this.setState({ mediaInfo: doc.data() });
-                this.getPicture('/mediaPosts/' + this.state.category.slice(0, -1).toLowerCase() + 'Posts/' + this.props.id);
-                // this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
-            }
-        })
+        let pic = '/mediaPosts/'
+        console.log("props id: " + this.props.id);
+        //means we are viewing a userList id already contains path and category
+        if(this.props.id.includes("/")) {
+            let path = this.props.id.split("/");
+            pic += path[1] + '/' + path[2];
+
+            firestore.collection('posts').doc(path[0]).collection(path[1]).doc(path[2]).get().then((doc) => {
+                if (doc.exists) {
+                    this.setState({ mediaInfo: doc.data() });
+                    this.getPicture(pic);
+                }
+            })
+        } else {
+            pic += this.categoryPostString + '/' + this.props.id;
+            firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
+                if (doc.exists) {
+                    this.setState({ mediaInfo: doc.data() });
+                    this.getPicture(pic);
+                }
+            })
+        }
     }
 
     render() {
@@ -184,7 +158,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 <img className="mediaPostImg" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
 
-                            <Link className="mediaPageLink" to={`/mediapost${this.state.category}/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
                                 {/* title */}
                                 {(this.state.hover) ?
                                     <div className="mediaPostTitle" style={{ color: `${this.tagColor}` }}>{this.state.mediaInfo['title']}</div> :
@@ -193,9 +167,9 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             </Link>
 
                             <div className="mediaPostButtons">
-                                <button className="invisible" onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon" /></button>
-                                <button className="invisible" onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon" /></button>
-                                <button className="invisible" onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon" /></button>
+                                <button className="invisible" onClick={() => this.updateList(this.props.id, "favouriteList", "addedFavourite")}><AiFillHeart className="icon" /></button>
+                                <button className="invisible" onClick={() => this.updateList(this.props.id, "laterList", "addedLater")}><AiFillClockCircle className="icon" /></button>
+                                <button className="invisible" onClick={() => this.updateList(this.props.id, "completedList", "addedCompleted")}><ImCheckmark className="icon" /></button>
                             </div>
                         </div>
 
@@ -230,7 +204,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
 
                         <div className="mediaPost3">
                             {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
-                            <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
+                            <Link className="mediaPageLink" to={`/mediapost/${this.userListUrl}`}>
                                 {/* picture of media*/}
                                 <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
@@ -249,29 +223,28 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                     {
                                         'favouriteList':
                                             <div className="mediaPostButtons3">
-                                                <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
-                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "laterList", "addedLater")}><AiFillClockCircle className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "completedList", "addedCompleted")}><ImCheckmark className="icon small" /></div>
                                                 <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
-
                                             </div>,
                                         'laterList':
                                             <div className="mediaPostButtons3">
-                                                <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
-                                                <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "favouriteList", "addedFavourite")}><AiFillHeart className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "completedList", "addedCompleted")}><ImCheckmark className="icon small" /></div>
                                                 <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
                                             </div>,
                                         'completedList':
                                             <div className="mediaPostButtons3">
-                                                <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
-                                                <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "favouriteList", "addedFavourite")}><AiFillHeart className="icon small" /></div>
+                                                <div onClick={() => this.updateList(this.props.id, "laterList", "addedLater")}><AiFillClockCircle className="icon small" /></div>
                                                 <div onClick={() => this.deleteFromList(this.props.id, this.props.listType)}><FaTrashAlt className="icon small" color="#ff5464" /></div>
                                             </div>
                                     }[this.props.listType] || <div>LIST TYPE PROPS DNE ERROR!</div>
                                     :
                                     <div className="mediaPostButtons3">
-                                        <div onClick={() => this.updateFavourite(this.props.id)}><AiFillHeart className="icon small" /></div>
-                                        <div onClick={() => this.updateLater(this.props.id)}><AiFillClockCircle className="icon small" /></div>
-                                        <div onClick={() => this.updateCompleted(this.props.id)}><ImCheckmark className="icon small" /></div>
+                                        <div onClick={() => this.updateList(this.props.id, "favouriteList", "addedFavourite")}><AiFillHeart className="icon small" /></div>
+                                        <div onClick={() => this.updateList(this.props.id, "laterList", "addedLater")}><AiFillClockCircle className="icon small" /></div>
+                                        <div onClick={() => this.updateList(this.props.id, "completedList", "addedCompleted")}><ImCheckmark className="icon small" /></div>
                                     </div>)
                             }
                         </div>
@@ -312,7 +285,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                             {<div className="mediaPostCategory2">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>}
                         </div>
                     </div>
-                    <Link style={{ backgroundImage: `url(${this.state.mediaPostPic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} to={`/mediapost/${this.props.id}`}> </Link>
+                    <Link style={{ backgroundImage: `url(${this.state.mediaPostPic})`, backgroundRepeat: 'no-repeat', backgroundSize: '100% 100%', userSelect: 'none', borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} to={`/mediapost/${this.state.category}/${this.props.id}`}> </Link>
                 </div>
             )
         }
