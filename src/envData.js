@@ -216,7 +216,7 @@ async function uploadMovieData(json, i, img_url) {
 
 
 export async function updateFirebaseMovies() {
-  let json = require('./temp/run_results.json')
+  // let json = require('./temp/run_results.json')
   // console.log(json)
   
   // await uploadMovieData(json, 1, json["movies"][1]["img_url"])
