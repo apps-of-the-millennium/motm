@@ -215,16 +215,16 @@ async function uploadMovieData(json, i, img_url) {
 }
 
 
-export async function updateFirebaseMovies() {
-  // let json = require('./temp/run_results.json')
-  // console.log(json)
+// export async function updateFirebaseMovies() {
+//   let json = require('./temp/run_results.json')
+//   console.log(json)
   
-  // await uploadMovieData(json, 1, json["movies"][1]["img_url"])
-  for(var i=0; i<json["movies"].length; i++ ) {
-    var img_url = json["movies"][i]["img_url"];
-    await uploadMovieData(json, i, img_url);
-  }
-}
+//   // await uploadMovieData(json, 1, json["movies"][1]["img_url"])
+//   for(var i=0; i<json["movies"].length; i++ ) {
+//     var img_url = json["movies"][i]["img_url"];
+//     await uploadMovieData(json, i, img_url);
+//   }
+// }
 
 export async function updateDatabase() {
 
