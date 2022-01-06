@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 
 import ActivityFeed from './ActivityFeed';
 import UserLists from './UserLists';
-// import envData from './envData'; //can take this out later mostly for adding data
 import { AuthContext } from "./context";
 
 //might not need this not sure if it's good practice though
@@ -22,7 +21,7 @@ FollowList.propTypes = {
 
 class ProfilePage extends React.Component { //({ user, match }) => {
     static contextType = AuthContext;
-    static previousContext;
+    // static previousContext;
 
     constructor(props, context) {
         super(props);
@@ -178,18 +177,31 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        console.log(this.state.authInfo);
-        this.previousContext = this.context;
-        if (this.state.authInfo.userId === this.props.user) {
-            this.setState({ usersProfile: true });
-        }
+        // old context method may need to test again not sure what works best
+
+        // this.previousContext = this.context;
+        // if(this.context.userId === this.props.user) {
+        //     this.setState({ usersProfile: true });
+        // }
+        firebase.auth().onAuthStateChanged((user) => {
+			if (user) {
+
+                if(user.uid === this.props.user) {
+				    this.setState({ usersProfile: true, isLoaded: true });
+                } else {
+                    this.setState({ isLoaded: true});
+                }
+                this.setState({ currentView: 'overview' }); //resets component view on user profile change
+			}
+		});
+        
         this.setState({ currentView: 'overview' }); //resets component view on user profile change
 
 
         firestore.collection('users').doc(this.props.user).get().then((doc) => {
             //unsure if doc.exists needs to be checked all the time
             if (doc.exists) {
-                this.setState({ userInfo: doc.data(), isLoaded: true });
+                this.setState({ userInfo: doc.data()});
                 this.getProfilePicture(doc.data()['profilePic']);
             }
         })
@@ -216,6 +228,10 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             })
             this.setState({ following: followingArr });
         })
+        console.log(this.context.userId);
+        if(this.context.userId === this.props.user) {
+            this.setState({ usersProfile: true });
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -233,17 +249,17 @@ class ProfilePage extends React.Component { //({ user, match }) => {
             }
         }
 
-        if (this.state.authInfo !== this.context) {
-            this.setState({ authInfo: this.context });
-            console.log("authinfo updated");
-            if (this.props.user === this.state.authInfo.userId) {
-                this.setState({ usersProfile: true });
-            } else {
-                this.setState({ usersProfile: false });
-            }
-        }
+        // if (this.state.authInfo !== this.context) {
+        //     this.setState({ authInfo: this.context });
+        //     console.log("authinfo updated");
+        //     if (this.props.user === this.state.authInfo.userId) {
+        //         this.setState({ usersProfile: true });
+        //     } else {
+        //         this.setState({ usersProfile: false });
+        //     }
+        // }
 
-        this.previousContext = this.context;
+        // this.previousContext = this.context;
     }
 
 

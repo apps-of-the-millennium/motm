@@ -6,6 +6,11 @@
   /* overflow: auto; */
 }
 
+.home-content {
+  margin: 0 auto;
+  width: 63%;
+}
+
 .pageContentContainer {
   margin: 0 auto;
   width: 63%;

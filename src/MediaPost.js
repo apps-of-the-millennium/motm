@@ -156,12 +156,13 @@ class MediaPost extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        console.log(this.state.category)
-        console.log(this.categoryPostString)
+        // console.log(this.state.category)
+        // console.log(this.categoryPostString)
         firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({ mediaInfo: doc.data() });
-                this.getPicture('/mediaPosts/' + this.props.id + '.jpg'); //broken for movies, think we are changing images
+                this.getPicture('/mediaPosts/' + this.state.category.slice(0, -1).toLowerCase() + 'Posts/' + this.props.id);
+                // this.getPicture('/mediaPosts/' + this.props.id + '.jpg');
             }
         })
     }
@@ -230,7 +231,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
                         <div className="mediaPost3">
                             {/* Link is wrapped separately to avoid breaking grid display css: trying to avoid yet another nested div */}
                             <Link className="mediaPageLink" to={`/mediapost/${this.state.category}/${this.props.id}`}>
-                                {/* picture of media*/}/
+                                {/* picture of media*/}
                                 <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
 

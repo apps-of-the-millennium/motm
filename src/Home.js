@@ -3,14 +3,12 @@ import React from 'react';
 import './Home.css';
 import MediaPost from './MediaPost';
 import { firestore } from "./firebase";
-import CustomSelect from './CustomSelect';
-import CategorySelector from './CategorySelector';
+import { Link } from 'react-router-dom';
+import Search from './Search';
 
 import { MEDIA_POST_TYPES, getAllSubstrings } from './envData';
 
-import { FaIcons, FaSearch } from 'react-icons/fa'; //make the filters into separate component?
-const LIMIT = 6;
-
+const LIMIT = 5;
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -18,10 +16,7 @@ class Home extends React.Component {
       trendingPosts: [],//envData.DUMMY_POSTS,
       popularPosts: [],//envData.DUMMY_POSTS,
       topPosts: [],//envData.DUMMY_POSTS,
-      searchPosts: [],
-
-      searchName: '',
-      searchTags: [],
+      searching: false,
 
       category: '',
 
@@ -94,141 +89,82 @@ class Home extends React.Component {
   }
 
   render() {
-    let searchVal = this.state.searchName;
-    let searchTags = this.state.searchTags;
     return (
       <div className="homeBg">
-        <div className="pageContentContainer">
-          <div className="filtersContainer">
-            <div className="filters">
-              <div className="filter-option">
-                <div style={{ fontWeight: '500', color: `var(--color-text)`, transition: 'color 1s', marginBottom: '10px' }}>Search</div>
-                <div className="filter-value-container">
-                  <FaSearch style={{ color: 'var(--color-text)', transition: 'color 1s', position: 'absolute', top: "11px", left: "12px" }} />
-                  <input className='searchInput'
-                    onChange={this.handleSearchNameChange}
-                    value={this.state.searchName}
-                    autoComplete="off"
-                    // placeholder="Search..."
-                    type="search"
-                    id="search" />
+        {/* <div className="pageContentContainer"> */}
+        <Search category={this.state.category} handleSearching={this.handleSearching} onClickCategory={this.onClickCategory} />
+          { (!this.state.searching) && (this.state.category !== '') ? (
+            <div className="home-content">
+              {/* Note: the word trending represents a css subclass, i.e use style from content-section and then any extra css under subclass trending */}
+              <div className="content-section trending">
+                <div className="section-label">
+                  TRENDING
+                  {/* ChANGE TO LINK */}
+                  <Link className="view-more" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/trending`}>View More</Link>
+                  {/* <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div> */}
                 </div>
-
-              </div>
-
-              <div className="filter-option">
-                <div className="filter-value-container">
-                  <CustomSelect handleChange={this.handleSearchTagChange} options={this.options} label="Genres" />
-                </div>
-              </div>
-            </div>
-            {this.state.category !== '' &&
-              <div className="extra-filters">
-                <div className="category-select-button" onClick={this.displayCategorySelector}><FaIcons className="icons-style" />
-                </div>
-                {this.state.isCategorySelectVisible &&
-                  <CategorySelector category={this.state.category} onClickCategory={this.onClickCategory} />
-                }
-              </div>
-            }
-
-
-          </div>
-
-          {(this.state.category === '') ?
-            <CategorySelector category={this.state.category} onClickCategory={this.onClickCategory} /> :
-            (searchVal === '' && searchTags.length === 0) ? (
-              <div className="home-content">
-                {/* Note: the word trending represents a css subclass, i.e use style from content-section and then any extra css under subclass trending */}
-                <div className="content-section trending">
-                  <div className="section-label">
-                    TRENDING
-                    <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>view more</div>
-                  </div>
-                  <div className="section-posts regular">
-                    {
-                      this.state.trendingPosts.map((post) => {
-                        let postInfo = post.postInfo;
-                        //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId}  /> </div>)
-                      })
-                    }
-                  </div>
-                </div>
-
-                <div className="content-section popular">
-                  <div className="section-label">
-                    POPULAR
-                    <div className="view-more" style={{ fontSize: '12px' }}>view more</div>
-                  </div>
-                  <div className="section-posts regular">
-                    {
-                      this.state.trendingPosts.map((post) => { //TODO: change to popularposts //Note: MediaPost component seems to be retrieving db info for the post using id anyways, i dont think we need all these props
-                        let postInfo = post.postInfo;
-                        //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
-                        return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} /> </div>)
-                      })
-                    }
-                  </div>
-                </div>
-
-                <div className="content-section top">
-                  <div className="section-label">
-                    TOP 10
-                    <div style={{ fontSize: '12px' }}>view more</div>
-                  </div>
-                  <div className="section-posts top">
-                    {
-                      this.state.trendingPosts.map((post, index) => {
-                        let postInfo = post.postInfo;
-                        //<MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
-                        return (
-                          <div className="top-post-container" key={post.docId}>
-                            <div className="order-value">{index+1}</div>
-                            <MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId}  />
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-
-              </div>) : (
-                <div className="content-section results">
-                  {(this.state.searchPosts.length === 0) ? <h3 className="section-label">There are no results to be shown...</h3> :
-                    <>
-                      <h3 className="section-label">SEARCH RESULTS</h3>
-                      <div className="section-posts regular" >
-                        {
-                          this.state.searchPosts.map((post) => {
-                            let postInfo = post.postInfo;
-                            return (
-                              <div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>
-                            )
-                          })
-                        }
-                      </div>
-                    </>
+                <div className="section-posts regular">
+                  {
+                    this.state.trendingPosts.map((post) => {
+                      let postInfo = post.postInfo;
+                      //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                      return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId}  /> </div>)
+                    })
                   }
                 </div>
-              )
-          }
+              </div>
 
-        </div>
+              <div className="content-section popular">
+                <div className="section-label">
+                  POPULAR
+                  {/* ChANGE TO LINK */}
+                  <Link className="view-more" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/popular`}>View More</Link>
+                  {/* <div className="view-more" style={{ fontSize: '12px' }}>View more</div> */}
+                </div>
+                <div className="section-posts regular">
+                  {
+                    this.state.trendingPosts.map((post) => { //TODO: change to popularposts //Note: MediaPost component seems to be retrieving db info for the post using id anyways, i dont think we need all these props
+                      let postInfo = post.postInfo;
+                      //return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} /> </div>)
+                      return (<div key={post.docId}> <MediaPost postType={MEDIA_POST_TYPES.FUNCTIONAL} category={postInfo.category} id={post.docId} /> </div>)
+                    })
+                  }
+                </div>
+              </div> 
+
+              <div className="content-section top">
+                <div className="section-label">
+                  TOP 10
+                  {/* LIMIT TO 10 */}
+                  <div style={{ fontSize: '12px' }}>View more</div>
+                </div>
+                <div className="section-posts top">
+                  {
+                    this.state.trendingPosts.map((post, index) => {
+                      let postInfo = post.postInfo;
+                      //<MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId} title={postInfo.title} info={postInfo.info} summary={postInfo.summary} imageUrl={postInfo.imageUrl} />
+                      return (
+                        <div className="top-post-container" key={post.docId}>
+                          <div className="order-value">{index+1}</div>
+                          <MediaPost postType={MEDIA_POST_TYPES.SIMPLE} category={postInfo.category} id={post.docId}  />
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+              </div>
+            </div> ) : (
+              <div></div>
+            )
+          }
       </div>
     )
   }
 
-  handleSearchNameChange = (e) => {
-    this.setState({ searchName: e.target.value }, () => {
-      this.retrieveSearchPosts();
-    });
-
-  }
-
-  handleSearchTagChange = (searchTags) => {
-    this.setState({ searchTags }, () => { this.retrieveSearchPosts() });
-    console.log(`Option selected:`, this.state.searchTags);
+  handleSearching = (nameSearch, tagLength) => {
+    // bool to check if there are words or tags or nothing
+    let searchBool = Boolean(nameSearch) || Boolean(tagLength)
+    this.setState({ searching: searchBool });
   }
 
   onClickCategory = (categoryType) => {
@@ -236,7 +172,7 @@ class Home extends React.Component {
       this.setState({ category: categoryType }, () => {
         this.categoryPostString = this.state.category.slice(0, -1) + 'Posts';
         this.retrievePosts();
-        this.retrieveSearchPosts(); //in case they tried to type stuff in search before category selection
+        // this.retrieveSearchPosts(); //in case they tried to type stuff in search before category selection
 
         if (typeof (Storage) !== "undefined") {
           sessionStorage.setItem('savedCategory', this.state.category);
@@ -250,50 +186,8 @@ class Home extends React.Component {
     this.setState({ isCategorySelectVisible: !this.state.isCategorySelectVisible });
   }
 
-
-  retrieveSearchPosts = () => {
-    if (this.state.category !== '') {
-      
-      this.setState({ searchPosts: [] }, () => {
-
-        //TODO .doc(category), category should be saved somewhere based on user category type selection and not fixed 'books', same with this.categoryPostString
-
-        //construct the ref
-        //console.log(this.state.searchTags);
-        let ref = firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString);
-
-        if (this.state.searchName !== '') {
-          let searchValue = this.state.searchName.toString().toLowerCase().trim();
-          ref = ref.where("titleSubStrings", "array-contains", searchValue)
-        }
-
-        if (this.state.searchTags) {
-          this.state.searchTags.forEach((tag) => {
-            ref = ref.where(`tags.${tag.value}`, '==', 'true');
-          });
-        }
-
-        ref.get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const newPost = {
-                docId: doc.id,
-                postInfo: doc.data()
-              }
-
-              if (this.state.searchPosts.findIndex(i => i.docId === doc.id) === -1) //only add to search posts if it doesnt exist yet
-                this.setState({ searchPosts: [...this.state.searchPosts, newPost] }); //may need to do once at the end to avoid async issues?
-            });
-          });
-      });
-
-    }
-
-  }
-
   retrievePosts = () => {
     //todo make separate functions for each post section (i.e trneding popular, top)
-
 
     //must reset the list to [] before making a db call, since this call is triggered whenever the user selects a new category through selector
     this.setState({ trendingPosts: [] }, () => {
