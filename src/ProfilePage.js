@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 
 import ActivityFeed from './ActivityFeed';
 import UserLists from './UserLists';
-import { updateFirebaseMovies } from './envData'; //can take this out later mostly for adding data
 import { AuthContext } from "./context";
 
 //might not need this not sure if it's good practice though
@@ -178,10 +177,7 @@ class ProfilePage extends React.Component { //({ user, match }) => {
     }
 
     componentDidMount() {
-        //temp adding data
-        updateFirebaseMovies()
-
-        // old context method
+        // old context method may need to test again not sure what works best
 
         // this.previousContext = this.context;
         // if(this.context.userId === this.props.user) {
@@ -189,7 +185,6 @@ class ProfilePage extends React.Component { //({ user, match }) => {
         // }
         firebase.auth().onAuthStateChanged((user) => {
 			if (user) {
-                console.log('vruhfs');
 
                 if(user.uid === this.props.user) {
 				    this.setState({ usersProfile: true, isLoaded: true });

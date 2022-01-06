@@ -66,7 +66,7 @@ const Header = () => {
             <div className="navigationContainer">
               <Link className="nav" to={`/`}>Home</Link>
               <Link className="nav" to={`/profile/${userId}`}>Profile</Link>
-              <a href="/#" className='nav'>Filler</a>
+              <Link className="nav" to={`/browse`}>Browse</Link>
               <a href="/#" className='nav'>Filler</a>
               <a href="/#" className='nav'>Filler</a>
               <Link className="nav" to={`/browse`}>Browse</Link>

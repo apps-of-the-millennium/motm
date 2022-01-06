@@ -169,15 +169,15 @@ async function uploadMovieData(json, i, img_url) {
     var director_stars = json["movies"][i]['director_stars'];
     var director = director_stars.split(": ")[1].split(" | ")[0].split(", ")
     var stars = director_stars.split(": ").slice(2)[0].split(", ")
-    var img_url = json["movies"][i]['img_url'];
+    // var img_url = json["movies"][i]['img_url'];
     var running_time = json["movies"][i]['running_time'];
     var summary = json["movies"][i]['summary'];
     var title = json["movies"][i]['title'];
     var releaseDate = json["movies"][i]['release_date'].slice(1, -1);
 
     var tags = {};
-    for(var i=0; i < genres.length; i++) {
-      tags[genres[i]] = "true";
+    for(var x=0; x < genres.length; x++) {
+      tags[genres[x]] = "true";
     }
  
     console.log(tags);
