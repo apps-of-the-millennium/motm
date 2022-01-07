@@ -21,6 +21,8 @@ import { AuthContext } from "./context";
 import addNotificationToUserActivity from './firestoreHelperFunctions';
 import ShowMoreText from 'react-show-more-text';
 
+import { LIST_TYPES } from './envData';
+
 // const text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
 
 class MediaPostPage extends React.Component {
@@ -39,7 +41,7 @@ class MediaPostPage extends React.Component {
             openOptions: false,
             popUp: false,
             listType: "",
-            addedComplete: false,
+            addedCompleted: false,
             addedFavourite: false,
             addedLater: false,
             timer: '',
@@ -52,63 +54,32 @@ class MediaPostPage extends React.Component {
         this.categoryPostString = this.state.category ? this.state.category.slice(0, -1) + 'Posts' : '';
     }
 
-    async setPopup(listType) {
+    async setPopup(listType, addedList) {
         clearTimeout(this.state.timer);
-        switch (listType) {
-            case 'f':
-                this.setState({ popUp: true, listType: 'Favourites List', addedFavourite: true });
-                break;
-            case 'l':
-                this.setState({ popUp: true, listType: 'Later List', addedLater: true });
-                break;
-            case 'c':
-                this.setState({ popUp: true, listType: 'Completed List', addedComplete: true });
-                break;
-            //default for future for lists
-            default:
-                this.setState({ popUp: true, listType: 'List' });
-                break;
-        }
+        
+        this.setState({ popUp: true, listType: listType, [addedList]: true });
         this.setState({ timer: setTimeout(() => this.setState({ popUp: false }), 5000) });
     }
 
-    async updateFavourite(id, needsUpdate) {
-        //if we added to Favourites while on the page
-        if (needsUpdate) {
-            //if there is no user (might be able to take this out since I won't allow non users to change the needsUpdate)
-            if (this.context.userId) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('favouriteList').set(
-                    { favouriteList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }
-                );
+    async updateLists(id) {
+        //currently only 3 hard-coded lists to update when we include user lists
+        //we may need to change this or make a separate function / component for user lists since they will be random ids
+        let lists = ['addedCompleted', 'addedFavourite', 'addedLater'];
+        for( var i=0; i < 3; i++ ) {
+            //if update required at that list
+            if (this.state[lists[i]]) {
+                let listName = LIST_TYPES[lists[i]];
+                console.log('LIST NAME: ' + listName);
+                let finalListName = (listName.charAt(0).toUpperCase() + listName.slice(1)).slice(0, -4) + ` List`;
+                //if there is no user (might be able to take this out since I won't allow non users to change the needsUpdate)
+                if (this.context.userId) {
+                    firestore.collection('users').doc(this.context.userId).collection('lists').doc(listName).set(
+                        { [listName]: firebase.firestore.FieldValue.arrayUnion(this.state.category+'/'+this.categoryPostString+'/'+id) },
+                        { merge: true }
+                    );
 
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Favourited `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
-            }
-        }
-    }
-
-    async updateLater(id, needsUpdate) {
-        if (needsUpdate) {
-            if (this.context.userId) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('laterList').set(
-                    { laterList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }
-                );
-
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Plans to watch `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
-            }
-        }
-    }
-
-    async updateCompleted(id, needsUpdate) {
-        if (needsUpdate) {
-            if (this.context.userId) {
-                firestore.collection('users').doc(this.context.userId).collection('lists').doc('completedList').set(
-                    { completedList: firebase.firestore.FieldValue.arrayUnion(id) },
-                    { merge: true }
-                );
-
-                addNotificationToUserActivity(this.context.userId, this.props.id, `Completed `, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
+                    addNotificationToUserActivity(this.context.userId, this.props.id, `Added to  `+ finalListName, { title: this.state.mediaInfo['title'], pic: this.state.mediaPostPic });
+                }
             }
         }
     }
@@ -237,9 +208,7 @@ class MediaPostPage extends React.Component {
     componentWillUnmount() {
         if (this.props.id) {
             this.updateRating(this.state.currRating, this.props.id);
-            this.updateCompleted(this.props.id, this.state.addedComplete);
-            this.updateFavourite(this.props.id, this.state.addedFavourite);
-            this.updateLater(this.props.id, this.state.addedLater);
+            this.updateLists(this.props.id);
             for (var key in localStorage) {
                 if (key.substring(0, (this.props.id).length) === this.props.id) {
                     localStorage.removeItem(key);
@@ -251,7 +220,7 @@ class MediaPostPage extends React.Component {
     componentDidUpdate() {
         //save info to local storage
         if (typeof (Storage) !== "undefined") {
-            localStorage.setItem(this.props.id + '.completedList', (this.state.addedComplete).toString());
+            localStorage.setItem(this.props.id + '.completedList', (this.state.addedCompleted).toString());
             localStorage.setItem(this.props.id + '.favouriteList', (this.state.addedFavourite).toString());
             localStorage.setItem(this.props.id + '.laterList', (this.state.addedLater).toString());
             localStorage.setItem(this.props.id + '.rating', (this.state.currRating));
@@ -272,7 +241,7 @@ class MediaPostPage extends React.Component {
             let local_rating = localStorage.getItem(this.props.id + '.rating') || 0;
 
             this.setState({
-                addedComplete: local_completed,
+                addedCompleted: local_completed,
                 addedFavourite: local_favourite,
                 addedLater: local_later,
                 currRating: local_rating,
@@ -316,9 +285,10 @@ class MediaPostPage extends React.Component {
                                     <div className="trophyButton"><ImTrophy className="trophy-icon" /></div>
                                     {(this.state.openOptions) ?
                                         <div className="dropdown-content2">
-                                            <button className="listOptions" onClick={() => this.setPopup('f')}>Favourites<AiFillHeart className="listOptions-icon" />  </button>
-                                            <button className="listOptions" onClick={() => this.setPopup('l')}>Watch Later<AiFillClockCircle className="listOptions-icon" />  </button>
-                                            <button className="listOptions" onClick={() => this.setPopup('c')}>Completed<ImCheckmark className="listOptions-icon" />  </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('Favourite List', 'addedFavourite')}>Favourites<AiFillHeart className="listOptions-icon" />  </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('Later List', 'addedLater')}>Watch Later<AiFillClockCircle className="listOptions-icon" />  </button>
+                                            <button className="listOptions" onClick={() => this.setPopup('Completed List', 'addedCompleted')}>Completed<ImCheckmark className="listOptions-icon" />  </button>
+                                            {/* Add separate component for making User Lists Here */}
                                         </div>
                                         : ''}
                                 </div>
