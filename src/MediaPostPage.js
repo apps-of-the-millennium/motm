@@ -41,7 +41,7 @@ class MediaPostPage extends React.Component {
             openOptions: false,
             popUp: false,
             listType: "",
-            addedComplete: false,
+            addedCompleted: false,
             addedFavourite: false,
             addedLater: false,
             timer: '',
@@ -64,7 +64,7 @@ class MediaPostPage extends React.Component {
     async updateLists(id) {
         //currently only 3 hard-coded lists to update when we include user lists
         //we may need to change this or make a separate function / component for user lists since they will be random ids
-        let lists = ['addedComplete', 'addedFavourite', 'addedLater'];
+        let lists = ['addedCompleted', 'addedFavourite', 'addedLater'];
         for( var i=0; i < 3; i++ ) {
             //if update required at that list
             if (this.state[lists[i]]) {
@@ -220,7 +220,7 @@ class MediaPostPage extends React.Component {
     componentDidUpdate() {
         //save info to local storage
         if (typeof (Storage) !== "undefined") {
-            localStorage.setItem(this.props.id + '.completedList', (this.state.addedComplete).toString());
+            localStorage.setItem(this.props.id + '.completedList', (this.state.addedCompleted).toString());
             localStorage.setItem(this.props.id + '.favouriteList', (this.state.addedFavourite).toString());
             localStorage.setItem(this.props.id + '.laterList', (this.state.addedLater).toString());
             localStorage.setItem(this.props.id + '.rating', (this.state.currRating));
@@ -241,7 +241,7 @@ class MediaPostPage extends React.Component {
             let local_rating = localStorage.getItem(this.props.id + '.rating') || 0;
 
             this.setState({
-                addedComplete: local_completed,
+                addedCompleted: local_completed,
                 addedFavourite: local_favourite,
                 addedLater: local_later,
                 currRating: local_rating,

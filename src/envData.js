@@ -9,7 +9,7 @@ const mediaPostTypeEnum = {
 
 //currently not used but may need later for refactoring
 const listTypes = {
-  addedComplete: 'completedList',
+  addedCompleted: 'completedList',
   addedFavourite: 'favouriteList',
   addedLater: 'laterList',
 }

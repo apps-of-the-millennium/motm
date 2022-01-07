@@ -172,6 +172,19 @@
 
 /* ==Lists== */
 
+.view-more {
+    background-color: var(--color-background-grey);
+    color: var(--color-text);
+    border-radius: 4px;
+}
+
+.arrow {
+    width: 3em;
+    height: 3em;
+    position: inherit;
+    outline: none;
+}
+
 /* ==Reviews== */
 
 /* ===================================== */ 

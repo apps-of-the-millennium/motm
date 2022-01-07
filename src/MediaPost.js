@@ -38,7 +38,7 @@ class MediaPost extends React.Component { //({ user, match }) => {
             popUpMessage: '',
             addedFavourite: false,
             addedLater: false,
-            addedComplete: false,
+            addedCompleted: false,
             timer: '',
             displayButtons: false
         };
@@ -208,10 +208,6 @@ class MediaPost extends React.Component { //({ user, match }) => {
                                 {/* picture of media*/}
                                 <img className="mediaPostImg3" src={this.state.mediaPostPic} alt=""></img>
                             </Link>
-
-                            {/* <Link className="mediaPageLink" to={`/mediapost/${this.props.id}`}>
-                                    
-                                </Link> */}
                             <div className="mediaPost-banner">
                                 <div className="mediaPostTitle3">{this.state.mediaInfo['title']}</div>
                             </div>
