@@ -81,7 +81,7 @@ function UserLists(props) {
                             return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"favouriteList"} updateList={updateList} /> </div>)
                         })
                     }
-                    <button className="view-more" onClick={() => viewMore('favouriteList')}>View More<br/><FiArrowRightCircle className="view-more arrow" style={style} /></button>
+                    <button className="view-more" onClick={() => viewMore('favouriteList')}>View More<br/><FiArrowRightCircle className="arrow-userList" style={style} /></button>
                 </div>
             </div>
 
@@ -93,7 +93,7 @@ function UserLists(props) {
                             return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"laterList"} updateList={updateList} />  </div>)
                         })
                     }
-                    <button className="view-more" onClick={() => viewMore('laterList')}>View More<br/><FiArrowRightCircle className="view-more arrow" style={style} /></button>
+                    <button className="view-more" onClick={() => viewMore('laterList')}>View More<br/><FiArrowRightCircle className="arrow-userList" style={style} /></button>
                 </div>
             </div>
 
@@ -105,7 +105,7 @@ function UserLists(props) {
                             return (<div key={post}> <MediaPost postType={MEDIA_POST_TYPES.LIST} id={post} usersProfile={props.usersProfile} listType={"completedList"} updateList={updateList} /> </div>)
                         })
                     }
-                    <button className="view-more" onClick={() => viewMore('completedList')}>View More<br/><FiArrowRightCircle className="view-more arrow" style={style} /></button>
+                    <button className="view-more" onClick={() => viewMore('completedList')}>View More<br/><FiArrowRightCircle className="arrow-userList" style={style} /></button>
                 </div>
             </div>
             {/* Add User created lists here maybe first 2 or 3 then view more */}

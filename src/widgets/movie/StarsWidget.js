@@ -79,19 +79,19 @@ function StarsWidget(props) {
 
     return (
         /*<Link to={`/profile/${props.allReviewInfo.uid}`} style={{ textDecoration: "none" }}>*/
-   
-        <div className="starsGrid">
-            {props.stars.map((star) => {
-                return (
-                    <div className="starContent">
-                        <img className='starImage' src={''} alt=""></img>
-                        <div className='starName'> {star} </div>
-                    </div>
-                )
-            })}
+        <div className="starsContainer"> 
+            <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Stars</div>
+            <div className="starsGrid">
+                {props.stars.map((star) => {
+                    return (
+                        <div className="starContent">
+                            <img className='starImage' src={''} alt=""></img>
+                            <div className='starName'> {star} </div>
+                        </div>
+                    )
+                })}
+            </div>
         </div>
-    
-
         /*</Link>*/
     )
 }

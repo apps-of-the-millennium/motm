@@ -1,3 +1,16 @@
+.starsContainer {
+    display:block;
+
+    width: auto;
+    height: auto;
+    /* background: #141e30; */
+    
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+}
+
 .starsGrid {
     display: grid;
 

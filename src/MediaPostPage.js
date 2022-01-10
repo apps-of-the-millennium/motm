@@ -5,11 +5,11 @@ import firebase from 'firebase/app';
 // import envData from './envData';
 import { Link } from 'react-router-dom';
 import randomColor from 'randomcolor';
-import ReviewPost from './ReviewPost';
 import Rating from '@material-ui/lab/Rating';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import StarsWidget from './widgets/movie/StarsWidget'
+import ReviewsWidget from './widgets/general/ReviewsWidget'
 
 import { AiFillHeart } from 'react-icons/ai';
 // import { AiFillStar } from 'react-icons/ai';
@@ -45,7 +45,6 @@ class MediaPostPage extends React.Component {
             addedFavourite: false,
             addedLater: false,
             timer: '',
-            reviews: [],
 
             tags: [] //contains objects {tag_name: asdf, tag_color: asdf}
         };
@@ -153,24 +152,6 @@ class MediaPostPage extends React.Component {
         }
     }
 
-    retrieveUserReviews = () => {
-        firestore.collection('posts').doc(this.state.category).collection(this.categoryPostString).doc(this.props.id).collection('reviews').orderBy("likes", "desc").limit(4).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
-                const newReviewPost = {
-                    review_id: doc.id,
-                    allReviewInfo: doc.data()
-                }
-
-                this.setState({ reviews: [...this.state.reviews, newReviewPost] })
-            });
-        })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
-    }
-
     onMouseEnterHandler = () => {
         this.setState({
             hover: true
@@ -258,7 +239,6 @@ class MediaPostPage extends React.Component {
             }
         });
 
-        this.retrieveUserReviews();
         //console.log(this.state.category)
     }
 
@@ -339,15 +319,35 @@ class MediaPostPage extends React.Component {
 
                                 <div className="extraInfoTitle">Category</div>
                                 <div className="extraInfoValue">{(this.state.mediaInfo['category']) ? this.state.mediaInfo['category'] : "N/A"}</div>
-
-                                <div className="extraInfoTitle">Release date</div>
+                                
+                                <div className="extraInfoTitle">Release Date</div>
                                 <div className="extraInfoValue">{(this.state.mediaInfo['releaseDate']) ? this.state.mediaInfo['releaseDate'] : "N/A"}</div>
 
-                                <div className="extraInfoTitle">Author</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['author']) ? this.state.mediaInfo['author'] : "N/A"}</div>
+                                {/* TODO: needs a better design than just a bunch of else ifs for different categories */}
+                                {this.state.category === 'books' &&
+                                    <>
+                                        <div className="extraInfoTitle">Author</div>
+                                        <div className="extraInfoValue">{(this.state.mediaInfo['author']) ? this.state.mediaInfo['author'] : "N/A"}</div>
 
-                                <div className="extraInfoTitle">Publisher</div>
-                                <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                        <div className="extraInfoTitle">Publisher</div>
+                                        <div className="extraInfoValue">{(this.state.mediaInfo['publisher']) ? this.state.mediaInfo['publisher'] : "N/A"}</div>
+                                    </>
+                                }
+
+                                {this.state.category === 'movies' && 
+                                    <>
+                                        <div className="extraInfoTitle">Age Rating</div>
+                                        <div className="extraInfoValue">{(this.state.mediaInfo['ageRating']) ? this.state.mediaInfo['ageRating'] : "N/A"}</div>
+
+                                        <div className="extraInfoTitle">Running Time</div>
+                                        <div className="extraInfoValue">{(this.state.mediaInfo['runningTime']) ? this.state.mediaInfo['runningTime'] : "N/A"}</div>
+
+                                        <div className="extraInfoTitle">Director</div>
+                                        <div className="extraInfoValue">{(this.state.mediaInfo['director']) ? this.state.mediaInfo['director'] : "N/A"}</div>
+                                    </>
+                                }
+
+                                
 
                                 {/* even more info ...example # of times favorited, watch listed, completed ... */}
                             </div>
@@ -367,28 +367,13 @@ class MediaPostPage extends React.Component {
                         </div>
 
                         <div className="overviewContentContainer">
-                            <div className="reviewsContainer">
-                                <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Reviews</div>
-                                {(this.state.reviews.length === 0) ? (<div className="extraInfoValue" style={{ fontStyle: 'italic', fontWeight: '600' }}>There are no reviews for {this.state.mediaInfo['title']} yet...
-                                    <Link className="revLink" style={{ fontStyle: 'italic', fontWeight: '700' }} to={{ pathname: `/review/write/${this.props.id}`, state: { mediaInfo: this.state.mediaInfo } }} >be the first </Link></div>)
-                                    : (
-                                        <div className="reviewsGrid">
-                                            {this.state.reviews.map((post) => {
-                                                return <ReviewPost key={post.review_id} review_id={post.review_id} allReviewInfo={post.allReviewInfo} />
-                                            })}
-                                        </div>
-                                    )}
-                            </div>
-
-                            {this.state.category === 'movies' ?
-                                (this.state.mediaInfo['stars'].length !== 0 ? 
-                                    <div className="starsContainer"> 
-                                        <div className="extraInfoTitle" style={{ marginBottom: "1rem" }}>Stars</div>
-                                        <StarsWidget stars={this.state.mediaInfo['stars']} />
-                                    </div> : "")
-                            : ""}                
-                            
-
+                            <ReviewsWidget category={this.state.category} categoryPostString={this.categoryPostString} id={this.props.id} mediaInfo={this.state.mediaInfo} />
+                            {/* idea: just pass media info as a prop and do these checks inside widget */}
+                            {this.state.category === 'movies' &&
+                                (this.state.mediaInfo['stars'].length !== 0 && 
+                                    <StarsWidget stars={this.state.mediaInfo['stars']} />
+                                )
+                            }                
                         </div>
                     </div>
                 </div>
