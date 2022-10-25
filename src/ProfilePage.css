@@ -172,13 +172,13 @@
 
 /* ==Lists== */
 
-.view-more {
+.view-more-list {
     background-color: var(--color-background-grey);
     color: var(--color-text);
     border-radius: 4px;
 }
 
-.arrow {
+.arrow-list {
     width: 3em;
     height: 3em;
     position: inherit;

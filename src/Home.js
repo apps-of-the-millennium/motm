@@ -100,8 +100,8 @@ class Home extends React.Component {
                 <div className="section-label">
                   TRENDING
                   {/* ChANGE TO LINK */}
-                  <Link className="view-more" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/trending`}>View More</Link>
-                  {/* <div className="view-more" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div> */}
+                  <Link className="view-more-home" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/trending`}>View More</Link>
+                  {/* <div className="view-more-home" style={{ fontSize: '12px' }} onClick={() => this.handlePostPagination(this.state.lastTrending, 'trendingPosts')}>View more</div> */}
                 </div>
                 <div className="section-posts regular">
                   {
@@ -118,8 +118,8 @@ class Home extends React.Component {
                 <div className="section-label">
                   POPULAR
                   {/* ChANGE TO LINK */}
-                  <Link className="view-more" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/popular`}>View More</Link>
-                  {/* <div className="view-more" style={{ fontSize: '12px' }}>View more</div> */}
+                  <Link className="view-more-home" style={{ fontSize: '12px' }} to={`/`+this.state.category+`/popular`}>View More</Link>
+                  {/* <div className="view-more-home" style={{ fontSize: '12px' }}>View more</div> */}
                 </div>
                 <div className="section-posts regular">
                   {
