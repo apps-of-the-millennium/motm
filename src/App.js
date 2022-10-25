@@ -47,9 +47,6 @@ class App extends Component {
                     id={props.match.params.id} category={props.match.params.category} {...props} />
                 )}
               />
-              <Route path="/:category/:section" 
-                render={props => (<CategoryPage category={props.match.params.category} section={props.match.params.section} {...props} />)}
-              />
               <Route
                 path="/review/write/:id"
                 render={props => (
@@ -68,6 +65,9 @@ class App extends Component {
                 path="/browse"
                 render={() =>
                   <BrowsePage/> } />
+              <Route path="/:category/:section" 
+                render={props => (<CategoryPage category={props.match.params.category} section={props.match.params.section} {...props} />)}
+              />
               <Route path="/" render={() => <ErrorPage /> } />
             </Switch> 
             <Footer />
